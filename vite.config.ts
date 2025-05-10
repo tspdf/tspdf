@@ -2,11 +2,18 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import tsconfigPaths from 'vite-tsconfig-paths';
 import tailwindcss from '@tailwindcss/vite';
+import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js';
 import dts from 'vite-plugin-dts';
 import path from 'path';
 
 export default defineConfig({
   plugins: [
+    cssInjectedByJsPlugin({
+      topExecutionPriority: true,
+      cssAssetsFilterFunction: (asset) => {
+        return asset.fileName.endsWith('.css');
+      },
+    }),
     react(),
     tsconfigPaths(),
     tailwindcss(),

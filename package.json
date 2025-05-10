@@ -7,9 +7,9 @@
   "type": "module",
   "main": "./dist/easy-pdf.umd.js",
   "module": "./dist/easy-pdf.es.js",
-  "types": "./dist/types/index.d.ts",
   "exports": {
     ".": {
+      "types": "./dist/types/index.d.ts",
       "import": "./dist/easy-pdf.es.js",
       "require": "./dist/easy-pdf.umd.js"
     }
@@ -60,6 +60,7 @@
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.30.1",
     "vite": "^6.3.5",
+    "vite-plugin-css-injected-by-js": "^3.5.2",
     "vite-plugin-dts": "^2.0.0",
     "vite-tsconfig-paths": "^5.1.4",
     "vitest": "^3.1.3"
