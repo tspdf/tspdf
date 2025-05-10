@@ -1,1 +1,1 @@
-export * from './PlaceHolder';
+export * from './Button';

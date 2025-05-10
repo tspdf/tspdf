@@ -1,22 +1,27 @@
 import type { StorybookConfig } from '@storybook/react-vite';
+import { mergeConfig } from 'vite';
+import tsconfigPaths from 'vite-tsconfig-paths';
+
 
 const config: StorybookConfig = {
-  stories: [
-    '../src/**/*.mdx',
-    '../src/**/*.stories.@(ts|tsx)',
-  ],
-  addons: [
-    '@storybook/addon-essentials',
-    '@storybook/addon-interactions',
-    '@storybook/addon-docs',
-  ],
   framework: {
     name: '@storybook/react-vite',
     options: {},
   },
+  stories: ['../src/components/**/*.stories.@(js|jsx|ts|tsx)'],
+  addons: [
+    '@storybook/addon-essentials',
+    '@storybook/addon-postcss',
+  ],
   docs: {
     autodocs: 'tag',
-  }
+  },
+  async viteFinal(baseConfig) {
+    // Merge in the tsconfig-paths plugin so aliases work
+    return mergeConfig(baseConfig, {
+      plugins: [tsconfigPaths()],
+    });
+  },
 };
 
 export default config;

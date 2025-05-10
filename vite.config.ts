@@ -1,32 +1,51 @@
-import react from '@vitejs/plugin-react'
-import path from 'path'
-import { defineConfig } from 'vite'
-import dts from 'vite-plugin-dts'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import tailwindcss from '@tailwindcss/vite';
+import dts from 'vite-plugin-dts';
+import path from 'path';
+import autoprefixer from 'autoprefixer';
+import postcssPlugin from '@tailwindcss/postcss';
 
-// https://vitejs.dev/config/
 export default defineConfig({
+  plugins: [
+    react(),
+    tailwindcss(),
+    dts({
+      root: path.resolve(__dirname, 'src'),
+      entryRoot: path.resolve(__dirname, 'src/components'),
+      outputDir: path.resolve(__dirname, 'dist/types'),
+      tsConfigFilePath: path.resolve(__dirname, 'tsconfig.json'),
+      insertTypesEntry: true,
+      skipDiagnostics: false,
+    }),
+  ],
+  css: {
+    postcss: {
+      plugins: [
+        postcssPlugin(),
+        autoprefixer(),
+      ],
+    },
+  },
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, 'src')
+      '@components': path.resolve(__dirname, 'src/components')
     }
   },
   build: {
+    outDir: 'dist',
+    emptyOutDir: true,
     lib: {
       entry: path.resolve(__dirname, 'src/components/index.tsx'),
       name: 'EasyPDF',
-      fileName: (format) => `easy-pdf.${format}.js`,
-      formats: ['es', 'cjs', 'umd']
+      formats: ['es', 'umd'],
+      fileName: (format) => `easy-pdf.${format}.js`
     },
     rollupOptions: {
-      // Externalize deps that shouldn't be bundled into the library
       external: ['react', 'react-dom'],
       output: {
-        globals: {
-          react: 'React',
-          'react-dom': 'ReactDOM'
-        }
+        globals: { react: 'React', 'react-dom': 'ReactDOM' }
       }
     }
-  },
-  plugins: [react(), dts({ rollupTypes: true })],
-})
+  }
+});
