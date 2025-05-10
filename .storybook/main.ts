@@ -15,7 +15,7 @@ const config: StorybookConfig = {
   docs: {
     autodocs: 'tag',
   },
-  async viteFinal(baseConfig) {
+  viteFinal(baseConfig) {
     // Merge in the tsconfig-paths plugin so aliases work
     return mergeConfig(baseConfig, {
       plugins: [tsconfigPaths()],
