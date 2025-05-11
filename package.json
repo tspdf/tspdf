@@ -1,6 +1,6 @@
 {
   "name": "@easy-pdf/react-easy-pdf",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A modern React component library for PDF rendering",
   "author": "Antony Seas",
   "license": "MIT",
