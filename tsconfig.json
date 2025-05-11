@@ -2,10 +2,7 @@
   "compilerOptions": {
     "target": "ES2020",
     "module": "ESNext",
-    "lib": [
-      "ES2020",
-      "DOM"
-    ],
+    "lib": ["ES2020", "DOM"],
     "jsx": "react-jsx",
     "declaration": true,
     "declarationDir": "./dist/types",
@@ -16,9 +13,7 @@
     "strictNullChecks": true,
     "baseUrl": ".",
     "paths": {
-      "@components/*": [
-        "src/components/*"
-      ]
+      "@components/*": ["src/components/*"]
     },
     "moduleResolution": "bundler"
   },
@@ -28,5 +23,5 @@
     "vite.config.ts",
     "vitest.workspace.ts",
     "eslint.config.js"
-  ],
+  ]
 }

@@ -1,25 +1,25 @@
-import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
-import tsconfigPaths from 'vite-tsconfig-paths';
-import tailwindcss from '@tailwindcss/vite';
-import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js';
-import dts from 'vite-plugin-dts';
-import path from 'path';
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import tsconfigPaths from "vite-tsconfig-paths";
+import tailwindcss from "@tailwindcss/vite";
+import cssInjectedByJsPlugin from "vite-plugin-css-injected-by-js";
+import dts from "vite-plugin-dts";
+import path from "path";
 
 export default defineConfig({
   plugins: [
     cssInjectedByJsPlugin({
       topExecutionPriority: true,
       cssAssetsFilterFunction: (asset) => {
-        return asset.fileName.endsWith('.css');
+        return asset.fileName.endsWith(".css");
       },
     }),
     react(),
     tsconfigPaths(),
     tailwindcss(),
     dts({
-      outputDir: 'dist/types',
-      tsConfigFilePath: './tsconfig.json',
+      outputDir: "dist/types",
+      tsConfigFilePath: "./tsconfig.json",
       insertTypesEntry: true,
       skipDiagnostics: false,
       rollupTypes: true,
@@ -27,20 +27,20 @@ export default defineConfig({
   ],
   build: {
     sourcemap: true,
-    minify: 'esbuild',
-    outDir: 'dist',
+    minify: "esbuild",
+    outDir: "dist",
     emptyOutDir: true,
     lib: {
-      entry: path.resolve(__dirname, 'src/components/index.tsx'),
-      name: 'EasyPDF',
-      formats: ['es', 'umd'],
+      entry: path.resolve(__dirname, "src/components/index.tsx"),
+      name: "EasyPDF",
+      formats: ["es", "umd"],
       fileName: (format) => `easy-pdf.${format}.js`,
     },
     rollupOptions: {
-      external: ['react', 'react-dom', 'tailwindcss'],
+      external: ["react", "react-dom", "tailwindcss"],
       output: {
-        globals: { react: 'React', 'react-dom': 'ReactDOM' },
-        assetFileNames: '[name].[hash][extname]',
+        globals: { react: "React", "react-dom": "ReactDOM" },
+        assetFileNames: "[name].[hash][extname]",
       },
     },
   },
