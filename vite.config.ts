@@ -31,7 +31,7 @@ export default defineConfig({
     outDir: "dist",
     emptyOutDir: true,
     lib: {
-      entry: path.resolve(__dirname, "src/components/index.tsx"),
+      entry: path.resolve(__dirname, "src/index.tsx"),
       name: "EasyPDF",
       formats: ["es", "umd"],
       fileName: (format) => `easy-pdf.${format}.js`,

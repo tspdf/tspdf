@@ -13,7 +13,7 @@
     "strictNullChecks": true,
     "baseUrl": ".",
     "paths": {
-      "@components/*": ["src/components/*"]
+      "@/*": ["src/*"]
     },
     "moduleResolution": "bundler"
   },
