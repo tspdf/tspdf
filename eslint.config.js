@@ -8,6 +8,7 @@ export default defineConfig([
   globalIgnores([
     "dist/",
     "eslint.config.js",
+    "commitlint.config.js"
   ]),
   tseslint.config(
     eslint.configs.recommended,
