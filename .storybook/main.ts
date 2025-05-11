@@ -16,6 +16,11 @@ const config: StorybookConfig = {
     // Merge in the tsconfig-paths plugin so aliases work
     return mergeConfig(baseConfig, {
       plugins: [tsconfigPaths()],
+      resolve: {
+        alias: {
+          "@": "/src",
+        },
+      },
     });
   },
 };
