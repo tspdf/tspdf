@@ -68,7 +68,6 @@ __metadata:
     "@rollup/plugin-commonjs": "npm:^28.0.3"
     "@rollup/plugin-node-resolve": "npm:^16.0.1"
     "@tailwindcss/cli": "npm:^4.1.5"
-    "@tailwindcss/vite": "npm:^4.1.7"
     "@types/react": "npm:^19.1.4"
     "@types/react-dom": "npm:^19.1.0"
     "@types/rollup-plugin-peer-deps-external": "npm:^2"
@@ -1085,19 +1084,6 @@ __metadata:
     postcss: "npm:^8.4.41"
     tailwindcss: "npm:4.1.7"
   checksum: 10c0/3779c34001dfa2741efa037089b9331807e15946e766decc983baef8ba5d4d519a1b86e7f27fffcf1a028bda19e0fdf5a87479a89b9e1cd2d7df5769273777c8
-  languageName: node
-  linkType: hard
-
-"@tailwindcss/vite@npm:^4.1.7":
-  version: 4.1.7
-  resolution: "@tailwindcss/vite@npm:4.1.7"
-  dependencies:
-    "@tailwindcss/node": "npm:4.1.7"
-    "@tailwindcss/oxide": "npm:4.1.7"
-    tailwindcss: "npm:4.1.7"
-  peerDependencies:
-    vite: ^5.2.0 || ^6
-  checksum: 10c0/8733e509a6834385998a952cc276b17038356794f657ac727e01a1abd40e1ca4a4b92cdc716127640ba5348fe8be6df7b3f04a948edcf684899312eed0046b68
   languageName: node
   linkType: hard
 

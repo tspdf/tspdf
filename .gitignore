@@ -8,12 +8,6 @@ node_modules
 # testing
 coverage
 
-# next.js
-.next/
-out/
-build
-.swc/
-
 # misc
 .DS_Store
 *.pem
