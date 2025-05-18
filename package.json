@@ -23,5 +23,8 @@
   ],
   "dependencies": {
     "postcss": "^8.5.3"
+  },
+  "resolutions": {
+    "globals": "16.1.0"
   }
 }

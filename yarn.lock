@@ -73,6 +73,7 @@ __metadata:
     "@types/rollup-plugin-peer-deps-external": "npm:^2"
     autoprefixer: "npm:^10.4.21"
     esbuild: "npm:^0.25.4"
+    eslint: "npm:^9.27.0"
     postcss: "npm:^8.5.3"
     rollup: "npm:^4.40.2"
     rollup-plugin-delete: "npm:^3.0.1"
@@ -2248,7 +2249,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint@npm:^9.26.0":
+"eslint@npm:^9.26.0, eslint@npm:^9.27.0":
   version: 9.27.0
   resolution: "eslint@npm:9.27.0"
   dependencies:
@@ -2642,17 +2643,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"globals@npm:^14.0.0":
-  version: 14.0.0
-  resolution: "globals@npm:14.0.0"
-  checksum: 10c0/b96ff42620c9231ad468d4c58ff42afee7777ee1c963013ff8aabe095a451d0ceeb8dcd8ef4cbd64d2538cef45f787a78ba3a9574f4a634438963e334471302d
-  languageName: node
-  linkType: hard
-
-"globals@npm:^16.1.0":
-  version: 11.12.0
-  resolution: "globals@npm:11.12.0"
-  checksum: 10c0/758f9f258e7b19226bd8d4af5d3b0dcf7038780fb23d82e6f98932c44e239f884847f1766e8fa9cc5635ccb3204f7fa7314d4408dd4002a5e8ea827b4018f0a1
+"globals@npm:16.1.0":
+  version: 16.1.0
+  resolution: "globals@npm:16.1.0"
+  checksum: 10c0/51df6319b5b9e679338baf058ecf1125af0d3148b97e57592deabd65fca5c5dcdcca321d7589282bd6afbea9f5a40bc7329c746f46d56780813d7d1c457209a2
   languageName: node
   linkType: hard
 

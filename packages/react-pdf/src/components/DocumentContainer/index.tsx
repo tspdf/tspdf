@@ -5,9 +5,5 @@ interface DocumentContainerProps extends React.HTMLProps<HTMLDivElement> {
 }
 
 export const DocumentContainer: React.FC<DocumentContainerProps> = () => {
-  return (
-    <div className="flex">
-      Test
-    </div>
-  );
+  return <div className="flex">Test</div>;
 };
