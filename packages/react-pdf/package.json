@@ -7,13 +7,7 @@
   "type": "module",
   "main": "./dist/easy-pdf.umd.js",
   "module": "./dist/easy-pdf.es.js",
-  "exports": {
-    ".": {
-      "types": "./dist/types/index.d.ts",
-      "import": "./dist/easy-pdf.es.js",
-      "require": "./dist/easy-pdf.umd.js"
-    }
-  },
+  "types": "./dist/types/index.d.ts",
   "files": [
     "dist"
   ],

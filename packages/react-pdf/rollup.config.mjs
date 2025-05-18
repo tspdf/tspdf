@@ -56,7 +56,7 @@ export default [
 
       // Tailwind + PostCSS pipeline
       postcss({
-        extract: true,
+        extract: false,
         modules: false,
         sourceMap: true,
         plugins: [
@@ -68,12 +68,12 @@ export default [
     ],
     output: [
       {
-        file: path.join(outputDir, pkg.module),
+        file: pkg.module,
         format: 'es',
         sourcemap: true,
       },
       {
-        file: path.join(outputDir, pkg.main),
+        file: pkg.main,
         format: 'umd',
         name: 'EasyPDF',
         globals: {
