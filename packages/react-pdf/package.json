@@ -1,0 +1,36 @@
+{
+  "name": "@easy-pdf/react-pdf",
+  "version": "v0.0.1",
+  "description": "A modern React component library for PDF rendering",
+  "author": "Antony Seas",
+  "license": "MIT",
+  "type": "module",
+  "main": "./dist/easy-pdf.umd.js",
+  "module": "./dist/easy-pdf.es.js",
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/easy-pdf.es.js",
+      "require": "./dist/easy-pdf.umd.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "rollup --config",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
+  },
+  "peerDependencies": {
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
+  },
+  "devDependencies": {
+    "@easy-pdf/eslint-config": "*",
+    "@easy-pdf/tailwind-config": "*",
+    "@easy-pdf/typescript-config": "*",
+    "@types/react": "^19.1.4",
+    "@types/react-dom": "^19.1.0"
+  }
+}
