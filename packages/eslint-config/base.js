@@ -5,8 +5,17 @@ import simpleImportSort from "eslint-plugin-simple-import-sort";
 import turboPlugin from "eslint-plugin-turbo";
 import onlyWarn from "eslint-plugin-only-warn";
 
-/** @type {import("eslint").Linter.FlatConfig[]} */
+/** @type {import("eslint").Linter.Config[]} */
 export const config = [
+  // 1) ignore build outputs & config scripts
+  {
+    ignores: [
+      "dist/**",
+      "**/*.mjs",
+      "**/*.config.mjs",
+    ],
+  },
+
   // Core JS rules
   js.configs.recommended,
 
@@ -43,11 +52,6 @@ export const config = [
 
   // downgrade everything to warnings
   { plugins: { onlyWarn } },
-
-  // ignore build and config files
-  {
-    ignores: ["dist/**"],
-  },
 ];
 
 export default config;

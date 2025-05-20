@@ -6,7 +6,10 @@
     "dev": "turbo run dev",
     "lint": "turbo run lint",
     "check-types": "turbo run check-types",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "postinstall": "husky",
+    "prepack": "pinst --disable",
+    "postpack": "pinst --enable"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.8.1",
@@ -30,5 +33,8 @@
   },
   "resolutions": {
     "globals": "16.1.0"
+  },
+  "commitlint": {
+    "extends": ["@commitlint/config-conventional"]
   }
 }
