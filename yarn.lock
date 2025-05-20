@@ -40,72 +40,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@easy-pdf/eslint-config@npm:*, @easy-pdf/eslint-config@workspace:packages/eslint-config":
-  version: 0.0.0-use.local
-  resolution: "@easy-pdf/eslint-config@workspace:packages/eslint-config"
-  dependencies:
-    "@eslint/js": "npm:^9.26.0"
-    eslint: "npm:^9.26.0"
-    eslint-config-prettier: "npm:^10.1.1"
-    eslint-plugin-only-warn: "npm:^1.1.0"
-    eslint-plugin-prettier: "npm:^5.4.0"
-    eslint-plugin-react: "npm:^7.37.4"
-    eslint-plugin-react-hooks: "npm:^5.2.0"
-    eslint-plugin-simple-import-sort: "npm:^12.1.1"
-    eslint-plugin-turbo: "npm:^2.5.0"
-    globals: "npm:^16.1.0"
-    turbo: "npm:^2.5.3"
-    typescript: "npm:^5.8.2"
-    typescript-eslint: "npm:^8.32.0"
-  languageName: unknown
-  linkType: soft
-
-"@easy-pdf/react-pdf@workspace:packages/react-pdf":
-  version: 0.0.0-use.local
-  resolution: "@easy-pdf/react-pdf@workspace:packages/react-pdf"
-  dependencies:
-    "@easy-pdf/eslint-config": "npm:*"
-    "@easy-pdf/tailwind-config": "npm:*"
-    "@easy-pdf/typescript-config": "npm:*"
-    "@rollup/plugin-commonjs": "npm:^28.0.3"
-    "@rollup/plugin-node-resolve": "npm:^16.0.1"
-    "@tailwindcss/postcss": "npm:^4.1.7"
-    "@types/react": "npm:^19.1.4"
-    "@types/react-dom": "npm:^19.1.5"
-    "@types/rollup-plugin-peer-deps-external": "npm:^2"
-    autoprefixer: "npm:^10.4.21"
-    esbuild: "npm:^0.25.4"
-    eslint: "npm:^9.27.0"
-    postcss: "npm:^8.5.3"
-    rollup: "npm:^4.40.2"
-    rollup-plugin-delete: "npm:^3.0.1"
-    rollup-plugin-dts: "npm:^6.2.1"
-    rollup-plugin-esbuild: "npm:^6.2.1"
-    rollup-plugin-peer-deps-external: "npm:^2.2.4"
-    rollup-plugin-postcss: "npm:^4.0.2"
-    typescript: "npm:^5.8.3"
-  peerDependencies:
-    react: ^19.1.0
-    react-dom: ^19.1.0
-  languageName: unknown
-  linkType: soft
-
-"@easy-pdf/tailwind-config@npm:*, @easy-pdf/tailwind-config@workspace:packages/tailwind-config":
-  version: 0.0.0-use.local
-  resolution: "@easy-pdf/tailwind-config@workspace:packages/tailwind-config"
-  dependencies:
-    "@tailwindcss/postcss": "npm:^4.1.7"
-    postcss: "npm:^8.5.3"
-    tailwindcss: "npm:^4.1.5"
-  languageName: unknown
-  linkType: soft
-
-"@easy-pdf/typescript-config@npm:*, @easy-pdf/typescript-config@workspace:packages/typescript-config":
-  version: 0.0.0-use.local
-  resolution: "@easy-pdf/typescript-config@workspace:packages/typescript-config"
-  languageName: unknown
-  linkType: soft
-
 "@emnapi/core@npm:^1.4.3":
   version: 1.4.3
   resolution: "@emnapi/core@npm:1.4.3"
@@ -945,6 +879,72 @@ __metadata:
   checksum: 10c0/44907308549ce775a41c38a815f747009ac45929a45d642b836aa6b0a536e4978d30b8d7d680bbd116e9dd73b7dbe2ef0d1369dcfc2d09e83ba381e485ecbe12
   languageName: node
   linkType: hard
+
+"@tspdf/eslint-config@npm:*, @tspdf/eslint-config@workspace:packages/eslint-config":
+  version: 0.0.0-use.local
+  resolution: "@tspdf/eslint-config@workspace:packages/eslint-config"
+  dependencies:
+    "@eslint/js": "npm:^9.26.0"
+    eslint: "npm:^9.26.0"
+    eslint-config-prettier: "npm:^10.1.1"
+    eslint-plugin-only-warn: "npm:^1.1.0"
+    eslint-plugin-prettier: "npm:^5.4.0"
+    eslint-plugin-react: "npm:^7.37.4"
+    eslint-plugin-react-hooks: "npm:^5.2.0"
+    eslint-plugin-simple-import-sort: "npm:^12.1.1"
+    eslint-plugin-turbo: "npm:^2.5.0"
+    globals: "npm:^16.1.0"
+    turbo: "npm:^2.5.3"
+    typescript: "npm:^5.8.2"
+    typescript-eslint: "npm:^8.32.0"
+  languageName: unknown
+  linkType: soft
+
+"@tspdf/react-pdf@workspace:packages/react-pdf":
+  version: 0.0.0-use.local
+  resolution: "@tspdf/react-pdf@workspace:packages/react-pdf"
+  dependencies:
+    "@rollup/plugin-commonjs": "npm:^28.0.3"
+    "@rollup/plugin-node-resolve": "npm:^16.0.1"
+    "@tailwindcss/postcss": "npm:^4.1.7"
+    "@tspdf/eslint-config": "npm:*"
+    "@tspdf/tailwind-config": "npm:*"
+    "@tspdf/typescript-config": "npm:*"
+    "@types/react": "npm:^19.1.4"
+    "@types/react-dom": "npm:^19.1.5"
+    "@types/rollup-plugin-peer-deps-external": "npm:^2"
+    autoprefixer: "npm:^10.4.21"
+    esbuild: "npm:^0.25.4"
+    eslint: "npm:^9.27.0"
+    postcss: "npm:^8.5.3"
+    rollup: "npm:^4.40.2"
+    rollup-plugin-delete: "npm:^3.0.1"
+    rollup-plugin-dts: "npm:^6.2.1"
+    rollup-plugin-esbuild: "npm:^6.2.1"
+    rollup-plugin-peer-deps-external: "npm:^2.2.4"
+    rollup-plugin-postcss: "npm:^4.0.2"
+    typescript: "npm:^5.8.3"
+  peerDependencies:
+    react: ^19.1.0
+    react-dom: ^19.1.0
+  languageName: unknown
+  linkType: soft
+
+"@tspdf/tailwind-config@npm:*, @tspdf/tailwind-config@workspace:packages/tailwind-config":
+  version: 0.0.0-use.local
+  resolution: "@tspdf/tailwind-config@workspace:packages/tailwind-config"
+  dependencies:
+    "@tailwindcss/postcss": "npm:^4.1.7"
+    postcss: "npm:^8.5.3"
+    tailwindcss: "npm:^4.1.5"
+  languageName: unknown
+  linkType: soft
+
+"@tspdf/typescript-config@npm:*, @tspdf/typescript-config@workspace:packages/typescript-config":
+  version: 0.0.0-use.local
+  resolution: "@tspdf/typescript-config@workspace:packages/typescript-config"
+  languageName: unknown
+  linkType: soft
 
 "@tybys/wasm-util@npm:^0.9.0":
   version: 0.9.0
@@ -1849,17 +1849,6 @@ __metadata:
   checksum: 10c0/26f364ebcdb6395f95124fda411f63137a4bfb5d3a06453f7f23dfe52502905bd84e0488172e0f9ec295fdc45f05c23d5d91baf16bd26f0fe9acd777a188dc39
   languageName: node
   linkType: hard
-
-"easy-pdf@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "easy-pdf@workspace:."
-  dependencies:
-    postcss: "npm:^8.5.3"
-    prettier: "npm:^3.5.3"
-    prettier-plugin-tailwindcss: "npm:^0.6.11"
-    turbo: "npm:^2.5.3"
-  languageName: unknown
-  linkType: soft
 
 "electron-to-chromium@npm:^1.5.149":
   version: 1.5.155
@@ -5340,6 +5329,17 @@ __metadata:
   checksum: 10c0/9c4759110a19c53f992d9aae23aac5ced636e99887b51b9e61def52611732872ff7668757d4e4c61f19691e36f4da981cd9485e869b4a7408d689f6bf1f14e62
   languageName: node
   linkType: hard
+
+"tspdf@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "tspdf@workspace:."
+  dependencies:
+    postcss: "npm:^8.5.3"
+    prettier: "npm:^3.5.3"
+    prettier-plugin-tailwindcss: "npm:^0.6.11"
+    turbo: "npm:^2.5.3"
+  languageName: unknown
+  linkType: soft
 
 "turbo-darwin-64@npm:2.5.3":
   version: 2.5.3
