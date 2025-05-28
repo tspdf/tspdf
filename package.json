@@ -8,7 +8,7 @@
     "lint:fix": "turbo run lint -- --fix",
     "check-types": "turbo run check-types",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "postinstall": "husky",
+    "postinstall": "husky && patch-package",
     "prepack": "pinst --disable",
     "postpack": "pinst --enable",
     "lint-staged": "lint-staged"
@@ -23,6 +23,7 @@
     "@commitlint/config-conventional": "^19.8.1",
     "husky": "^9.1.7",
     "lint-staged": "^16.0.0",
+    "patch-package": "^6.5.0",
     "pinst": "^3.0.0",
     "prettier": "^3.5.3",
     "prettier-plugin-tailwindcss": "^0.6.11",
