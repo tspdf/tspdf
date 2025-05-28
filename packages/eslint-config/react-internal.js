@@ -6,6 +6,12 @@ import pluginReact from "eslint-plugin-react";
 import globals from "globals";
 import { config as baseConfig } from "./base.js";
 
+// Sanitize globals: trim whitespace from names
+const mergedGlobals = { ...globals.serviceworker, ...globals.browser };
+const sanitizedGlobals = Object.fromEntries(
+  Object.entries(mergedGlobals).map(([key, val]) => [key.trim(), val])
+);
+
 /**
  * A custom ESLint configuration for libraries that use React.
  *
@@ -19,10 +25,7 @@ export const config = [
   {
     languageOptions: {
       ...pluginReact.configs.flat.recommended.languageOptions,
-      globals: {
-        ...globals.serviceworker,
-        ...globals.browser,
-      },
+      globals: sanitizedGlobals,
     },
   },
   {
