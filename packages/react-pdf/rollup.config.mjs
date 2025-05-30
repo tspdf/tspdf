@@ -1,15 +1,15 @@
-import path from 'path';
-import { fileURLToPath } from 'url';
-import fs from 'fs';
-import peerDepsExternal from 'rollup-plugin-peer-deps-external';
-import resolve from '@rollup/plugin-node-resolve';
-import commonjs from '@rollup/plugin-commonjs';
-import postcss from 'rollup-plugin-postcss';
-import postcssTailwind from '@tailwindcss/postcss';
-import autoprefixer from 'autoprefixer';
-import esbuild from 'rollup-plugin-esbuild';
-import dts from 'rollup-plugin-dts';
-import del from 'rollup-plugin-delete';
+import path from "path";
+import { fileURLToPath } from "url";
+import fs from "fs";
+import peerDepsExternal from "rollup-plugin-peer-deps-external";
+import resolve from "@rollup/plugin-node-resolve";
+import commonjs from "@rollup/plugin-commonjs";
+import postcss from "rollup-plugin-postcss";
+import postcssTailwind from "@tailwindcss/postcss";
+import autoprefixer from "autoprefixer";
+import esbuild from "rollup-plugin-esbuild";
+import dts from "rollup-plugin-dts";
+import del from "rollup-plugin-delete";
 
 // __dirname equivalent in ESM
 const __filename = fileURLToPath(import.meta.url);
@@ -17,14 +17,11 @@ const __dirname = path.dirname(__filename);
 
 // Load package.json without import assertions
 const pkg = JSON.parse(
-  fs.readFileSync(
-    path.resolve(__dirname, 'package.json'),
-    'utf8'
-  )
+  fs.readFileSync(path.resolve(__dirname, "package.json"), "utf8")
 );
 
-const input = path.resolve(__dirname, 'src/index.tsx');
-const outputDir = path.resolve(__dirname, 'dist');
+const input = path.resolve(__dirname, "src/index.tsx");
+const outputDir = path.resolve(__dirname, "dist");
 
 export default [
   // 1) Bundle (ESM + UMD)
@@ -32,12 +29,12 @@ export default [
     input,
     external: [
       ...Object.keys(pkg.peerDependencies || {}),
-      'tailwindcss',
-      'react/jsx-runtime'
+      "tailwindcss",
+      "react/jsx-runtime",
     ],
     plugins: [
       // Clean dist before build
-      del({ targets: 'dist/*', runOnce: true }),
+      del({ targets: "dist/*", runOnce: true }),
 
       // Auto-externalize peerDependencies
       peerDepsExternal(),
@@ -50,8 +47,8 @@ export default [
       esbuild({
         sourceMap: true,
         minify: true,
-        target: 'esnext',
-        jsx: 'automatic'
+        target: "esnext",
+        jsx: "automatic",
       }),
 
       // Tailwind + PostCSS pipeline
@@ -59,31 +56,28 @@ export default [
         extract: false,
         modules: false,
         sourceMap: true,
-        plugins: [
-          postcssTailwind(),
-          autoprefixer(),
-        ],
-        extensions: ['.css'],
+        plugins: [postcssTailwind(), autoprefixer()],
+        extensions: [".css"],
       }),
     ],
     output: [
       {
         file: pkg.module,
-        format: 'es',
+        format: "es",
         sourcemap: true,
       },
       {
         file: pkg.main,
-        format: 'umd',
-        name: 'EasyPDF',
+        format: "umd",
+        name: "TSPDF",
         globals: {
-          react: 'React',
-          'react-dom': 'ReactDOM',
-          'react/jsx-runtime': 'jsxRuntime'
+          react: "React",
+          "react-dom": "ReactDOM",
+          "react/jsx-runtime": "jsxRuntime",
         },
         sourcemap: true,
-      }
-    ]
+      },
+    ],
   },
 
   // 2) Type Declarations
@@ -92,12 +86,12 @@ export default [
     external: [/\.css$/],
     plugins: [
       dts({
-        tsconfig: './tsconfig.json'
-      })
+        tsconfig: "./tsconfig.json",
+      }),
     ],
     output: {
-      file: path.join(outputDir, 'types/index.d.ts'),
-      format: 'es'
-    }
-  }
+      file: path.join(outputDir, "types/index.d.ts"),
+      format: "es",
+    },
+  },
 ];
