@@ -6,19 +6,14 @@ import type * as Preset from "@docusaurus/preset-classic";
 
 const config: Config = {
   title: "TS PDF",
-  tagline: "The easiest PDF.js integration for React",
+  tagline: "Easy to use PDF viewer for React (more frameworks coming soon)",
   favicon: "img/tspdf-logo.png",
-
-  // Set the production url of your site here
   url: "https://tspdf.dev",
-  // Set the /<baseUrl>/ pathname under which your site is served
-  // For GitHub pages deployment, it is often '/<projectName>/'
   baseUrl: "/",
 
   // GitHub pages deployment config.
-  // If you aren't using GitHub pages, you don't need these.
-  organizationName: "facebook", // Usually your GitHub org/user name.
-  projectName: "docusaurus", // Usually your repo name.
+  organizationName: "tspdf",
+  projectName: "tspdf",
 
   onBrokenLinks: "throw",
   onBrokenMarkdownLinks: "warn",
