@@ -37,6 +37,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "18"
+      - name: Enable Corepack
+        run: corepack enable
+      - name: Prepare Yarn
+        run: corepack prepare yarn@4.9.1 --activate
       - name: Install dependencies
         run: yarn install
         working-directory: apps/docs
