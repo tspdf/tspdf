@@ -14,7 +14,7 @@ PDF viewer with built-in features (work in progress).
 
 ## Goals
 
-- 🚀 **Rendering**: Install and render PDFs made simple.
+- 🚀 **Visualize**: Install and visualize PDFs made simple.
 - 🔍 **Viewer**: Highlight text, add comments, and switch themes.
 - ⚙️ **Multi-Framework**: React support now; Angular, Vue, Svelte coming.
 
