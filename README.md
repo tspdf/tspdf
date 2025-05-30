@@ -2,7 +2,7 @@
 
 [![npm version](https://img.shields.io/npm/v/@tspdf/react-pdf)](https://www.npmjs.com/package/@tspdf/react-pdf) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-PDF renderer with built-in viewer features (work in progress).
+PDF viewer with built-in features (work in progress).
 
 > ⚠️ **Early-stage**: Libraries are in initial setup with placeholder code; core functionality is not yet available.
 >
