@@ -1,0 +1,41 @@
+{
+  "name": "@tspdf/pdf-core",
+  "version": "v0.0.0",
+  "description": "Core package to wrap up PDF.js and provide a consistent API for PDF rendering.",
+  "author": "TS PDF",
+  "license": "MIT",
+  "packageManager": "yarn@4.9.1",
+  "sideEffects": false,
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    }
+  },
+  "scripts": {
+    "build": "tsup src/index.ts --dts --format esm,cjs",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
+  },
+  "dependencies": {
+    "pdfjs-dist": "^5.2.133"
+  },
+  "devDependencies": {
+    "@tspdf/eslint-config": "*",
+    "@tspdf/typescript-config": "*",
+    "eslint": "^9.28.0",
+    "tsup": "^6.7.0"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "extends": "../typescript-config/base.json",
+  "compilerOptions": {
+    // Include ES2015 and DOM APIs
+    "lib": [
+      "ES2015",
+      "DOM"
+    ],
+    "module": "ESNext",
+    "target": "es6",
+    "outDir": "dist",
+    "declaration": true,
+    "declarationMap": true,
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true
+  },
+  "include": [
+    "src"
+  ]
+}
