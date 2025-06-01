@@ -3,6 +3,7 @@
   "version": "v0.0.0",
   "description": "Core package to wrap up PDF.js and provide a consistent API for PDF rendering.",
   "author": "TS PDF",
+  "private": true,
   "license": "MIT",
   "packageManager": "yarn@4.9.1",
   "type": "module",
@@ -24,7 +25,7 @@
     }
   },
   "scripts": {
-    "build": "tsup src/index.ts --dts --format esm,cjs",
+    "build": "tsup",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },

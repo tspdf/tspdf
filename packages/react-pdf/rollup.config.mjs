@@ -88,6 +88,28 @@ export default [
       dts({
         tsconfig: "./tsconfig.json",
       }),
+      // Copy license files for legal compliance
+      {
+        name: "copy-licenses",
+        generateBundle() {
+          // Copy the Apache 2.0 license for PDF.js dependency
+          const licensesDir = path.join(outputDir, "licenses");
+          const sourceFile = path.resolve(
+            __dirname,
+            "../../licenses/pdfjs-dist.txt"
+          );
+          const targetFile = path.join(licensesDir, "pdfjs-dist.txt");
+
+          if (!fs.existsSync(licensesDir)) {
+            fs.mkdirSync(licensesDir, { recursive: true });
+          }
+
+          if (fs.existsSync(sourceFile)) {
+            fs.copyFileSync(sourceFile, targetFile);
+            console.log("✓ Copied PDF.js license to dist/licenses/");
+          }
+        },
+      },
     ],
     output: {
       file: path.join(outputDir, "types/index.d.ts"),

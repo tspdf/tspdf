@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "type": "module",
   "private": true,
+  "license": "MIT",
   "exports": {
     ".": "./shared-styles.css",
     "./postcss": "./postcss.config.js"
