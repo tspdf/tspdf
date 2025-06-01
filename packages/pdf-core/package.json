@@ -5,7 +5,6 @@
   "author": "TS PDF",
   "license": "MIT",
   "packageManager": "yarn@4.9.1",
-  "sideEffects": false,
   "type": "module",
   "files": [
     "dist"
