@@ -24,12 +24,17 @@ PDF viewer with built-in features (work in progress).
 - [Contributing](#contributing)
 - [License](#license)
 
-## Roadmap
+## Roadmap for Project Startup (Proof of Concept)
 
-- [ ] React package
-- [ ] Theming engine
-- [ ] Accessibility support
-- ...and more to be defined!
+> This roadmap focuses on implementing the core functionality.  
+> It does not include visual or UI aspects.  
+> It will help us define a more comprehensive roadmap in the future.
+
+- [ ] Install `pdfjs-dist` and implement an initial wrapper package for PDF.js.
+- [ ] Create `Page` and `Document` components to display the PDF.
+- [ ] Add logic to render the document in scroll mode or single-page mode.
+- [ ] Implement a text layer for the document.
+- [ ] More tasks to be defined...
 
 ## Contributing
 
