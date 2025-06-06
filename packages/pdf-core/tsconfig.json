@@ -1,19 +1,19 @@
 {
   "extends": "../typescript-config/base.json",
   "compilerOptions": {
-    // Include ES2015 and DOM APIs
     "lib": [
-      "ES2015",
+      "ES2020",
       "DOM"
     ],
     "module": "ESNext",
-    "target": "es6",
+    "target": "ES2020",
     "outDir": "dist",
     "declaration": true,
     "declarationMap": true,
     "moduleResolution": "node",
     "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "skipLibCheck": true
   },
   "include": [
     "src",

@@ -1,5 +1,6 @@
-import "./worker";
+import "./core/worker";
 
-export * from "./document";
-export * from "./page";
-export * from "./render";
+export * from "./api";
+export * from "./core";
+export * from "./interfaces";
+export * from "./types";
