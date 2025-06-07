@@ -32,7 +32,7 @@ export const configFilesConfig = [
       'simple-import-sort/exports': 'error',
       // Allow console.log in config files
       'no-console': 'off',
-      // Allow unused variables in config files (they might be interface implementations)
+      // Allow unused variables in config files
       'no-unused-vars': 'off',
       '@typescript-eslint/no-unused-vars': 'off',
     },
