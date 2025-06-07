@@ -45,7 +45,8 @@
     "postcss": "^8.5.3"
   },
   "resolutions": {
-    "globals": "16.1.0"
+    "globals": "16.1.0",
+    "webpack-dev-server": "^5.2.1"
   },
   "commitlint": {
     "extends": [
