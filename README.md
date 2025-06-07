@@ -30,7 +30,7 @@ PDF viewer with built-in features (work in progress).
 > It does not include visual or UI aspects.  
 > It will help us define a more comprehensive roadmap in the future.
 
-- [ ] Install `pdfjs-dist` and implement an initial wrapper package for PDF.js.
+- [x] Install `pdfjs-dist` and implement an initial wrapper package for PDF.js.
 - [ ] Create `Page` and `Document` components to display the PDF.
 - [ ] Add logic to render the document in scroll mode or single-page mode.
 - [ ] Implement a text layer for the document.
