@@ -41,7 +41,6 @@
     "@tspdf/typescript-config": "*",
     "@types/react": "^19.1.4",
     "@types/react-dom": "^19.1.5",
-    "@types/rollup-plugin-peer-deps-external": "^2",
     "autoprefixer": "^10.4.21",
     "esbuild": "^0.25.4",
     "eslint": "^9.27.0",
