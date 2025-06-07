@@ -8,15 +8,18 @@
     "lint": "turbo run lint",
     "lint:fix": "turbo run lint -- --fix",
     "check-types": "turbo run check-types",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "format": "prettier --write \"**/*.{ts,tsx,md,js,mjs,json}\"",
     "postinstall": "husky && patch-package",
     "prepack": "pinst --disable",
     "postpack": "pinst --enable",
     "lint-staged": "lint-staged"
   },
   "lint-staged": {
-    "*.{ts,tsx,md}": [
+    "*.{ts,tsx,md,js,mjs}": [
       "yarn lint:fix"
+    ],
+    "*.{json}": [
+      "prettier --write"
     ]
   },
   "devDependencies": {

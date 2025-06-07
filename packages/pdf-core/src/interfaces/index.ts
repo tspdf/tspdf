@@ -1,2 +1,2 @@
-export * from "./IDocument";
-export * from "./IPage";
+export * from './IDocument';
+export * from './IPage';

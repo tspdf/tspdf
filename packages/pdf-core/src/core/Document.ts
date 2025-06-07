@@ -1,9 +1,9 @@
-import type { PDFDocumentProxy } from "pdfjs-dist";
-import { getDocument } from "pdfjs-dist";
+import type { PDFDocumentProxy } from 'pdfjs-dist';
+import { getDocument } from 'pdfjs-dist';
 
-import type { IDocument, IPage } from "../interfaces";
-import { PDFError, PDFErrorType } from "../types";
-import { Page } from "./Page";
+import type { IDocument, IPage } from '../interfaces';
+import { PDFError, PDFErrorType } from '../types';
+import { Page } from './Page';
 
 export class Document implements IDocument {
   private pdfDocument: PDFDocumentProxy | null;
@@ -41,7 +41,7 @@ export class Document implements IDocument {
     if (!this.pdfDocument) {
       throw new PDFError(
         PDFErrorType.LOADING_ERROR,
-        "PDF document is not loaded",
+        'PDF document is not loaded',
       );
     }
 
@@ -73,7 +73,7 @@ export class Document implements IDocument {
     if (!this.pdfDocument) {
       throw new PDFError(
         PDFErrorType.LOADING_ERROR,
-        "PDF document is not loaded",
+        'PDF document is not loaded',
       );
     }
     void this.pdfDocument.destroy();
