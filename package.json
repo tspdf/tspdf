@@ -1,6 +1,7 @@
 {
   "name": "tspdf",
   "private": true,
+  "license": "MIT",
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",
@@ -27,7 +28,7 @@
     "pinst": "^3.0.0",
     "prettier": "^3.5.3",
     "prettier-plugin-tailwindcss": "^0.6.11",
-    "turbo": "^2.5.3"
+    "turbo": "^2.5.4"
   },
   "engines": {
     "node": ">=18"

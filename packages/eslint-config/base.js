@@ -9,11 +9,7 @@ import onlyWarn from "eslint-plugin-only-warn";
 export const config = [
   // 1) ignore build outputs & config scripts
   {
-    ignores: [
-      "dist/**",
-      "**/*.mjs",
-      "**/*.config.mjs",
-    ],
+    ignores: ["dist/**", "**/*.mjs", "**/*.config.mjs"],
   },
 
   // Core JS rules
@@ -32,7 +28,7 @@ export const config = [
       },
     },
     tseslint.configs.stylisticTypeChecked,
-    eslintPluginPrettierRecommended,
+    eslintPluginPrettierRecommended
   ),
 
   // turbo plugin

@@ -4,6 +4,17 @@
   "description": "A modern React component library for PDF rendering",
   "author": "Antony Seas",
   "license": "MIT",
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/tspdf/tspdf/blob/main/LICENSE"
+    },
+    {
+      "type": "Apache-2.0",
+      "url": "https://github.com/tspdf/tspdf/blob/main/licenses/pdfjs-dist.txt",
+      "note": "PDF.js dependency"
+    }
+  ],
   "type": "module",
   "main": "./dist/tspdf.umd.js",
   "module": "./dist/tspdf.es.js",
