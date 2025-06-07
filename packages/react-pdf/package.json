@@ -36,6 +36,7 @@
     "@rollup/plugin-node-resolve": "^16.0.1",
     "@tailwindcss/postcss": "^4.1.7",
     "@tspdf/eslint-config": "*",
+    "@tspdf/pdf-core": "workspace:^",
     "@tspdf/tailwind-config": "*",
     "@tspdf/typescript-config": "*",
     "@types/react": "^19.1.4",

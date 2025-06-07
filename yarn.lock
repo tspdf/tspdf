@@ -4278,7 +4278,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@tspdf/pdf-core@workspace:packages/pdf-core":
+"@tspdf/pdf-core@workspace:^, @tspdf/pdf-core@workspace:packages/pdf-core":
   version: 0.0.0-use.local
   resolution: "@tspdf/pdf-core@workspace:packages/pdf-core"
   dependencies:
@@ -4298,6 +4298,7 @@ __metadata:
     "@rollup/plugin-node-resolve": "npm:^16.0.1"
     "@tailwindcss/postcss": "npm:^4.1.7"
     "@tspdf/eslint-config": "npm:*"
+    "@tspdf/pdf-core": "workspace:^"
     "@tspdf/tailwind-config": "npm:*"
     "@tspdf/typescript-config": "npm:*"
     "@types/react": "npm:^19.1.4"
