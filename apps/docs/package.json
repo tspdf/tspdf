@@ -1,5 +1,6 @@
 {
-  "name": "apps-docs",
+  "name": "@tspdf/docs",
+  "description": "Documentation for TS PDF, built with Docusaurus.",
   "version": "0.0.0",
   "private": true,
   "scripts": {
