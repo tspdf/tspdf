@@ -6,7 +6,6 @@ import postcss from 'rollup-plugin-postcss';
 import {
   createBaseConfig,
   createBrowserOutputConfig,
-  createExternalChecker,
   createNodeOutputConfig,
   createTypeScriptDeclarationsConfig,
   createUmdOutputConfig,
@@ -71,31 +70,16 @@ export function createReactLibraryConfig(options) {
     ],
   });
 
-  const {
-    resolvedInput,
-    defaultExternal,
-    basePlugins,
-    outputDir: outDir,
-  } = baseConfig;
+  const { resolvedInput, basePlugins, outputDir: outDir } = baseConfig;
 
-  // Enhanced React-specific external checker
-  const reactExternalChecker = id => {
-    // Always externalize React ecosystem dependencies (unless they're bundled)
-    if (
-      (id === 'react' ||
-        id === 'react-dom' ||
-        id === 'react-dom/client' ||
-        id === 'react-dom/server' ||
-        id.startsWith('react/') ||
-        id.startsWith('react-dom/')) &&
-      !bundledDependencies.some(dep => id === dep || id.startsWith(`${dep}/`))
-    ) {
-      return true;
+  // Modern approach: use plugins to handle externals automatically
+  const getExternal = bundledDeps => id => {
+    // Never externalize bundled dependencies
+    if (bundledDeps.some(dep => id === dep || id.startsWith(`${dep}/`))) {
+      return false;
     }
-    return createExternalChecker(defaultExternal, {
-      nodeBuiltins: false, // React libraries typically don't need Node.js built-ins
-      bundledDependencies,
-    })(id);
+    // Let peerDepsExternal plugin handle the rest automatically
+    return false; // Plugin will handle peer deps
   };
 
   const configs = [
@@ -104,7 +88,7 @@ export function createReactLibraryConfig(options) {
       input: resolvedInput,
       output: createNodeOutputConfig(outDir, { preserveModules }),
       plugins: [...basePlugins],
-      external: reactExternalChecker,
+      external: getExternal(bundledDependencies),
       treeshake: {
         moduleSideEffects: false,
         propertyReadSideEffects: false,
@@ -119,7 +103,7 @@ export function createReactLibraryConfig(options) {
       plugins: basePlugins.filter(
         plugin => !plugin.name || plugin.name !== 'copy',
       ), // Remove copy plugin to avoid conflicts
-      external: reactExternalChecker,
+      external: getExternal(bundledDependencies),
     },
 
     // 3) TypeScript declarations
@@ -137,7 +121,7 @@ export function createReactLibraryConfig(options) {
       plugins: basePlugins.filter(
         plugin => !plugin.name || plugin.name !== 'copy',
       ), // Remove copy plugin to avoid conflicts
-      external: reactExternalChecker,
+      external: getExternal(bundledDependencies),
     });
   }
 

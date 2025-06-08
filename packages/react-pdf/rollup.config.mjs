@@ -9,15 +9,13 @@ const reactPdfConfig = createReactLibraryConfig({
   input: 'src/index.tsx',
   packageJsonPath: './package.json',
   minify: true,
-  umdName: 'TSPDFReact', // Specific to this package
-  // Bundle pdf-core by treating it as non-external
+  umdName: 'TSPDFReact',
   bundledDependencies: ['@tspdf/pdf-core'],
   globals: {
     react: 'React',
     'react-dom': 'ReactDOM',
     'react/jsx-runtime': 'jsxRuntime',
     'react/jsx-dev-runtime': 'jsxDevRuntime',
-    // pdf-core will be bundled, so no global needed
   },
 });
 
