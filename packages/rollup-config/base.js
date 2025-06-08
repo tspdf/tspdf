@@ -198,7 +198,7 @@ export function createResolveConfig(options = {}) {
  * @param {string} options.packageJsonPath - Path to package.json file
  * @param {string} [options.outputDir] - Output directory (defaults to 'dist')
  * @param {boolean} [options.minify] - Whether to minify output (defaults to true)
- * @param {string} [options.target] - esbuild target (defaults to 'es2022')
+ * @param {string} [options.target] - esbuild target (defaults to 'es2024')
  * @param {Array} [options.external] - External dependencies to exclude from bundle
  * @param {Array} [options.plugins] - Additional plugins to include
  * @param {boolean} [options.treeshake] - Enable tree-shaking optimizations (defaults to true)
@@ -213,7 +213,7 @@ export function createBaseConfig(options) {
     packageJsonPath,
     outputDir = 'dist',
     minify = true,
-    target = 'es2022',
+    target = 'es2024',
     external = [],
     plugins = [],
     treeshake = true,

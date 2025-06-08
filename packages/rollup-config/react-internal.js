@@ -19,7 +19,7 @@ import {
  * @param {string} options.packageJsonPath - Path to package.json file
  * @param {string} [options.outputDir] - Output directory (defaults to 'dist')
  * @param {boolean} [options.minify] - Whether to minify output (defaults to true)
- * @param {string} [options.target] - esbuild target (defaults to 'es2022')
+ * @param {string} [options.target] - esbuild target (defaults to 'es2024')
  * @param {Object} [options.globals] - UMD globals mapping
  * @param {string} [options.umdName] - UMD global variable name
  * @param {boolean} [options.preserveModules] - Whether to preserve modules for better tree-shaking
@@ -33,7 +33,7 @@ export function createReactLibraryConfig(options) {
     packageJsonPath,
     outputDir = 'dist',
     minify = true,
-    target = 'es2022',
+    target = 'es2024',
     globals = {
       react: 'React',
       'react-dom': 'ReactDOM',
