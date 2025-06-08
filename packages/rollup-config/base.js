@@ -332,19 +332,21 @@ export function createBaseConfig(options) {
       }
     : false;
 
-  // Modern esbuild configuration
+  // Modern esbuild configuration - focus on transpilation, not format conversion
   const esbuildConfig = {
     target,
     minify,
     sourcemap: true,
-    format: 'esm', // Use ESM as default format
-    platform: browser ? 'browser' : 'neutral', // Optimize for target environment
-    keepNames: !minify, // Preserve function names in development
+    platform: browser ? 'browser' : 'neutral',
+    keepNames: !minify,
     define: {
       'process.env.NODE_ENV': JSON.stringify(
         minify ? 'production' : 'development',
       ),
     },
+    // Use more modern JSX transform
+    jsx: 'automatic',
+    jsxDev: !minify,
   };
 
   // Common plugins used across all configurations
@@ -354,6 +356,9 @@ export function createBaseConfig(options) {
     commonjs({
       ignoreTryCatch: false,
       requireReturnsDefault: 'auto',
+      // Enhanced CommonJS handling to avoid conversion warnings
+      transformMixedEsModules: true,
+      strictRequires: true,
     }),
     esbuild(esbuildConfig),
     // ...other plugins from options
