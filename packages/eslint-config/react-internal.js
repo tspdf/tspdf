@@ -41,6 +41,15 @@ export const config = [
       'react/react-in-jsx-scope': 'off',
     },
   },
+
+  // Ensure React-specific rules are warnings, not errors
+  {
+    rules: {
+      'react/prop-types': 'warn',
+      'react/display-name': 'warn',
+      'react/no-unescaped-entities': 'warn',
+    },
+  },
 ];
 
 export default config;

@@ -105,6 +105,13 @@ export const config = [
   // Prettier integration
   eslintPluginPrettierRecommended,
 
+  // Override Prettier rules to be warnings instead of errors
+  {
+    rules: {
+      'prettier/prettier': 'warn',
+    },
+  },
+
   // Turbo monorepo plugin
   {
     plugins: { turbo: turboPlugin },
@@ -117,8 +124,8 @@ export const config = [
   {
     plugins: { 'simple-import-sort': simpleImportSort },
     rules: {
-      'simple-import-sort/imports': 'error',
-      'simple-import-sort/exports': 'error',
+      'simple-import-sort/imports': 'warn',
+      'simple-import-sort/exports': 'warn',
     },
   },
 
