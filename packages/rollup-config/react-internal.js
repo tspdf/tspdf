@@ -13,7 +13,7 @@ import {
 } from './base.js';
 
 /**
- * Creates a modern Rollup configuration for React component libraries
+ * Creates a Rollup configuration for React component libraries
  * @param {Object} options - Configuration options
  * @param {string} options.input - Entry point file path
  * @param {string} options.packageJsonPath - Path to package.json file
@@ -33,7 +33,7 @@ export function createReactLibraryConfig(options) {
     packageJsonPath,
     outputDir = 'dist',
     minify = true,
-    target = 'es2022', // Modern target for better performance
+    target = 'es2022',
     globals = {
       react: 'React',
       'react-dom': 'ReactDOM',
@@ -72,7 +72,6 @@ export function createReactLibraryConfig(options) {
 
   const { resolvedInput, basePlugins, outputDir: outDir } = baseConfig;
 
-  // Modern approach: use plugins to handle externals automatically
   const getExternal = bundledDeps => id => {
     // Never externalize bundled dependencies
     if (bundledDeps.some(dep => id === dep || id.startsWith(`${dep}/`))) {

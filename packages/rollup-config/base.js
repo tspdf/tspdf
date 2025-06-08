@@ -30,7 +30,7 @@ export function findWorkspaceRoot() {
 }
 
 /**
- * Creates modern Node.js output configuration (ESM + CJS)
+ * Creates Node.js output configuration (ESM + CJS)
  * @param {string} outputDir - Output directory
  * @param {Object} options - Additional options
  * @param {boolean} options.preserveModules - Whether to preserve modules for tree-shaking
@@ -88,7 +88,7 @@ export function createNodeOutputConfig(outputDir, options = {}) {
 }
 
 /**
- * Creates modern UMD output configuration
+ * Creates UMD output configuration
  * @param {string} outputDir - Output directory
  * @param {string} umdName - UMD global variable name
  * @param {Object} globals - UMD globals mapping
@@ -192,7 +192,7 @@ export function createResolveConfig(options = {}) {
 }
 
 /**
- * Modern base configuration for all TSPDF rollup builds
+ * Base configuration for all TSPDF rollup builds
  * @param {Object} options - Configuration options
  * @param {string} options.input - Entry point file path
  * @param {string} options.packageJsonPath - Path to package.json file
@@ -213,7 +213,7 @@ export function createBaseConfig(options) {
     packageJsonPath,
     outputDir = 'dist',
     minify = true,
-    target = 'es2022', // Modern target for better performance
+    target = 'es2022',
     external = [],
     plugins = [],
     treeshake = true,
@@ -249,7 +249,7 @@ export function createBaseConfig(options) {
       }
     : false;
 
-  // Modern esbuild configuration - focus on transpilation, not format conversion
+  // Esbuild configuration - focus on transpilation, not format conversion
   const esbuildConfig = {
     target,
     minify,
@@ -261,7 +261,7 @@ export function createBaseConfig(options) {
         minify ? 'production' : 'development',
       ),
     },
-    // Use more modern JSX transform
+    // Use more JSX transform
     jsx: 'automatic',
     jsxDev: !minify,
   };
@@ -298,7 +298,7 @@ export function createBaseConfig(options) {
 }
 
 /**
- * Creates modern TypeScript declarations configuration
+ * Creates TypeScript declarations configuration
  * @param {string} input - Input file path
  * @param {string} outputDir - Output directory
  * @param {Object} options - Additional options
