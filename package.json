@@ -22,14 +22,7 @@
       "eslint --fix",
       "eslint --max-warnings 0"
     ],
-    "packages/**/*.{js,mjs,ts}": [
-      "eslint --fix",
-      "eslint --max-warnings 0"
-    ],
     "*.{md,json}": [
-      "prettier --write"
-    ],
-    "packages/**/*.json": [
       "prettier --write"
     ]
   },
