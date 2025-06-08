@@ -11,7 +11,7 @@
     "src"
   ],
   "main": "./src/index.ts",
-  "types": "./src/index.ts",
+  "types": "./src/index.d.ts",
   "exports": {
     ".": {
       "import": "./src/index.ts",
