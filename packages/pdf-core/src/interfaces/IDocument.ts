@@ -1,4 +1,4 @@
-import type { IPage } from "./IPage";
+import type { IPage } from './IPage';
 
 /**
  * Interface representing a PDF document with its metadata and pages

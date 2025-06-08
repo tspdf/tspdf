@@ -1,10 +1,10 @@
 import React from 'react';
 
-interface DocumentContainerProps extends React.HTMLProps<HTMLDivElement> {
+interface DocumentProps extends React.HTMLProps<HTMLDivElement> {
   file?: string;
 }
 
-export const DocumentContainer: React.FC<DocumentContainerProps> = () => {
+export const Document: React.FC<DocumentProps> = () => {
   return (
     <div className='flex bg-amber-100 font-bold text-red-500'>
       This is a test with style.....

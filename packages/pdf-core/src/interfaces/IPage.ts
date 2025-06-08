@@ -1,4 +1,4 @@
-import type { IRenderOptions, IViewport, IViewportOptions } from "../types";
+import type { IRenderOptions, IViewport, IViewportOptions } from '../types';
 
 /**
  * Interface representing a PDF page with rendering capabilities

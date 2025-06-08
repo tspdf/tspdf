@@ -7,16 +7,23 @@
     "dev": "turbo run dev",
     "lint": "turbo run lint",
     "lint:fix": "turbo run lint -- --fix",
+    "lint:strict": "turbo run lint -- --max-warnings 0",
+    "lint:config": "npx eslint \"packages/**/*.{js,mjs,ts}\" --fix",
     "check-types": "turbo run check-types",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "format": "prettier --write \"**/*.{ts,tsx,md,js,mjs,json}\"",
+    "format:config": "prettier --write \"packages/**/*.{js,mjs,ts,json}\"",
     "postinstall": "husky && patch-package",
     "prepack": "pinst --disable",
     "postpack": "pinst --enable",
     "lint-staged": "lint-staged"
   },
   "lint-staged": {
-    "*.{ts,tsx,md}": [
-      "yarn lint:fix"
+    "*.{ts,tsx,js,mjs}": [
+      "eslint --fix",
+      "eslint --max-warnings 0"
+    ],
+    "*.{md,json}": [
+      "prettier --write"
     ]
   },
   "devDependencies": {
@@ -42,7 +49,9 @@
     "postcss": "^8.5.3"
   },
   "resolutions": {
-    "globals": "16.1.0"
+    "globals": "16.1.0",
+    "webpack-dev-server": "^5.2.1",
+    "esbuild": "^0.25.0"
   },
   "commitlint": {
     "extends": [

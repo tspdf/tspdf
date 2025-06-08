@@ -1,26 +1,32 @@
-import React from 'react';
-import Layout from '@theme/Layout';
 import Link from '@docusaurus/Link';
+import Layout from '@theme/Layout';
+
 import styles from './index.module.css';
 
 export default function Home() {
   return (
-    <Layout title="TS PDF" description="PDF.js made simple: React base. More frameworks coming soon.">
+    <Layout
+      title='TS PDF'
+      description='PDF.js made simple: React base. More frameworks coming soon.'
+    >
       <main>
         <div className={styles.hero}>
           <h1 className={styles.title}>TS PDF</h1>
-          <p className={styles.subtitle}>PDF.js made simple: React base implementation. More frameworks coming soon.</p>
+          <p className={styles.subtitle}>
+            PDF.js made simple: React base implementation. More frameworks
+            coming soon.
+          </p>
           <p className={styles.notice}>⚠️ Pre-release: Not production ready.</p>
           <div className={styles.buttons}>
             <Link
-              to="https://github.com/tspdf/tspdf"
-              className="button button--primary button--lg"
+              to='https://github.com/tspdf/tspdf'
+              className='button button--primary button--lg'
             >
               Get Started
             </Link>
             <Link
-              to="https://github.com/tspdf/tspdf/issues"
-              className="button button--secondary button--lg"
+              to='https://github.com/tspdf/tspdf/issues'
+              className='button button--secondary button--lg'
             >
               Contribute
             </Link>
@@ -49,7 +55,8 @@ export default function Home() {
         <section style={{ textAlign: 'center', marginTop: '3rem' }}>
           <p>
             Full documentation is coming soon. Visit our{' '}
-            <Link to="https://github.com/tspdf/tspdf">GitHub repo</Link> for more details.
+            <Link to='https://github.com/tspdf/tspdf'>GitHub repo</Link> for
+            more details.
           </p>
         </section>
       </main>
