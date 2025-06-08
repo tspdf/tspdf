@@ -12,5 +12,5 @@
     "allowSyntheticDefaultImports": true,
     "skipLibCheck": true
   },
-  "include": ["src", "tsup.config.ts"]
+  "include": ["src"]
 }

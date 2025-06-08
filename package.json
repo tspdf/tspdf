@@ -46,7 +46,8 @@
   },
   "resolutions": {
     "globals": "16.1.0",
-    "webpack-dev-server": "^5.2.1"
+    "webpack-dev-server": "^5.2.1",
+    "esbuild": "^0.25.0"
   },
   "commitlint": {
     "extends": [

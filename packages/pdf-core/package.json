@@ -8,34 +8,25 @@
   "packageManager": "yarn@4.9.1",
   "type": "module",
   "files": [
-    "dist"
+    "src"
   ],
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
   "exports": {
     ".": {
-      "import": {
-        "types": "./dist/index.d.ts",
-        "default": "./dist/index.js"
-      },
-      "require": {
-        "types": "./dist/index.d.cts",
-        "default": "./dist/index.cjs"
-      }
+      "import": "./src/index.ts",
+      "require": "./src/index.ts"
     }
   },
   "scripts": {
-    "build": "tsup",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
-  },
-  "dependencies": {
-    "pdfjs-dist": "^5.2.133"
   },
   "devDependencies": {
     "@tspdf/eslint-config": "*",
     "@tspdf/typescript-config": "*",
     "eslint": "^9.28.0",
-    "tsup": "^6.7.0"
+    "pdfjs-dist": "^5.2.133",
+    "typescript": "^5.8.3"
   }
 }
