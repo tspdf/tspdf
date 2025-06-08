@@ -16,11 +16,11 @@
     "lint-staged": "lint-staged"
   },
   "lint-staged": {
-    "*.{ts,tsx,md,js,mjs}": [
-      "yarn lint:fix",
-      "yarn lint:strict"
+    "*.{ts,tsx,js,mjs}": [
+      "eslint --fix",
+      "eslint --max-warnings 0"
     ],
-    "*.json": [
+    "*.{md,json}": [
       "prettier --write"
     ]
   },
