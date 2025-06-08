@@ -6,7 +6,8 @@
   "license": "MIT",
   "exports": {
     "./base": "./base.js",
-    "./react-internal": "./react-internal.js"
+    "./react-internal": "./react-internal.js",
+    "./config-files": "./config-files.js"
   },
   "devDependencies": {
     "@eslint/js": "^9.26.0",

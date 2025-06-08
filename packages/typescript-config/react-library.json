@@ -3,18 +3,13 @@
   "extends": "./base.json",
   "compilerOptions": {
     "jsx": "react-jsx",
-    "lib": [
-      "ES2015"
-    ],
+    "lib": ["ES2024", "DOM"],
     "module": "ESNext",
-    "target": "es6",
+    "target": "ES2024",
     "outDir": "dist",
     "declaration": true,
     "moduleResolution": "node",
-    "types": [
-      "react",
-      "react-dom"
-    ],
+    "types": ["react", "react-dom"],
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true
   }

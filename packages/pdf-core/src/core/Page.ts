@@ -1,8 +1,8 @@
-import type { PDFPageProxy } from "pdfjs-dist";
+import type { PDFPageProxy } from 'pdfjs-dist';
 
-import type { IPage } from "../interfaces";
-import type { IRenderOptions, IViewport, IViewportOptions } from "../types";
-import { PDFError, PDFErrorType } from "../types";
+import type { IPage } from '../interfaces';
+import type { IRenderOptions, IViewport, IViewportOptions } from '../types';
+import { PDFError, PDFErrorType } from '../types';
 
 export class Page implements IPage {
   constructor(private readonly page: PDFPageProxy) {}
@@ -54,18 +54,18 @@ export class Page implements IPage {
       const rotation = options.rotation ?? 0;
       const pixelRatio =
         options.pixelRatio ??
-        (typeof window !== "undefined" ? window.devicePixelRatio : 1);
+        (typeof window !== 'undefined' ? window.devicePixelRatio : 1);
 
       const viewport = this.page.getViewport({
         scale,
         rotation: this.rotation + rotation,
       });
 
-      const ctx = canvas.getContext("2d");
+      const ctx = canvas.getContext('2d');
       if (!ctx) {
         throw new PDFError(
           PDFErrorType.RENDERING_ERROR,
-          "Unable to get canvas 2D context",
+          'Unable to get canvas 2D context',
         );
       }
 

@@ -30,3 +30,8 @@ yarn-error.log*
 dist/
 
 .vscode
+
+# yarn
+.yarn/install-state.gz
+.yarn/build-state.yml
+.yarn/cache

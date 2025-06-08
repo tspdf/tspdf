@@ -1,5 +1,5 @@
-import { Document } from "../core";
-import type { IDocument } from "../interfaces";
+import { Document } from '../core';
+import type { IDocument } from '../interfaces';
 
 /**
  * Create a new PDF document from a URL
