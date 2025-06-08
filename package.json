@@ -7,6 +7,7 @@
     "dev": "turbo run dev",
     "lint": "turbo run lint",
     "lint:fix": "turbo run lint -- --fix",
+    "lint:strict": "turbo run lint -- --max-warnings 0",
     "check-types": "turbo run check-types",
     "format": "prettier --write \"**/*.{ts,tsx,md,js,mjs,json}\"",
     "postinstall": "husky && patch-package",
@@ -16,9 +17,10 @@
   },
   "lint-staged": {
     "*.{ts,tsx,md,js,mjs}": [
-      "yarn lint:fix"
+      "yarn lint:fix",
+      "yarn lint:strict"
     ],
-    "*.{json}": [
+    "*.json": [
       "prettier --write"
     ]
   },

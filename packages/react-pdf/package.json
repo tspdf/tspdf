@@ -37,7 +37,8 @@
   "scripts": {
     "build": "rollup --config",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "lint:fix": "eslint . --fix",
+    "lint:strict": "eslint . --max-warnings 0"
   },
   "peerDependencies": {
     "react": "^19.1.0",
