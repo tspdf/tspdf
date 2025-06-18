@@ -1,10 +1,7 @@
 import { Document as CoreDocument, IPage } from '@tspdf/pdf-core';
-import { GlobalWorkerOptions, version as pdfjsVersion } from 'pdfjs-dist';
 import React, { useEffect, useState } from 'react';
 
 import { Page } from '../Page';
-
-GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjsVersion}/build/pdf.worker.mjs`;
 
 interface DocumentProps extends React.HTMLProps<HTMLDivElement> {
   file: string;
