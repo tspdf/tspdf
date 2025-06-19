@@ -16,6 +16,7 @@ const reactPdfConfig = createReactLibraryConfig({
     'react-dom': 'ReactDOM',
     'react/jsx-runtime': 'jsxRuntime',
     'react/jsx-dev-runtime': 'jsxDevRuntime',
+    'pdfjs-dist': 'pdfjsLib',
   },
 });
 

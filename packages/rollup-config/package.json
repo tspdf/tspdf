@@ -8,7 +8,8 @@
   "type": "module",
   "exports": {
     "./base": "./base.js",
-    "./react-internal": "./react-internal.js"
+    "./react-internal": "./react-internal.js",
+    "./ts-internal": "./ts-internal.js"
   },
   "dependencies": {
     "@rollup/plugin-alias": "^5.1.1",
