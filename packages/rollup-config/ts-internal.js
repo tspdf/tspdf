@@ -1,12 +1,11 @@
 import {
   createBaseConfig,
-  createNodeOutputConfig,
   createTypeScriptDeclarationsConfig,
-  createWorkspaceAlias,
 } from './base.js';
 
 /**
  * Create TypeScript library configuration for internal packages
+ * ESM-only format optimized for tree-shaking
  */
 export function createTypeScriptLibraryConfig(options) {
   const {
@@ -15,7 +14,6 @@ export function createTypeScriptLibraryConfig(options) {
     outputDir = 'dist',
     minify = true,
     target = 'es2024',
-    bundledDependencies = [],
   } = options;
 
   // Get base configuration
@@ -25,28 +23,31 @@ export function createTypeScriptLibraryConfig(options) {
     outputDir,
     minify,
     target,
-    plugins: [createWorkspaceAlias(bundledDependencies)],
   });
 
-  const { resolvedInput, basePlugins, outputDir: outDir } = baseConfig;
-
-  // External function that bundles workspace dependencies
-  const getExternal = bundledDeps => id => {
-    if (bundledDeps.some(dep => id === dep || id.startsWith(`${dep}/`))) {
-      return false;
-    }
-    // Bundle all dependencies for internal packages
-    return /^node:/.test(id) || /^@?[a-z]/.test(id);
-  };
+  const {
+    resolvedInput,
+    basePlugins,
+    outputDir: outDir,
+    defaultExternal,
+  } = baseConfig;
 
   return [
-    // ESM + CJS for Node.js/bundlers
+    // ESM only for optimal tree-shaking
     {
       input: resolvedInput,
-      output: createNodeOutputConfig(outDir),
+      output: {
+        file: `${outDir}/index.js`,
+        format: 'esm',
+        sourcemap: true,
+        exports: 'named',
+      },
       plugins: [...basePlugins],
-      external: getExternal(bundledDependencies),
-      treeshake: { moduleSideEffects: false },
+      external: defaultExternal,
+      treeshake: {
+        moduleSideEffects: false,
+        propertyReadSideEffects: false,
+      },
     },
 
     // TypeScript declarations

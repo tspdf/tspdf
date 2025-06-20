@@ -8,7 +8,6 @@ import {
   createNodeOutputConfig,
   createTypeScriptDeclarationsConfig,
   createUmdOutputConfig,
-  createWorkspaceAlias,
 } from './base.js';
 
 /**
@@ -27,7 +26,7 @@ export function createReactLibraryConfig(options) {
       'react/jsx-runtime': 'jsxRuntime',
     },
     umdName = 'MyLibrary',
-    bundledDependencies = [],
+    plugins = [],
   } = options;
 
   // Get base configuration
@@ -38,7 +37,6 @@ export function createReactLibraryConfig(options) {
     minify,
     target,
     plugins: [
-      createWorkspaceAlias(bundledDependencies),
       peerDepsExternal(),
       postcss({
         plugins: [postcssTailwind(), autoprefixer()],
@@ -47,20 +45,11 @@ export function createReactLibraryConfig(options) {
         sourceMap: true,
         extract: 'styles.css',
       }),
+      ...plugins,
     ],
   });
 
   const { resolvedInput, basePlugins, outputDir: outDir } = baseConfig;
-
-  // External function that bundles workspace dependencies
-  const getExternal = bundledDeps => id => {
-    // Bundle workspace dependencies
-    if (bundledDeps.some(dep => id === dep || id.startsWith(`${dep}/`))) {
-      return false;
-    }
-    // Let peerDepsExternal plugin handle the rest (peer deps will be external)
-    return null;
-  };
 
   return [
     // ESM + CJS for Node.js/bundlers
@@ -68,7 +57,6 @@ export function createReactLibraryConfig(options) {
       input: resolvedInput,
       output: createNodeOutputConfig(outDir),
       plugins: [...basePlugins],
-      external: getExternal(bundledDependencies),
       treeshake: { moduleSideEffects: false },
     },
 
@@ -77,7 +65,6 @@ export function createReactLibraryConfig(options) {
       input: resolvedInput,
       output: createUmdOutputConfig(outDir, umdName, globals),
       plugins: basePlugins.filter(p => p.name !== 'copy'),
-      external: getExternal(bundledDependencies),
     },
 
     // TypeScript declarations
