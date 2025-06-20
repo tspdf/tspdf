@@ -5,14 +5,7 @@ const reactPdfConfig = createReactLibraryConfig({
   input: 'src/index.tsx',
   packageJsonPath: './package.json',
   minify: true,
-  umdName: 'TSPDFReact',
-  globals: {
-    react: 'React',
-    'react-dom': 'ReactDOM',
-    'react/jsx-runtime': 'jsxRuntime',
-    'react/jsx-dev-runtime': 'jsxDevRuntime',
-    'pdfjs-dist': 'pdfjsLib',
-  },
+  tailwindContent: ['./src/**/*.{js,ts,jsx,tsx}'],
   plugins: [
     copy({
       targets: [

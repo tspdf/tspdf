@@ -14,6 +14,8 @@ export function createTypeScriptLibraryConfig(options) {
     outputDir = 'dist',
     minify = true,
     target = 'es2024',
+    filename = 'index.js',
+    plugins = [],
   } = options;
 
   // Get base configuration
@@ -23,31 +25,23 @@ export function createTypeScriptLibraryConfig(options) {
     outputDir,
     minify,
     target,
+    plugins,
   });
 
-  const {
-    resolvedInput,
-    basePlugins,
-    outputDir: outDir,
-    defaultExternal,
-  } = baseConfig;
+  const { resolvedInput, basePlugins, outputDir: outDir } = baseConfig;
 
   return [
-    // ESM only for optimal tree-shaking
+    // ESM only
     {
       input: resolvedInput,
       output: {
-        file: `${outDir}/index.js`,
-        format: 'esm',
+        file: `${outDir}/${filename}`,
+        format: 'es',
         sourcemap: true,
-        exports: 'named',
       },
       plugins: [...basePlugins],
-      external: defaultExternal,
-      treeshake: {
-        moduleSideEffects: false,
-        propertyReadSideEffects: false,
-      },
+      external: ['pdfjs-dist'],
+      treeshake: { moduleSideEffects: false },
     },
 
     // TypeScript declarations

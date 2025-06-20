@@ -7,40 +7,6 @@ import dts from 'rollup-plugin-dts';
 import esbuild from 'rollup-plugin-esbuild';
 
 /**
- * Create output configurations for Node.js (ESM + CJS)
- */
-export function createNodeOutputConfig(outputDir) {
-  return [
-    {
-      file: `${outputDir}/index.esm.js`,
-      format: 'esm',
-      sourcemap: true,
-      exports: 'named',
-    },
-    {
-      file: `${outputDir}/index.cjs`,
-      format: 'cjs',
-      sourcemap: true,
-      exports: 'named',
-    },
-  ];
-}
-
-/**
- * Create UMD output configuration
- */
-export function createUmdOutputConfig(outputDir, umdName, globals = {}) {
-  return {
-    file: `${outputDir}/index.umd.js`,
-    format: 'umd',
-    name: umdName,
-    globals,
-    sourcemap: true,
-    exports: 'named',
-  };
-}
-
-/**
  * Create base configuration for packages
  */
 export function createBaseConfig(options) {
@@ -50,7 +16,6 @@ export function createBaseConfig(options) {
     outputDir = 'dist',
     minify = true,
     target = 'es2024',
-    external = [],
     plugins = [],
   } = options;
 
@@ -59,13 +24,6 @@ export function createBaseConfig(options) {
     fs.readFileSync(path.resolve(projectDir, packageJsonPath), 'utf8'),
   );
   const resolvedInput = path.resolve(projectDir, input);
-
-  // External dependencies (don't bundle deps and peerDeps)
-  const defaultExternal = [
-    ...Object.keys(pkg.dependencies || {}),
-    ...Object.keys(pkg.peerDependencies || {}),
-    ...external,
-  ];
 
   // Base plugins
   const basePlugins = [
@@ -89,7 +47,6 @@ export function createBaseConfig(options) {
   return {
     pkg,
     resolvedInput,
-    defaultExternal,
     basePlugins,
     outputDir,
   };
