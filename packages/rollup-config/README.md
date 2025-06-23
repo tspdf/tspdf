@@ -23,3 +23,4 @@ This package is an **internal build tool** used exclusively within the TSPDF wor
 | ---------------- | ---------------------------- | ------------------------------------- |
 | `base`           | Core utilities and functions | `@tspdf/rollup-config/base`           |
 | `react-internal` | React component libraries    | `@tspdf/rollup-config/react-internal` |
+| `ts-internal`    | TypeScript library packages  | `@tspdf/rollup-config/ts-internal`    |
