@@ -54,20 +54,20 @@ export const Document: React.FC<DocumentProps> = ({
   }, [pdfDocument, pageNumber]);
 
   if (error) {
-    return <div style={{ color: 'red' }}>Error: {error}</div>;
+    return <div className='text-red-500'>Error: {error}</div>;
   }
 
   if (!file) {
-    return <div>No file specified.</div>;
+    return <div className='text-gray-500'>No file specified.</div>;
   }
 
   return (
     <div
-      className='tspdf-document relative h-full w-full overflow-auto bg-gray-50'
+      className='relative h-full w-full overflow-auto scroll-smooth bg-gray-50'
       {...rest}
     >
-      <div className='flex min-h-full items-center justify-center p-4'>
-        <div className='tspdf-pages-container flex flex-col items-center gap-4'>
+      <div className='flex min-h-full items-center justify-center p-4 sm:p-2 md:p-4'>
+        <div className='origin-center-top mx-auto flex min-h-full w-fit min-w-fit flex-col items-center gap-4 transition-transform duration-200 ease-in-out'>
           <Page page={currentPage} />
         </div>
       </div>

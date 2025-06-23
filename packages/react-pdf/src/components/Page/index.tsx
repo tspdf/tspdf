@@ -21,12 +21,12 @@ export const Page: React.FC<PageProps> = ({ page, ...rest }) => {
 
   return (
     <div
-      className='tspdf-page relative box-border rounded-lg bg-white shadow-lg'
+      className='relative mx-auto block shrink-0 rounded-lg bg-white p-2 shadow-lg sm:p-1'
       {...rest}
     >
       <canvas
         ref={canvasRef}
-        className='block max-w-full rounded-lg border border-gray-200'
+        className='block h-auto w-auto max-w-full rounded-lg border border-gray-200 object-contain'
       />
     </div>
   );
