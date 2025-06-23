@@ -41,7 +41,12 @@ export function createTypeScriptLibraryConfig(options) {
       },
       plugins: [...basePlugins],
       external: ['pdfjs-dist'],
-      treeshake: { moduleSideEffects: false },
+      treeshake: {
+        moduleSideEffects: id => {
+          // Preserve side effects for CSS files and stylesheets
+          return /\.(css|scss|sass|less|styl)$/.test(id);
+        },
+      },
     },
 
     // TypeScript declarations

@@ -5,7 +5,6 @@ const reactPdfConfig = createReactLibraryConfig({
   input: 'src/index.tsx',
   packageJsonPath: './package.json',
   minify: true,
-  tailwindContent: ['./src/**/*.{js,ts,jsx,tsx}'],
   plugins: [
     copy({
       targets: [

@@ -1,4 +1,4 @@
-import postcssTailwind from '@tailwindcss/postcss';
+import tailwindcss from '@tailwindcss/postcss';
 import autoprefixer from 'autoprefixer';
 import peerDepsExternal from 'rollup-plugin-peer-deps-external';
 import postcss from 'rollup-plugin-postcss';
@@ -10,12 +10,7 @@ import { createTypeScriptLibraryConfig } from './ts-internal.js';
  * Extends TypeScript config with React-specific plugins
  */
 export function createReactLibraryConfig(options) {
-  const {
-    tailwindContent = ['./src/**/*.{js,ts,jsx,tsx}'],
-    plugins = [],
-    external = [],
-    ...baseOptions
-  } = options;
+  const { plugins = [], external = [], ...baseOptions } = options;
 
   const config = createTypeScriptLibraryConfig({
     ...baseOptions,
@@ -23,16 +18,13 @@ export function createReactLibraryConfig(options) {
     plugins: [
       peerDepsExternal(),
       postcss({
-        plugins: [
-          postcssTailwind({
-            content: tailwindContent,
-          }),
-          autoprefixer(),
-        ],
+        plugins: [tailwindcss(), autoprefixer()],
         minimize: baseOptions.minify ?? true,
-        inject: false,
-        extract: 'index.css',
-        sourceMap: true,
+        inject: {
+          insertAt: 'top',
+        },
+        sourceMap: false,
+        extract: false,
       }),
       ...plugins,
     ],
