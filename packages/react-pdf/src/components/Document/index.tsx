@@ -62,8 +62,15 @@ export const Document: React.FC<DocumentProps> = ({
   }
 
   return (
-    <div {...rest}>
-      <Page page={currentPage} />
+    <div
+      className='tspdf-document relative h-full w-full overflow-auto bg-gray-50'
+      {...rest}
+    >
+      <div className='flex min-h-full items-center justify-center p-4'>
+        <div className='tspdf-pages-container flex flex-col items-center gap-4'>
+          <Page page={currentPage} />
+        </div>
+      </div>
     </div>
   );
 };

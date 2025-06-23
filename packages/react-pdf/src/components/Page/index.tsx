@@ -5,7 +5,7 @@ interface PageProps extends React.HTMLProps<HTMLDivElement> {
   page: IPage | null;
 }
 
-export const Page: React.FC<PageProps> = ({ page }) => {
+export const Page: React.FC<PageProps> = ({ page, ...rest }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -20,10 +20,13 @@ export const Page: React.FC<PageProps> = ({ page }) => {
   }, [page]);
 
   return (
-    <div>
+    <div
+      className='tspdf-page relative box-border rounded-lg bg-white shadow-lg'
+      {...rest}
+    >
       <canvas
         ref={canvasRef}
-        style={{ border: '1px solid #000', maxWidth: '100%' }}
+        className='block max-w-full rounded-lg border border-gray-200'
       />
     </div>
   );
