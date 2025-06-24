@@ -24,6 +24,7 @@
     "@mdx-js/react": "^3.0.0",
     "@tailwindcss/cli": "^4.1.10",
     "@tailwindcss/postcss": "^4.1.10",
+    "@tspdf/react-pdf": "workspace:^",
     "clsx": "^2.0.0",
     "postcss": "^8.4.49",
     "prism-react-renderer": "^2.3.0",
