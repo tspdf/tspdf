@@ -1,10 +1,32 @@
 import BrowserOnly from '@docusaurus/BrowserOnly';
 import Layout from '@theme/Layout';
+import React, { useEffect, useState } from 'react';
 
 import styles from './demo.module.css';
 
 function PDFDemo() {
-  const { Document } = require('@tspdf/react-pdf');
+  const [Document, setDocument] = useState<React.ComponentType<any> | null>(
+    null,
+  );
+
+  useEffect(() => {
+    const loadComponent = async () => {
+      try {
+        const { Document: DocumentComponent } = await import(
+          '@tspdf/react-pdf'
+        );
+        setDocument(() => DocumentComponent);
+      } catch (error) {
+        console.error('Failed to load PDF component:', error);
+      }
+    };
+
+    loadComponent();
+  }, []);
+
+  if (!Document) {
+    return <div>Loading PDF component...</div>;
+  }
 
   return (
     <div className={styles.pdfContainer}>

@@ -57,10 +57,6 @@ export const Document: React.FC<DocumentProps> = ({
     return <div className='text-red-500'>Error: {error}</div>;
   }
 
-  if (!file) {
-    return <div className='text-gray-500'>No file specified.</div>;
-  }
-
   return (
     <div
       className='relative h-full w-full overflow-auto scroll-smooth bg-gray-50'
