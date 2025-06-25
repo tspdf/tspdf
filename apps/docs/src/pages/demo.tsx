@@ -1,7 +1,17 @@
+import BrowserOnly from '@docusaurus/BrowserOnly';
 import Layout from '@theme/Layout';
-import { Document } from '@tspdf/react-pdf';
 
 import styles from './demo.module.css';
+
+function PDFDemo() {
+  const { Document } = require('@tspdf/react-pdf');
+
+  return (
+    <div className={styles.pdfContainer}>
+      <Document file='https://raw.githubusercontent.com/mozilla/pdf.js/ba2edeae/web/compressed.tracemonkey-pldi-09.pdf' />
+    </div>
+  );
+}
 
 export default function Demo() {
   return (
@@ -52,9 +62,9 @@ export default function Demo() {
         </section>
 
         <section className={styles.demoSection}>
-          <div className={styles.pdfContainer}>
-            <Document file='https://raw.githubusercontent.com/mozilla/pdf.js/ba2edeae/web/compressed.tracemonkey-pldi-09.pdf' />
-          </div>
+          <BrowserOnly fallback={<div>Loading PDF viewer...</div>}>
+            {() => <PDFDemo />}
+          </BrowserOnly>
         </section>
       </main>
     </Layout>
