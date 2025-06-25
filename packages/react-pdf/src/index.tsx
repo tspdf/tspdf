@@ -1,3 +1,3 @@
 import './index.css';
 
-export { DocumentContainer } from './components/DocumentContainer/index.js';
+export { Document } from './components/Document/index.js';

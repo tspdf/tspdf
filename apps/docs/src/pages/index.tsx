@@ -30,6 +30,9 @@ export default function Home() {
             >
               Contribute
             </Link>
+            <Link to='/demo' className='button button--primary button--lg'>
+              Demo
+            </Link>
           </div>
         </div>
 

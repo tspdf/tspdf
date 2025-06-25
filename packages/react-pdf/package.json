@@ -16,19 +16,12 @@
     }
   ],
   "type": "module",
-  "main": "./dist/lib/index.cjs.js",
-  "module": "./dist/lib/index.esm.js",
-  "types": "./dist/types/index.d.ts",
+  "main": "./dist/index.esm.js",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "import": {
-        "types": "./dist/types/index.d.ts",
-        "default": "./dist/lib/index.esm.js"
-      },
-      "require": {
-        "types": "./dist/types/index.d.ts",
-        "default": "./dist/lib/index.cjs.js"
-      }
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.esm.js"
     }
   },
   "files": [
@@ -41,6 +34,7 @@
     "lint:strict": "eslint . --max-warnings 0"
   },
   "peerDependencies": {
+    "pdfjs-dist": "^5.2.133",
     "react": "^19.1.0",
     "react-dom": "^19.1.0"
   },

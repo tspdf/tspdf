@@ -8,26 +8,34 @@
   "packageManager": "yarn@4.9.1",
   "type": "module",
   "files": [
-    "src"
+    "dist"
   ],
-  "main": "./src/index.ts",
-  "types": "./src/index.d.ts",
+  "main": "./dist/index.esm.js",
+  "module": "./dist/index.esm.js",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "import": "./src/index.ts",
-      "require": "./src/index.ts"
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.esm.js"
     }
   },
+  "sideEffects": false,
   "scripts": {
+    "build": "rollup --config",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "lint:strict": "eslint . --max-warnings 0"
   },
+  "peerDependencies": {
+    "pdfjs-dist": "^5.2.133"
+  },
   "devDependencies": {
     "@tspdf/eslint-config": "*",
+    "@tspdf/rollup-config": "*",
     "@tspdf/typescript-config": "*",
     "eslint": "^9.28.0",
     "pdfjs-dist": "^5.2.133",
+    "rollup": "^4.40.2",
     "typescript": "^5.8.3"
   }
 }

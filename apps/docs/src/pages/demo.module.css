@@ -1,0 +1,132 @@
+.hero {
+  text-align: center;
+  padding: 4rem 2rem;
+}
+
+.title {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.statusSection {
+  padding: 2rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.sectionTitle {
+  text-align: center;
+  margin-bottom: 2rem;
+  font-size: 2rem;
+}
+
+.statusCards {
+  display: grid;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.statusCard {
+  padding: 1rem;
+  border-left: 3px solid transparent;
+}
+
+.statusCard.warning {
+  border-left-color: var(--ifm-color-warning);
+}
+
+.statusCard.danger {
+  border-left-color: var(--ifm-color-danger);
+}
+
+.statusCardTitle {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+.statusCardTitle.warning {
+  color: var(--ifm-color-warning-dark);
+}
+
+.statusCardTitle.danger {
+  color: var(--ifm-color-danger-dark);
+}
+
+.statusCardContent {
+  margin: 0;
+  line-height: 1.5;
+}
+
+.demoSection {
+  padding: 2rem;
+  text-align: center;
+  margin: 2rem 0;
+}
+
+.pdfContainer {
+  margin: 2rem auto;
+  max-width: 800px;
+  height: 600px;
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 8px;
+  overflow: hidden;
+  background: white;
+}
+
+.demoTitle {
+  margin-bottom: 1rem;
+  font-size: 2rem;
+}
+
+.demoSubtitle {
+  margin-bottom: 1.5rem;
+  line-height: 1.5;
+  opacity: 0.8;
+}
+
+.statusIndicator {
+  display: inline-flex;
+  align-items: center;
+  color: var(--ifm-color-primary);
+  font-size: 0.9rem;
+}
+
+.pulse {
+  width: 6px;
+  height: 6px;
+  background-color: var(--ifm-color-primary);
+  border-radius: 50%;
+  margin-right: 0.5rem;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero {
+    padding: 3rem 1rem;
+  }
+
+  .title {
+    font-size: 2.5rem;
+  }
+
+  .statusSection,
+  .demoSection {
+    padding: 2rem 1rem;
+  }
+
+  .sectionTitle,
+  .demoTitle {
+    font-size: 1.75rem;
+  }
+}
