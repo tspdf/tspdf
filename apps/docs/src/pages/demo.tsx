@@ -1,33 +1,10 @@
 import BrowserOnly from '@docusaurus/BrowserOnly';
 import Layout from '@theme/Layout';
-import React, { useEffect, useState } from 'react';
 
 import styles from './demo.module.css';
 
 function PDFDemo() {
-  const [Document, setDocument] = useState<React.ComponentType<any> | null>(
-    null,
-  );
-
-  useEffect(() => {
-    const loadComponent = async () => {
-      try {
-        const { Document: DocumentComponent } = await import(
-          '@tspdf/react-pdf'
-        );
-        setDocument(() => DocumentComponent);
-      } catch (error) {
-        console.error('Failed to load PDF component:', error);
-      }
-    };
-
-    loadComponent();
-  }, []);
-
-  if (!Document) {
-    return <div>Loading PDF component...</div>;
-  }
-
+  const { Document } = require('@tspdf/react-pdf');
   return (
     <div className={styles.pdfContainer}>
       <Document file='https://raw.githubusercontent.com/mozilla/pdf.js/ba2edeae/web/compressed.tracemonkey-pldi-09.pdf' />
@@ -84,7 +61,24 @@ export default function Demo() {
         </section>
 
         <section className={styles.demoSection}>
-          <BrowserOnly fallback={<div>Loading PDF viewer...</div>}>
+          <BrowserOnly
+            fallback={
+              <div className={styles.pdfContainer}>
+                <div
+                  style={{
+                    padding: '2rem',
+                    textAlign: 'center',
+                    color: '#666',
+                    backgroundColor: '#f5f5f5',
+                    borderRadius: '8px',
+                  }}
+                >
+                  <h3>Loading PDF Demo...</h3>
+                  <p>The PDF viewer is loading. This may take a moment.</p>
+                </div>
+              </div>
+            }
+          >
             {() => <PDFDemo />}
           </BrowserOnly>
         </section>
