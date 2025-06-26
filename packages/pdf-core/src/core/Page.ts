@@ -1,6 +1,5 @@
-import type { PDFPageProxy } from 'pdfjs-dist';
-
 import type { IPage } from '../interfaces';
+import { PDFPageProxy } from '../pdfjs/types';
 import type { IRenderOptions, IViewport, IViewportOptions } from '../types';
 import { PDFError, PDFErrorType } from '../types';
 
