@@ -38,9 +38,15 @@ export function createTypeScriptLibraryConfig(options) {
         file: `${outDir}/${filename}`,
         format: 'es',
         sourcemap: true,
+        inlineDynamicImports: true,
       },
       plugins: [...basePlugins],
-      external: ['pdfjs-dist'],
+      external: id => {
+        // Bundle @tspdf packages, externalize everything else that's not relative
+        if (id.startsWith('@tspdf/')) return false;
+        if (id === 'pdfjs-dist') return true;
+        return !id.startsWith('.') && !id.startsWith('/');
+      },
       treeshake: {
         moduleSideEffects: id => {
           // Preserve side effects for CSS files and stylesheets

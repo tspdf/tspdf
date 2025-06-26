@@ -1,16 +1,8 @@
-import type { PDFDocumentProxy } from 'pdfjs-dist';
-import {
-  getDocument,
-  GlobalWorkerOptions,
-  version as pdfjsVersion,
-} from 'pdfjs-dist';
-
 import type { IDocument, IPage } from '../interfaces';
+import { loadPdfjs } from '../pdfjs';
+import { PDFDocumentProxy } from '../pdfjs/types';
 import { PDFError, PDFErrorType } from '../types';
 import { Page } from './Page';
-
-//TODO: Add a proper way to handle workerSrc
-GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjsVersion}/build/pdf.worker.mjs`;
 
 export class Document implements IDocument {
   private pdfDocument: PDFDocumentProxy | null;
@@ -30,7 +22,9 @@ export class Document implements IDocument {
 
   async load(): Promise<void> {
     try {
-      const loadingTask = getDocument({
+      const pdfjs = await loadPdfjs();
+
+      const loadingTask = pdfjs.getDocument({
         url: this.url,
         withCredentials: false,
       });
