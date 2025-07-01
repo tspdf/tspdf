@@ -1,23 +1,26 @@
 import { IPage } from '@tspdf/pdf-core';
 import React, { useEffect, useRef } from 'react';
 
+import { useZoom } from '../../contexts/ZoomContext';
+
 interface PageProps extends React.HTMLProps<HTMLDivElement> {
   page: IPage | null;
 }
 
 export const Page: React.FC<PageProps> = ({ page, ...rest }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const { scale } = useZoom();
 
   useEffect(() => {
     const renderPage = async () => {
       if (page && canvasRef.current) {
-        await page.render(canvasRef.current);
+        await page.render(canvasRef.current, { scale });
       }
     };
     if (typeof window !== 'undefined') {
       renderPage().catch(console.error);
     }
-  }, [page]);
+  }, [page, scale]);
 
   return (
     <div
@@ -26,7 +29,7 @@ export const Page: React.FC<PageProps> = ({ page, ...rest }) => {
     >
       <canvas
         ref={canvasRef}
-        className='block h-auto w-auto max-w-full rounded-lg border border-gray-200 object-contain'
+        className='block h-auto w-auto rounded-lg border border-gray-200'
       />
     </div>
   );

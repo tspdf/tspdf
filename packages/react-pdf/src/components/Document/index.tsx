@@ -62,8 +62,11 @@ export const Document: React.FC<DocumentProps> = ({
       className='relative h-full w-full overflow-auto scroll-smooth bg-gray-50'
       {...rest}
     >
-      <div className='flex min-h-full items-center justify-center p-4 sm:p-2 md:p-4'>
-        <div className='origin-center-top mx-auto flex min-h-full w-fit min-w-fit flex-col items-center gap-4 transition-transform duration-200 ease-in-out'>
+      <div className='flex p-4 sm:p-2 md:p-4' style={{ minWidth: '100%' }}>
+        <div
+          className='mx-auto pr-4 sm:pr-2 md:pr-4'
+          style={{ minWidth: 'fit-content' }}
+        >
           <Page page={currentPage} />
         </div>
       </div>
