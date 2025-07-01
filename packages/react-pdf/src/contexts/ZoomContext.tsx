@@ -65,6 +65,10 @@ export const ZoomProvider: React.FC<ZoomProviderProps> = ({
   return <ZoomContext.Provider value={value}>{children}</ZoomContext.Provider>;
 };
 
+export const useOptionalZoom = (): ZoomContextValue | null => {
+  return useContext(ZoomContext);
+};
+
 export const useZoom = (): ZoomContextValue => {
   const context = useContext(ZoomContext);
   if (!context) {
