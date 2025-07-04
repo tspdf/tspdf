@@ -44,14 +44,14 @@ export const ZoomControls: React.FC<ZoomControlsProps> = ({
       <button
         onClick={handleZoomOut}
         disabled={!canZoomOut}
-        className='rounded bg-blue-500 px-3 py-1 text-white hover:bg-blue-600 disabled:cursor-not-allowed disabled:bg-gray-300'
+        className='w-10 rounded bg-blue-500 px-3 py-1 text-white hover:bg-blue-600 disabled:cursor-not-allowed disabled:bg-gray-300'
         title='Zoom out'
       >
         -
       </button>
       <button
         onClick={handleReset}
-        className='rounded bg-gray-500 px-3 py-1 text-white hover:bg-gray-600'
+        className='w-10 rounded bg-gray-500 px-3 py-1 text-white hover:bg-gray-600'
         title='Reset zoom to 100%'
       >
         ⟲
@@ -59,7 +59,7 @@ export const ZoomControls: React.FC<ZoomControlsProps> = ({
       <button
         onClick={handleZoomIn}
         disabled={!canZoomIn}
-        className='rounded bg-blue-500 px-3 py-1 text-white hover:bg-blue-600 disabled:cursor-not-allowed disabled:bg-gray-300'
+        className='w-10 rounded bg-blue-500 px-3 py-1 text-white hover:bg-blue-600 disabled:cursor-not-allowed disabled:bg-gray-300'
         title='Zoom in'
       >
         +
