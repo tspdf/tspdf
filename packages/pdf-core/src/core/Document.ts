@@ -22,10 +22,6 @@ export class Document implements IDocument {
     return this.pdfDocument.numPages;
   }
 
-  get zoomManager(): IZoomManager | undefined {
-    return this._zoomManager;
-  }
-
   async load(): Promise<void> {
     try {
       const pdfjs = await loadPdfjs();
