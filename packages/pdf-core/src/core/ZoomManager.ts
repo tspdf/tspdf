@@ -61,8 +61,10 @@ export class ZoomManager implements IZoomManager {
 
     this.boundWheelHandler = (event: Event) => {
       const wheelEvent = event as WheelEvent;
+
       if (wheelEvent.ctrlKey) {
         wheelEvent.preventDefault();
+        wheelEvent.stopPropagation();
 
         if (wheelEvent.deltaY < 0) {
           this.setScale(this.scale * this.zoomFactor);
@@ -74,6 +76,7 @@ export class ZoomManager implements IZoomManager {
 
     targetElement.addEventListener('wheel', this.boundWheelHandler, {
       passive: false,
+      capture: true,
     });
   }
 

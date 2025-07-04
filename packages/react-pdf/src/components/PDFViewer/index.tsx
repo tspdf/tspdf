@@ -45,11 +45,7 @@ const PDFViewerContent: React.FC<PDFViewerProps> = ({
 
       {/* PDF Document */}
       <div className='flex-1 overflow-hidden'>
-        <Document
-          file={file}
-          pageNumber={pageNumber}
-          zoomManager={zoomManager}
-        />
+        <Document file={file} pageNumber={pageNumber} />
       </div>
     </div>
   );

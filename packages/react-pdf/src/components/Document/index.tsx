@@ -1,8 +1,4 @@
-import {
-  Document as CoreDocument,
-  type IPage,
-  type IZoomManager,
-} from '@tspdf/pdf-core';
+import { Document as CoreDocument, type IPage } from '@tspdf/pdf-core';
 import React, { useEffect, useRef, useState } from 'react';
 
 import { useZoomOptional } from '../../hooks/useZoomOptional';
@@ -11,7 +7,6 @@ import { Page } from '../Page';
 interface DocumentProps extends React.HTMLProps<HTMLDivElement> {
   file: string;
   pageNumber?: number;
-  zoomManager?: IZoomManager;
 }
 
 export const Document: React.FC<DocumentProps> = ({
@@ -20,8 +15,7 @@ export const Document: React.FC<DocumentProps> = ({
   ...rest
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const contextZoomManager = useZoomOptional();
-  const zoomManager = contextZoomManager || undefined;
+  const zoomManager = useZoomOptional();
   const [pdfDocument, setPdfDocument] = useState<CoreDocument | null>(null);
   const [currentPage, setCurrentPage] = useState<IPage | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -30,7 +24,7 @@ export const Document: React.FC<DocumentProps> = ({
     const loadDocument = async () => {
       try {
         setError(null);
-        const doc = new CoreDocument(file, zoomManager);
+        const doc = new CoreDocument(file, zoomManager || undefined);
         await doc.load();
         if (zoomManager && containerRef.current) {
           zoomManager.enableControls(containerRef.current);
