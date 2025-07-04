@@ -1,11 +1,17 @@
-import { Document as CoreDocument, IPage } from '@tspdf/pdf-core';
+import {
+  Document as CoreDocument,
+  type IPage,
+  type IZoomManager,
+} from '@tspdf/pdf-core';
 import React, { useEffect, useState } from 'react';
 
+import { useZoomOptional } from '../../hooks/useZoomOptional';
 import { Page } from '../Page';
 
 interface DocumentProps extends React.HTMLProps<HTMLDivElement> {
   file: string;
   pageNumber?: number;
+  zoomManager?: IZoomManager;
 }
 
 export const Document: React.FC<DocumentProps> = ({
@@ -13,6 +19,8 @@ export const Document: React.FC<DocumentProps> = ({
   pageNumber = 1,
   ...rest
 }) => {
+  const contextZoomManager = useZoomOptional();
+  const zoomManager = contextZoomManager || undefined;
   const [pdfDocument, setPdfDocument] = useState<CoreDocument | null>(null);
   const [currentPage, setCurrentPage] = useState<IPage | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -21,8 +29,11 @@ export const Document: React.FC<DocumentProps> = ({
     const loadDocument = async () => {
       try {
         setError(null);
-        const doc = new CoreDocument(file);
+        const doc = new CoreDocument(file, zoomManager);
         await doc.load();
+        if (zoomManager) {
+          zoomManager.enableControls();
+        }
         setPdfDocument(doc);
       } catch (err) {
         console.error('Failed to load document:', err);
@@ -32,7 +43,7 @@ export const Document: React.FC<DocumentProps> = ({
     if (file && typeof window !== 'undefined') {
       loadDocument().catch(console.error);
     }
-  }, [file]);
+  }, [file, zoomManager]);
 
   useEffect(() => {
     const loadPage = async () => {
@@ -52,6 +63,15 @@ export const Document: React.FC<DocumentProps> = ({
       loadPage().catch(console.error);
     }
   }, [pdfDocument, pageNumber]);
+
+  // Clean up when component unmounts
+  useEffect(() => {
+    return () => {
+      if (pdfDocument) {
+        pdfDocument.destroy();
+      }
+    };
+  }, [pdfDocument]);
 
   if (error) {
     return <div className='text-red-500'>Error: {error}</div>;

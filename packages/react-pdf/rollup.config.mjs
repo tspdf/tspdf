@@ -9,7 +9,7 @@ const licenseFile = resolve(__dirname, '../../licenses/pdfjs-dist.txt');
 const reactPdfConfig = createReactLibraryConfig({
   input: 'src/index.tsx',
   packageJsonPath: './package.json',
-  minify: true,
+  minify: false,
   plugins: [
     copy({
       targets: [

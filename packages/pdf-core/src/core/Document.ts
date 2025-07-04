@@ -1,4 +1,4 @@
-import type { IDocument, IPage } from '../interfaces';
+import type { IDocument, IPage, IZoomManager } from '../interfaces';
 import { loadPdfjs } from '../pdfjs';
 import { PDFDocumentProxy } from '../pdfjs/types';
 import { PDFError, PDFErrorType } from '../types';
@@ -7,10 +7,12 @@ import { Page } from './Page';
 export class Document implements IDocument {
   private pdfDocument: PDFDocumentProxy | null;
   private readonly url: string;
+  private readonly _zoomManager?: IZoomManager;
 
-  constructor(url: string) {
+  constructor(url: string, zoomManager?: IZoomManager) {
     this.pdfDocument = null;
     this.url = url;
+    this._zoomManager = zoomManager;
   }
 
   get numPages(): number {
@@ -18,6 +20,10 @@ export class Document implements IDocument {
       return 0;
     }
     return this.pdfDocument.numPages;
+  }
+
+  get zoomManager(): IZoomManager | undefined {
+    return this._zoomManager;
   }
 
   async load(): Promise<void> {
@@ -60,7 +66,7 @@ export class Document implements IDocument {
 
     try {
       const pdfPage = await this.pdfDocument.getPage(pageNumber);
-      return new Page(pdfPage);
+      return new Page(pdfPage, () => this._zoomManager?.currentScale ?? 1);
     } catch (error) {
       throw new PDFError(
         PDFErrorType.PAGE_ERROR,
@@ -77,6 +83,10 @@ export class Document implements IDocument {
         'PDF document is not loaded',
       );
     }
+
+    // Clean up zoom controls if available
+    this._zoomManager?.destroy();
+
     void this.pdfDocument.destroy();
   }
 }

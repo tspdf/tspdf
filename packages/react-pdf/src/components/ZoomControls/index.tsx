@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
-import { useZoom } from '../../contexts/ZoomContext';
+import { useZoom } from '../../hooks/useZoom';
 
 export interface ZoomControlsProps {
   className?: string;
@@ -11,19 +11,39 @@ export const ZoomControls: React.FC<ZoomControlsProps> = ({
   className = '',
   showPercentage = true,
 }) => {
-  const { scale, zoomIn, zoomOut, resetZoom, canZoomIn, canZoomOut } =
-    useZoom();
+  const zoomManager = useZoom();
+  const [scale, setScale] = useState(1);
+  const [canZoomIn, setCanZoomIn] = useState(true);
+  const [canZoomOut, setCanZoomOut] = useState(false);
+
+  // Track zoom state changes from the zoom manager
+  useEffect(() => {
+    const updateZoomState = () => {
+      setScale(zoomManager.currentScale);
+      setCanZoomIn(zoomManager.canZoomIn);
+      setCanZoomOut(zoomManager.canZoomOut);
+    };
+
+    // Initial state
+    updateZoomState();
+
+    // Listen for zoom changes by polling
+    // In a real implementation, you might want to add an event system to the ZoomManager class
+    const interval = setInterval(updateZoomState, 100);
+
+    return () => clearInterval(interval);
+  }, [zoomManager]);
 
   const handleZoomIn = () => {
-    zoomIn();
+    zoomManager.zoomIn();
   };
 
   const handleZoomOut = () => {
-    zoomOut();
+    zoomManager.zoomOut();
   };
 
   const handleReset = () => {
-    resetZoom();
+    zoomManager.resetZoom();
   };
 
   return (
@@ -36,7 +56,6 @@ export const ZoomControls: React.FC<ZoomControlsProps> = ({
       >
         −
       </button>
-
       {showPercentage && (
         <button
           onClick={handleReset}
@@ -46,7 +65,6 @@ export const ZoomControls: React.FC<ZoomControlsProps> = ({
           {Math.round(scale * 100)}%
         </button>
       )}
-
       <button
         onClick={handleZoomIn}
         disabled={!canZoomIn}

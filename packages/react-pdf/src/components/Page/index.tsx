@@ -1,7 +1,7 @@
-import { IPage } from '@tspdf/pdf-core';
-import React, { useEffect, useRef } from 'react';
+import { type IPage } from '@tspdf/pdf-core';
+import React, { useEffect, useRef, useState } from 'react';
 
-import { useOptionalZoom } from '../../contexts/ZoomContext';
+import { useZoomOptional } from '../../hooks/useZoomOptional';
 
 interface PageProps extends React.HTMLProps<HTMLDivElement> {
   page: IPage | null;
@@ -9,9 +9,20 @@ interface PageProps extends React.HTMLProps<HTMLDivElement> {
 
 export const Page: React.FC<PageProps> = ({ page, ...rest }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const zoomContext = useOptionalZoom();
-  // If zoomContext is not provided, default to scale 1
-  const scale = zoomContext?.scale ?? 1;
+  const zoomManager = useZoomOptional();
+  const [scale, setScale] = useState(1);
+
+  useEffect(() => {
+    if (zoomManager) {
+      const updateScale = () => {
+        setScale(zoomManager.currentScale);
+      };
+
+      updateScale();
+      const interval = setInterval(updateScale, 100);
+      return () => clearInterval(interval);
+    }
+  }, [zoomManager]);
 
   useEffect(() => {
     const renderPage = async () => {

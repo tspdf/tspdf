@@ -1,4 +1,5 @@
 import type { IPage } from './IPage';
+import type { IZoomManager } from './IZoomManager';
 
 /**
  * Interface representing a PDF document with its metadata and pages
@@ -6,6 +7,9 @@ import type { IPage } from './IPage';
 export interface IDocument {
   /** Number of pages in the document */
   readonly numPages: number;
+
+  /** Zoom manager instance (if zoom is enabled) */
+  readonly zoomManager: IZoomManager | undefined;
 
   /** Load the PDF document */
   load(): Promise<void>;

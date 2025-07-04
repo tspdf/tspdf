@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
-import { useZoom, ZoomProvider } from '../../contexts/ZoomContext';
+import { useZoom, ZoomProvider } from '../../hooks/useZoom';
 import { Document } from '../Document';
 import { ZoomControls } from '../ZoomControls';
 
@@ -15,7 +15,19 @@ const PDFViewerContent: React.FC<PDFViewerProps> = ({
   pageNumber = 1,
   className = '',
 }) => {
-  const { scale } = useZoom();
+  const zoomManager = useZoom();
+  const [scale, setScale] = useState(1);
+
+  useEffect(() => {
+    const updateScale = () => {
+      setScale(zoomManager.currentScale);
+    };
+
+    updateScale();
+    const interval = setInterval(updateScale, 100);
+
+    return () => clearInterval(interval);
+  }, [zoomManager]);
 
   return (
     <div className={`flex h-full flex-col ${className}`}>
@@ -24,7 +36,8 @@ const PDFViewerContent: React.FC<PDFViewerProps> = ({
         <h2 className='text-lg font-semibold'>PDF Viewer</h2>
         <div className='flex items-center gap-4'>
           <span className='text-sm text-gray-600'>
-            Page {pageNumber} • Scale: {Math.round(scale * 100)}%
+            Page {pageNumber}
+            {` • Scale: ${Math.round(scale * 100)}%`}
           </span>
           <ZoomControls />
         </div>
@@ -32,15 +45,19 @@ const PDFViewerContent: React.FC<PDFViewerProps> = ({
 
       {/* PDF Document */}
       <div className='flex-1 overflow-hidden'>
-        <Document file={file} pageNumber={pageNumber} />
+        <Document
+          file={file}
+          pageNumber={pageNumber}
+          zoomManager={zoomManager}
+        />
       </div>
     </div>
   );
 };
 
-export const PDFViewer: React.FC<PDFViewerProps> = props => {
+export const PDFViewer: React.FC<PDFViewerProps> = ({ ...props }) => {
   return (
-    <ZoomProvider initialScale={1.0} minScale={0.25} maxScale={4.0}>
+    <ZoomProvider>
       <PDFViewerContent {...props} />
     </ZoomProvider>
   );
