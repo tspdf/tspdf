@@ -3,7 +3,7 @@ import {
   type IPage,
   type IZoomManager,
 } from '@tspdf/pdf-core';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import { useZoomOptional } from '../../hooks/useZoomOptional';
 import { Page } from '../Page';
@@ -19,6 +19,7 @@ export const Document: React.FC<DocumentProps> = ({
   pageNumber = 1,
   ...rest
 }) => {
+  const containerRef = useRef<HTMLDivElement>(null);
   const contextZoomManager = useZoomOptional();
   const zoomManager = contextZoomManager || undefined;
   const [pdfDocument, setPdfDocument] = useState<CoreDocument | null>(null);
@@ -31,8 +32,8 @@ export const Document: React.FC<DocumentProps> = ({
         setError(null);
         const doc = new CoreDocument(file, zoomManager);
         await doc.load();
-        if (zoomManager) {
-          zoomManager.enableControls();
+        if (zoomManager && containerRef.current) {
+          zoomManager.enableControls(containerRef.current);
         }
         setPdfDocument(doc);
       } catch (err) {
@@ -64,14 +65,18 @@ export const Document: React.FC<DocumentProps> = ({
     }
   }, [pdfDocument, pageNumber]);
 
-  // Clean up when component unmounts
+  // Clean up when component unmounts or zoomManager changes
   useEffect(() => {
+    const currentContainer = containerRef.current;
     return () => {
+      if (zoomManager) {
+        zoomManager.disableControls(currentContainer || undefined);
+      }
       if (pdfDocument) {
         pdfDocument.destroy();
       }
     };
-  }, [pdfDocument]);
+  }, [pdfDocument, zoomManager]);
 
   if (error) {
     return <div className='text-red-500'>Error: {error}</div>;
@@ -79,6 +84,7 @@ export const Document: React.FC<DocumentProps> = ({
 
   return (
     <div
+      ref={containerRef}
       className='relative h-full w-full overflow-auto scroll-smooth bg-gray-50'
       {...rest}
     >
