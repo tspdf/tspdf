@@ -20,57 +20,64 @@ export const Document: React.FC<DocumentProps> = ({
   const [currentPage, setCurrentPage] = useState<IPage | null>(null);
   const [error, setError] = useState<string | null>(null);
 
+  // Load document when file changes
   useEffect(() => {
+    if (!file || typeof window === 'undefined') return;
+
     const loadDocument = async () => {
       try {
         setError(null);
         const doc = new CoreDocument(file, zoomManager || undefined);
         await doc.load();
-        if (zoomManager && containerRef.current) {
-          zoomManager.enableControls(containerRef.current);
-        }
         setPdfDocument(doc);
       } catch (err) {
         console.error('Failed to load document:', err);
         setError(err instanceof Error ? err.message : String(err));
       }
     };
-    if (file && typeof window !== 'undefined') {
-      loadDocument().catch(console.error);
-    }
+
+    loadDocument();
   }, [file, zoomManager]);
 
+  // Enable zoom controls when container and zoomManager are ready
   useEffect(() => {
+    if (!zoomManager || !containerRef.current) return;
+
+    const container = containerRef.current;
+    zoomManager.enableControls(container);
+
+    return () => {
+      zoomManager.disableControls(container);
+    };
+  }, [zoomManager, pdfDocument]);
+
+  // Load page when document or pageNumber changes
+  useEffect(() => {
+    if (!pdfDocument) return;
+
     const loadPage = async () => {
-      if (pdfDocument) {
-        try {
-          setError(null);
-          const page = await pdfDocument.getPage(pageNumber);
-          setCurrentPage(page);
-        } catch (err) {
-          console.error(`Failed to load page ${pageNumber}:`, err);
-          setError(err instanceof Error ? err.message : String(err));
-          setCurrentPage(null);
-        }
+      try {
+        setError(null);
+        const page = await pdfDocument.getPage(pageNumber);
+        setCurrentPage(page);
+      } catch (err) {
+        console.error(`Failed to load page ${pageNumber}:`, err);
+        setError(err instanceof Error ? err.message : String(err));
+        setCurrentPage(null);
       }
     };
-    if (pdfDocument) {
-      loadPage().catch(console.error);
-    }
+
+    loadPage();
   }, [pdfDocument, pageNumber]);
 
   // Clean up when component unmounts
   useEffect(() => {
-    const currentContainer = containerRef.current;
     return () => {
-      if (zoomManager) {
-        zoomManager.disableControls(currentContainer || undefined);
-      }
       if (pdfDocument) {
         pdfDocument.destroy();
       }
     };
-  }, [pdfDocument, zoomManager]);
+  }, [pdfDocument]);
 
   if (error) {
     return <div className='text-red-500'>Error: {error}</div>;
