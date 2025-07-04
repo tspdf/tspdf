@@ -103,7 +103,9 @@ export class ZoomManager implements IZoomManager {
     if (typeof window === 'undefined' || !this.boundWheelHandler) return;
 
     const targetElement = element || document;
-    targetElement.removeEventListener('wheel', this.boundWheelHandler);
+    targetElement.removeEventListener('wheel', this.boundWheelHandler, {
+      capture: true,
+    });
     this.boundWheelHandler = null;
   }
 

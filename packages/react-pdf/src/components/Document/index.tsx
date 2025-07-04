@@ -59,7 +59,7 @@ export const Document: React.FC<DocumentProps> = ({
     }
   }, [pdfDocument, pageNumber]);
 
-  // Clean up when component unmounts or zoomManager changes
+  // Clean up when component unmounts
   useEffect(() => {
     const currentContainer = containerRef.current;
     return () => {
