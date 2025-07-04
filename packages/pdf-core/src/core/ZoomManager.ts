@@ -4,19 +4,22 @@ export class ZoomManager implements IZoomManager {
   private scale: number;
   private readonly minScale: number;
   private readonly maxScale: number;
-  private readonly scaleStep: number;
+  private readonly zoomFactor: number;
+  private readonly stepSize: number;
   private boundWheelHandler: ((event: Event) => void) | null = null;
 
   constructor(
     initialScale: number,
     minScale: number = 0.25,
     maxScale: number = 4.0,
-    scaleStep: number = 0.25,
+    zoomFactor: number = 1.2,
+    stepSize: number = 0.1,
   ) {
     this.scale = initialScale;
     this.minScale = minScale;
     this.maxScale = maxScale;
-    this.scaleStep = scaleStep;
+    this.zoomFactor = zoomFactor;
+    this.stepSize = stepSize;
   }
 
   get currentScale(): number {
@@ -40,11 +43,11 @@ export class ZoomManager implements IZoomManager {
   }
 
   zoomIn(): void {
-    this.setScale(this.scale + this.scaleStep);
+    this.setScale(this.scale + this.stepSize);
   }
 
   zoomOut(): void {
-    this.setScale(this.scale - this.scaleStep);
+    this.setScale(this.scale - this.stepSize);
   }
 
   resetZoom(): void {
@@ -62,9 +65,9 @@ export class ZoomManager implements IZoomManager {
         wheelEvent.preventDefault();
 
         if (wheelEvent.deltaY < 0) {
-          this.zoomIn();
+          this.setScale(this.scale * this.zoomFactor);
         } else if (wheelEvent.deltaY > 0) {
-          this.zoomOut();
+          this.setScale(this.scale / this.zoomFactor);
         }
       }
     };

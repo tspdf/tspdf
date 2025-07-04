@@ -14,7 +14,8 @@ export interface ZoomProviderProps {
   initialScale?: number;
   minScale?: number;
   maxScale?: number;
-  scaleStep?: number;
+  zoomFactor?: number;
+  stepSize?: number;
 }
 
 export const ZoomProvider: React.FC<ZoomProviderProps> = ({
@@ -23,14 +24,15 @@ export const ZoomProvider: React.FC<ZoomProviderProps> = ({
   initialScale = 1.0,
   minScale = 0.25,
   maxScale = 4.0,
-  scaleStep = 0.25,
+  zoomFactor = 1.2,
+  stepSize = 0.1,
 }) => {
   const contextZoomManager = useMemo(() => {
     return (
       zoomManager ||
-      new ZoomManager(initialScale, minScale, maxScale, scaleStep)
+      new ZoomManager(initialScale, minScale, maxScale, zoomFactor, stepSize)
     );
-  }, [zoomManager, initialScale, minScale, maxScale, scaleStep]);
+  }, [zoomManager, initialScale, minScale, maxScale, zoomFactor, stepSize]);
 
   return (
     <ZoomContext.Provider value={contextZoomManager}>
