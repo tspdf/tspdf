@@ -33,7 +33,7 @@ const PDFViewerContent: React.FC<PDFViewerProps> = ({
     <div className={`flex h-full flex-col ${className}`}>
       {/* Toolbar with zoom controls */}
       <div className='flex items-center justify-between border-b bg-white p-4 shadow-sm'>
-        <h2 className='text-lg font-semibold'>PDF Viewer</h2>
+        <h2 className='text-lg font-semibold'>TSPDF</h2>
         <div className='flex items-center gap-4'>
           <span className='text-sm text-gray-600'>
             Page {pageNumber}

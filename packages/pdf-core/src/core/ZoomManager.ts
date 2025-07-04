@@ -7,6 +7,7 @@ export class ZoomManager implements IZoomManager {
   private readonly zoomFactor: number;
   private readonly stepSize: number;
   private boundWheelHandler: ((event: Event) => void) | null = null;
+  private listeners: Array<() => void> = [];
 
   constructor(
     initialScale: number,
@@ -39,7 +40,25 @@ export class ZoomManager implements IZoomManager {
       Math.max(newScale, this.minScale),
       this.maxScale,
     );
+    const changed = this.scale !== clampedScale;
     this.scale = clampedScale;
+    if (changed) {
+      this.notifyListeners();
+    }
+  }
+
+  addListener(listener: () => void): () => void {
+    this.listeners.push(listener);
+    return () => {
+      const index = this.listeners.indexOf(listener);
+      if (index > -1) {
+        this.listeners.splice(index, 1);
+      }
+    };
+  }
+
+  private notifyListeners(): void {
+    this.listeners.forEach(listener => listener());
   }
 
   zoomIn(): void {

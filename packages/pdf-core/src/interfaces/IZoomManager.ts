@@ -40,4 +40,11 @@ export interface IZoomManager {
 
   /** Clean up resources and remove event listeners */
   destroy(): void;
+
+  /**
+   * Add a listener for zoom changes
+   * @param listener Function to call when zoom changes
+   * @returns Function to remove the listener
+   */
+  addListener(listener: () => void): () => void;
 }

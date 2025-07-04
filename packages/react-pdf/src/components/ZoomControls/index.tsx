@@ -4,34 +4,27 @@ import { useZoom } from '../../hooks/useZoom';
 
 export interface ZoomControlsProps {
   className?: string;
-  showPercentage?: boolean;
 }
 
 export const ZoomControls: React.FC<ZoomControlsProps> = ({
   className = '',
-  showPercentage = true,
 }) => {
   const zoomManager = useZoom();
-  const [scale, setScale] = useState(1);
   const [canZoomIn, setCanZoomIn] = useState(true);
   const [canZoomOut, setCanZoomOut] = useState(false);
 
-  // Track zoom state changes from the zoom manager
   useEffect(() => {
     const updateZoomState = () => {
-      setScale(zoomManager.currentScale);
       setCanZoomIn(zoomManager.canZoomIn);
       setCanZoomOut(zoomManager.canZoomOut);
     };
 
-    // Initial state
     updateZoomState();
 
-    // Listen for zoom changes by polling
-    // In a real implementation, you might want to add an event system to the ZoomManager class
-    const interval = setInterval(updateZoomState, 100);
+    // Listen for zoom changes using the event system
+    const removeListener = zoomManager.addListener(updateZoomState);
 
-    return () => clearInterval(interval);
+    return removeListener;
   }, [zoomManager]);
 
   const handleZoomIn = () => {
@@ -54,17 +47,15 @@ export const ZoomControls: React.FC<ZoomControlsProps> = ({
         className='rounded bg-blue-500 px-3 py-1 text-white hover:bg-blue-600 disabled:cursor-not-allowed disabled:bg-gray-300'
         title='Zoom out'
       >
-        −
+        -
       </button>
-      {showPercentage && (
-        <button
-          onClick={handleReset}
-          className='min-w-16 rounded bg-gray-100 px-2 py-1 text-sm font-medium hover:bg-gray-200'
-          title='Reset zoom'
-        >
-          {Math.round(scale * 100)}%
-        </button>
-      )}
+      <button
+        onClick={handleReset}
+        className='rounded bg-gray-500 px-3 py-1 text-white hover:bg-gray-600'
+        title='Reset zoom to 100%'
+      >
+        ⟲
+      </button>
       <button
         onClick={handleZoomIn}
         disabled={!canZoomIn}
