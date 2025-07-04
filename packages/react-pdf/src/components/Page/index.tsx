@@ -14,13 +14,14 @@ export const Page: React.FC<PageProps> = ({ page, ...rest }) => {
 
   useEffect(() => {
     if (zoomManager) {
-      const updateScale = () => {
+      const handleZoomChange = () => {
         setScale(zoomManager.currentScale);
       };
 
-      updateScale();
-      const interval = setInterval(updateScale, 100);
-      return () => clearInterval(interval);
+      handleZoomChange(); // Initialize scale
+
+      const removeListener = zoomManager.addListener(handleZoomChange);
+      return removeListener;
     }
   }, [zoomManager]);
 

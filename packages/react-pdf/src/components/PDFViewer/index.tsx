@@ -19,14 +19,14 @@ const PDFViewerContent: React.FC<PDFViewerProps> = ({
   const [scale, setScale] = useState(1);
 
   useEffect(() => {
-    const updateScale = () => {
+    const handleZoomChange = () => {
       setScale(zoomManager.currentScale);
     };
 
-    updateScale();
-    const interval = setInterval(updateScale, 100);
+    handleZoomChange(); // Initialize scale
 
-    return () => clearInterval(interval);
+    const removeListener = zoomManager.addListener(handleZoomChange);
+    return removeListener;
   }, [zoomManager]);
 
   return (
