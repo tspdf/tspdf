@@ -1,12 +1,13 @@
 import { type IZoomManager, ZoomManager } from '@tspdf/pdf-core';
 import React, {
-  createContext,
   type ReactNode,
   useContext,
+  useEffect,
   useMemo,
+  useState,
 } from 'react';
 
-export const ZoomContext = createContext<IZoomManager | null>(null);
+import { ZoomContext } from '../contexts/ZoomContext';
 
 export interface ZoomProviderProps {
   children: ReactNode;
@@ -41,10 +42,34 @@ export const ZoomProvider: React.FC<ZoomProviderProps> = ({
   );
 };
 
-export const useZoom = (): IZoomManager => {
+export const useZoom = () => {
   const context = useContext(ZoomContext);
   if (!context) {
     throw new Error('useZoom must be used within a ZoomProvider');
   }
-  return context;
+
+  const [scale, setScale] = useState(context.currentScale);
+  const [canZoomIn, setCanZoomIn] = useState(context.canZoomIn);
+  const [canZoomOut, setCanZoomOut] = useState(context.canZoomOut);
+
+  useEffect(() => {
+    const updateState = () => {
+      setScale(context.currentScale);
+      setCanZoomIn(context.canZoomIn);
+      setCanZoomOut(context.canZoomOut);
+    };
+
+    const removeListener = context.addListener(updateState);
+    return removeListener;
+  }, [context]);
+
+  return {
+    scale,
+    canZoomIn,
+    canZoomOut,
+    zoomIn: () => context.zoomIn(),
+    zoomOut: () => context.zoomOut(),
+    resetZoom: () => context.resetZoom(),
+    zoomManager: context,
+  };
 };

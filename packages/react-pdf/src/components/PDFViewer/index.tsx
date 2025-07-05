@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
 import { useZoom, ZoomProvider } from '../../hooks/useZoom';
 import { Document } from '../Document';
@@ -15,19 +15,7 @@ const PDFViewerContent: React.FC<PDFViewerProps> = ({
   pageNumber = 1,
   className = '',
 }) => {
-  const zoomManager = useZoom();
-  const [scale, setScale] = useState(1);
-
-  useEffect(() => {
-    const handleZoomChange = () => {
-      setScale(zoomManager.currentScale);
-    };
-
-    handleZoomChange(); // Initialize scale
-
-    const removeListener = zoomManager.addListener(handleZoomChange);
-    return removeListener;
-  }, [zoomManager]);
+  const { scale } = useZoom();
 
   return (
     <div className={`flex h-full flex-col ${className}`}>

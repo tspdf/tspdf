@@ -15,7 +15,7 @@ export const Document: React.FC<DocumentProps> = ({
   ...rest
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const zoomManager = useZoomOptional();
+  const { zoomManager } = useZoomOptional();
   const [pdfDocument, setPdfDocument] = useState<CoreDocument | null>(null);
   const [currentPage, setCurrentPage] = useState<IPage | null>(null);
   const [error, setError] = useState<string | null>(null);
