@@ -1,12 +1,12 @@
 import Layout from '@theme/Layout';
-import { Document } from '@tspdf/react-pdf';
+import { PDFViewer } from '@tspdf/react-pdf';
 
 import styles from './demo.module.css';
 
 function PDFDemo() {
   return (
     <div className={styles.pdfContainer}>
-      <Document file='https://raw.githubusercontent.com/mozilla/pdf.js/ba2edeae/web/compressed.tracemonkey-pldi-09.pdf' />
+      <PDFViewer file='https://raw.githubusercontent.com/mozilla/pdf.js/ba2edeae/web/compressed.tracemonkey-pldi-09.pdf' />
     </div>
   );
 }

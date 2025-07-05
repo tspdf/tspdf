@@ -1,6 +1,7 @@
-import { Document as CoreDocument, IPage } from '@tspdf/pdf-core';
-import React, { useEffect, useState } from 'react';
+import { Document as CoreDocument, type IPage } from '@tspdf/pdf-core';
+import React, { useEffect, useRef, useState } from 'react';
 
+import { useZoomOptional } from '../../hooks/useZoomOptional';
 import { Page } from '../Page';
 
 interface DocumentProps extends React.HTMLProps<HTMLDivElement> {
@@ -13,15 +14,20 @@ export const Document: React.FC<DocumentProps> = ({
   pageNumber = 1,
   ...rest
 }) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { zoomManager } = useZoomOptional();
   const [pdfDocument, setPdfDocument] = useState<CoreDocument | null>(null);
   const [currentPage, setCurrentPage] = useState<IPage | null>(null);
   const [error, setError] = useState<string | null>(null);
 
+  // Load document when file changes
   useEffect(() => {
+    if (!file || typeof window === 'undefined') return;
+
     const loadDocument = async () => {
       try {
         setError(null);
-        const doc = new CoreDocument(file);
+        const doc = new CoreDocument(file, zoomManager || undefined);
         await doc.load();
         setPdfDocument(doc);
       } catch (err) {
@@ -29,29 +35,49 @@ export const Document: React.FC<DocumentProps> = ({
         setError(err instanceof Error ? err.message : String(err));
       }
     };
-    if (file && typeof window !== 'undefined') {
-      loadDocument().catch(console.error);
-    }
-  }, [file]);
 
+    loadDocument();
+  }, [file, zoomManager]);
+
+  // Enable zoom controls when container and zoomManager are ready
   useEffect(() => {
+    if (!zoomManager || !containerRef.current) return;
+
+    const container = containerRef.current;
+    zoomManager.enableControls(container);
+
+    return () => {
+      zoomManager.disableControls(container);
+    };
+  }, [zoomManager]);
+
+  // Load page when document or pageNumber changes
+  useEffect(() => {
+    if (!pdfDocument) return;
+
     const loadPage = async () => {
-      if (pdfDocument) {
-        try {
-          setError(null);
-          const page = await pdfDocument.getPage(pageNumber);
-          setCurrentPage(page);
-        } catch (err) {
-          console.error(`Failed to load page ${pageNumber}:`, err);
-          setError(err instanceof Error ? err.message : String(err));
-          setCurrentPage(null);
-        }
+      try {
+        setError(null);
+        const page = await pdfDocument.getPage(pageNumber);
+        setCurrentPage(page);
+      } catch (err) {
+        console.error(`Failed to load page ${pageNumber}:`, err);
+        setError(err instanceof Error ? err.message : String(err));
+        setCurrentPage(null);
       }
     };
-    if (pdfDocument) {
-      loadPage().catch(console.error);
-    }
+
+    loadPage();
   }, [pdfDocument, pageNumber]);
+
+  // Clean up when component unmounts
+  useEffect(() => {
+    return () => {
+      if (pdfDocument) {
+        pdfDocument.destroy();
+      }
+    };
+  }, [pdfDocument]);
 
   if (error) {
     return <div className='text-red-500'>Error: {error}</div>;
@@ -59,11 +85,15 @@ export const Document: React.FC<DocumentProps> = ({
 
   return (
     <div
+      ref={containerRef}
       className='relative h-full w-full overflow-auto scroll-smooth bg-gray-50'
       {...rest}
     >
-      <div className='flex min-h-full items-center justify-center p-4 sm:p-2 md:p-4'>
-        <div className='origin-center-top mx-auto flex min-h-full w-fit min-w-fit flex-col items-center gap-4 transition-transform duration-200 ease-in-out'>
+      <div className='flex p-4 sm:p-2 md:p-4' style={{ minWidth: '100%' }}>
+        <div
+          className='mx-auto pr-4 sm:pr-2 md:pr-4'
+          style={{ minWidth: 'fit-content' }}
+        >
           <Page page={currentPage} />
         </div>
       </div>

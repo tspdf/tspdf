@@ -4,7 +4,10 @@ import type { IRenderOptions, IViewport, IViewportOptions } from '../types';
 import { PDFError, PDFErrorType } from '../types';
 
 export class Page implements IPage {
-  constructor(private readonly page: PDFPageProxy) {}
+  constructor(
+    private readonly page: PDFPageProxy,
+    private readonly getDocumentScale?: () => number,
+  ) {}
 
   get pageNumber(): number {
     return this.page.pageNumber;
@@ -25,8 +28,10 @@ export class Page implements IPage {
   }
 
   getViewport(options: IViewportOptions = {}): IViewport {
+    const scale = options.scale ?? this.getDocumentScale?.() ?? 1;
+
     const viewport = this.page.getViewport({
-      scale: options.scale ?? 1,
+      scale,
       rotation: options.rotation ?? 0,
       offsetX: options.offsetX ?? 0,
       offsetY: options.offsetY ?? 0,
@@ -49,7 +54,7 @@ export class Page implements IPage {
     options: IRenderOptions = {},
   ): Promise<void> {
     try {
-      const scale = options.scale ?? 1;
+      const scale = options.scale ?? this.getDocumentScale?.() ?? 1;
       const rotation = options.rotation ?? 0;
       const pixelRatio =
         options.pixelRatio ??
