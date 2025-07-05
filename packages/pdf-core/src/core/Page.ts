@@ -28,8 +28,7 @@ export class Page implements IPage {
   }
 
   getViewport(options: IViewportOptions = {}): IViewport {
-    const documentScale = this.getDocumentScale?.() ?? 1;
-    const scale = (options.scale ?? 1) * documentScale;
+    const scale = options.scale ?? this.getDocumentScale?.() ?? 1;
 
     const viewport = this.page.getViewport({
       scale,
@@ -55,8 +54,7 @@ export class Page implements IPage {
     options: IRenderOptions = {},
   ): Promise<void> {
     try {
-      const documentScale = this.getDocumentScale?.() ?? 1;
-      const scale = (options.scale ?? 1) * documentScale;
+      const scale = options.scale ?? this.getDocumentScale?.() ?? 1;
       const rotation = options.rotation ?? 0;
       const pixelRatio =
         options.pixelRatio ??

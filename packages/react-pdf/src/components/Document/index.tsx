@@ -49,7 +49,7 @@ export const Document: React.FC<DocumentProps> = ({
     return () => {
       zoomManager.disableControls(container);
     };
-  }, [zoomManager, pdfDocument]);
+  }, [zoomManager]);
 
   // Load page when document or pageNumber changes
   useEffect(() => {
