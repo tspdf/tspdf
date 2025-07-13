@@ -1,7 +1,5 @@
 import type {
   IRenderOptions,
-  IViewport,
-  IViewportOptions,
   IVisibilityOptions,
   VisibilityCallback,
 } from '../types';
@@ -11,15 +9,6 @@ import type {
  */
 export interface IPage {
   readonly pageNumber: number;
-  readonly width: number;
-  readonly height: number;
-  readonly rotation: number;
-
-  /**
-   * Get the viewport for this page with the given parameters
-   * @param options Viewport options
-   */
-  getViewport(options?: IViewportOptions): IViewport;
 
   /**
    * Render the page to a canvas

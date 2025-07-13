@@ -1,64 +1,31 @@
 import type { IPage } from '../interfaces';
+import { IPageRenderManager } from '../interfaces/IPageRenderManager';
 import { PDFPageProxy } from '../pdfjs/types';
 import type {
   IRenderOptions,
-  IViewport,
-  IViewportOptions,
   IVisibilityOptions,
   VisibilityCallback,
 } from '../types';
 import { PDFError, PDFErrorType } from '../types';
 import { VisibilityManager } from '../utils';
+import { PageRenderManager } from './PageRenderManager';
 
 export class Page implements IPage {
   private visibilityManager?: VisibilityManager;
   private isVisible = false;
   private pendingCanvas: HTMLCanvasElement | null = null;
   private pendingRenderOptions: IRenderOptions | null = null;
+  private pageRenderManager: IPageRenderManager;
 
   constructor(
     private readonly page: PDFPageProxy,
-    private readonly getDocumentScale?: () => number,
-  ) {}
+    private readonly getDocumentScale: () => number,
+  ) {
+    this.pageRenderManager = new PageRenderManager(page, this.getDocumentScale);
+  }
 
   get pageNumber(): number {
     return this.page.pageNumber;
-  }
-
-  get width(): number {
-    const viewport = this.page.getViewport({ scale: 1 });
-    return viewport.width;
-  }
-
-  get height(): number {
-    const viewport = this.page.getViewport({ scale: 1 });
-    return viewport.height;
-  }
-
-  get rotation(): number {
-    return this.page.rotate;
-  }
-
-  getViewport(options: IViewportOptions = {}): IViewport {
-    const scale = options.scale ?? this.getDocumentScale?.() ?? 1;
-
-    const viewport = this.page.getViewport({
-      scale,
-      rotation: options.rotation ?? 0,
-      offsetX: options.offsetX ?? 0,
-      offsetY: options.offsetY ?? 0,
-      dontFlip: options.dontFlip ?? false,
-    });
-
-    return {
-      width: viewport.width,
-      height: viewport.height,
-      scale: viewport.scale,
-      rotation: viewport.rotation,
-      offsetX: viewport.offsetX,
-      offsetY: viewport.offsetY,
-      transform: viewport.transform,
-    };
   }
 
   async render(
@@ -66,16 +33,11 @@ export class Page implements IPage {
     options: IRenderOptions = {},
   ): Promise<void> {
     try {
-      const scale = options.scale ?? this.getDocumentScale?.() ?? 1;
-      const rotation = options.rotation ?? 0;
       const pixelRatio =
         options.pixelRatio ??
         (typeof window !== 'undefined' ? window.devicePixelRatio : 1);
 
-      const viewport = this.page.getViewport({
-        scale,
-        rotation: this.rotation + rotation,
-      });
+      const viewport = this.pageRenderManager.getViewport();
 
       const ctx = canvas.getContext('2d');
       if (!ctx) {
