@@ -6,13 +6,11 @@ import { ZoomControls } from '../ZoomControls';
 
 interface PDFViewerProps {
   file: string;
-  pageNumber?: number;
   className?: string;
 }
 
 const PDFViewerContent: React.FC<PDFViewerProps> = ({
   file,
-  pageNumber = 1,
   className = '',
 }) => {
   const { scale } = useZoom();
@@ -24,8 +22,7 @@ const PDFViewerContent: React.FC<PDFViewerProps> = ({
         <h2 className='text-lg font-semibold'>TSPDF</h2>
         <div className='flex items-center gap-4'>
           <span className='text-sm text-gray-600'>
-            Page {pageNumber}
-            {` • Scale: ${Math.round(scale * 100)}%`}
+            Scale: {Math.round(scale * 100)}%
           </span>
           <ZoomControls />
         </div>
@@ -33,7 +30,7 @@ const PDFViewerContent: React.FC<PDFViewerProps> = ({
 
       {/* PDF Document */}
       <div className='flex-1 overflow-hidden'>
-        <Document file={file} pageNumber={pageNumber} />
+        <Document file={file} />
       </div>
     </div>
   );

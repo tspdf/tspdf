@@ -61,3 +61,24 @@ export interface IRenderOptions {
   /** Device pixel ratio for high-DPI displays */
   pixelRatio?: number;
 }
+
+/**
+ * Visibility detection callback
+ */
+export type VisibilityCallback = (
+  pageNumber: number,
+  isVisible: boolean,
+  intersectionRatio: number,
+) => void;
+
+/**
+ * Options for visibility detection
+ */
+export interface IVisibilityOptions {
+  /** Root element for intersection observation (defaults to viewport) */
+  root?: Element | null;
+  /** Root margin for intersection detection */
+  rootMargin?: string;
+  /** Threshold for visibility detection (0-1) */
+  threshold?: number | number[];
+}
