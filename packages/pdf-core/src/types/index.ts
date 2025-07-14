@@ -12,15 +12,6 @@ export interface IViewport {
 }
 
 /**
- * Error types for PDF operations
- */
-export enum PDFErrorType {
-  LOADING_ERROR = 'LOADING_ERROR',
-  PAGE_ERROR = 'PAGE_ERROR',
-  RENDERING_ERROR = 'RENDERING_ERROR',
-}
-
-/**
  * PDF operation error
  */
 export class PDFError extends Error {
