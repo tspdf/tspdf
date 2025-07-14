@@ -1,4 +1,4 @@
-import { IViewport, IViewportOptions } from '../types';
+import { IViewport } from '../types';
 
 /**
  * Interface for managing PDF page rendering operations.
@@ -20,5 +20,5 @@ export interface IPageRenderManager {
   /**
    * Calculates and returns a viewport for rendering the PDF page.
    */
-  getViewport(options?: IViewportOptions): IViewport;
+  getViewport(): IViewport;
 }

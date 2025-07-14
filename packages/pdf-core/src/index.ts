@@ -3,7 +3,6 @@ export type { IPage, IZoomManager } from './interfaces';
 export type {
   IRenderOptions,
   IViewport,
-  IViewportOptions,
   IVisibilityOptions,
   VisibilityCallback,
 } from './types';

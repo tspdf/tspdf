@@ -1,20 +1,4 @@
 /**
- * Options for viewport calculation
- */
-export interface IViewportOptions {
-  /** Scale factor */
-  scale?: number;
-  /** Rotation in degrees */
-  rotation?: number;
-  /** Offset X */
-  offsetX?: number;
-  /** Offset Y */
-  offsetY?: number;
-  /** Don't flip */
-  dontFlip?: boolean;
-}
-
-/**
  * PDF viewport information
  */
 export interface IViewport {

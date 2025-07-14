@@ -1,6 +1,6 @@
 import { IPageRenderManager } from '../interfaces/IPageRenderManager';
 import { PDFPageProxy } from '../pdfjs/types';
-import { IViewport, IViewportOptions } from '../types';
+import { IViewport } from '../types';
 
 export class PageRenderManager implements IPageRenderManager {
   constructor(
@@ -15,15 +15,15 @@ export class PageRenderManager implements IPageRenderManager {
     return this.getDocumentScale() ?? 1.0;
   }
 
-  getViewport(options: IViewportOptions = {}): IViewport {
+  getViewport(): IViewport {
     const scale = this.currentScale;
 
     const viewport = this.page.getViewport({
       scale,
-      rotation: options.rotation ?? 0,
-      offsetX: options.offsetX ?? 0,
-      offsetY: options.offsetY ?? 0,
-      dontFlip: options.dontFlip ?? false,
+      rotation: 0,
+      offsetX: 0,
+      offsetY: 0,
+      dontFlip: false,
     });
 
     return {
