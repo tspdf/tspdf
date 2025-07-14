@@ -1,74 +1,39 @@
 import type { IPage } from '../interfaces';
-import { IPageRenderManager } from '../interfaces/IPageRenderManager';
+import { IRenderManager } from '../interfaces/IRenderManager';
 import { PDFPageProxy } from '../pdfjs/types';
 import type {
   IRenderOptions,
   IVisibilityOptions,
   VisibilityCallback,
 } from '../types';
-import { PDFError, PDFErrorType } from '../types';
 import { VisibilityManager } from '../utils';
-import { PageRenderManager } from './PageRenderManager';
+import { RenderManager } from './RenderManager';
 
 export class Page implements IPage {
   private visibilityManager?: VisibilityManager;
   private isVisible = false;
   private pendingCanvas: HTMLCanvasElement | null = null;
   private pendingRenderOptions: IRenderOptions | null = null;
-  private pageRenderManager: IPageRenderManager;
+  private renderManager: IRenderManager;
 
   constructor(
     private readonly page: PDFPageProxy,
     private readonly getDocumentScale: () => number,
   ) {
-    this.pageRenderManager = new PageRenderManager(page, this.getDocumentScale);
+    this.renderManager = new RenderManager(page, this.getDocumentScale);
   }
 
   get pageNumber(): number {
-    return this.page.pageNumber;
+    return this.renderManager.pageNumber;
   }
 
   async render(
     canvas: HTMLCanvasElement,
     options: IRenderOptions = {},
   ): Promise<void> {
-    try {
-      const pixelRatio =
-        options.pixelRatio ??
-        (typeof window !== 'undefined' ? window.devicePixelRatio : 1);
-
-      const viewport = this.pageRenderManager.getViewport();
-
-      const ctx = canvas.getContext('2d');
-      if (!ctx) {
-        throw new PDFError(
-          PDFErrorType.RENDERING_ERROR,
-          'Unable to get canvas 2D context',
-        );
-      }
-
-      // Set canvas size
-      canvas.width = viewport.width * pixelRatio;
-      canvas.height = viewport.height * pixelRatio;
-
-      // Scale the context to account for device pixel ratio
-      ctx.save();
-      ctx.scale(pixelRatio, pixelRatio);
-
-      // Render the page
-      await this.page.render({
-        canvasContext: ctx,
-        viewport,
-      }).promise;
-
-      ctx.restore();
-    } catch (error) {
-      throw new PDFError(
-        PDFErrorType.RENDERING_ERROR,
-        `Failed to render page ${String(this.pageNumber)}`,
-        error as Error,
-      );
-    }
+    this.renderManager.render(canvas, options).catch(error => {
+      throw error;
+    });
   }
 
   /**

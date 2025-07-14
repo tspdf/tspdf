@@ -1,4 +1,4 @@
-import { IViewport } from '../types';
+import { IRenderOptions, IViewport } from '../types';
 
 /**
  * Interface for managing PDF page rendering operations.
@@ -6,7 +6,8 @@ import { IViewport } from '../types';
  * The PageRenderManager is responsible for calculating viewports and managing
  * the rendering properties of a PDF page, including scale, rotation, and positioning.
  */
-export interface IPageRenderManager {
+export interface IRenderManager {
+  readonly pageNumber: number;
   /**
    * Gets the current scale factor being applied to the page.
    *
@@ -21,4 +22,11 @@ export interface IPageRenderManager {
    * Calculates and returns a viewport for rendering the PDF page.
    */
   getViewport(): IViewport;
+
+  /**
+   * Render the page to a canvas
+   * @param canvas The canvas element to render to
+   * @param options Rendering options
+   */
+  render(canvas: HTMLCanvasElement, options?: IRenderOptions): Promise<void>;
 }

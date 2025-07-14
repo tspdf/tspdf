@@ -24,13 +24,8 @@ export enum PDFErrorType {
  * PDF operation error
  */
 export class PDFError extends Error {
-  constructor(
-    public readonly type: PDFErrorType,
-    message: string,
-    public readonly originalError?: unknown,
-  ) {
+  constructor(message: string) {
     super(message);
-    this.name = 'PDFError';
   }
 }
 
