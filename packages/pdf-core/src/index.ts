@@ -6,4 +6,3 @@ export type {
   IVisibilityOptions,
   VisibilityCallback,
 } from './types';
-export { VisibilityManager } from './utils';

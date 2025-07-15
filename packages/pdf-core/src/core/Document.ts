@@ -8,11 +8,22 @@ export class Document implements IDocument {
   private pdfDocument: PDFDocumentProxy | null;
   private readonly url: string;
   private readonly _zoomManager?: IZoomManager;
+  private readonly pages = new Map<number, IPage>();
+  private zoomChangeUnsubscribe?: () => void;
 
   constructor(url: string, zoomManager?: IZoomManager) {
     this.pdfDocument = null;
     this.url = url;
     this._zoomManager = zoomManager;
+
+    // Listen for zoom changes and refresh all pages
+    if (this._zoomManager && 'addListener' in this._zoomManager) {
+      this.zoomChangeUnsubscribe = (this._zoomManager as any).addListener(
+        () => {
+          this.refreshAllPages();
+        },
+      );
+    }
   }
 
   get numPages(): number {
@@ -41,6 +52,12 @@ export class Document implements IDocument {
       throw new PDFError('PDF document is not loaded');
     }
 
+    // Return cached page if it exists
+    const cachedPage = this.pages.get(pageNumber);
+    if (cachedPage) {
+      return cachedPage;
+    }
+
     // Validate pageNumber is a valid number and within range
     if (
       !Number.isInteger(pageNumber) ||
@@ -54,7 +71,15 @@ export class Document implements IDocument {
 
     try {
       const pdfPage = await this.pdfDocument.getPage(pageNumber);
-      return new Page(pdfPage, () => this._zoomManager?.currentScale ?? 1);
+      const page = new Page(
+        pdfPage,
+        () => this._zoomManager?.currentScale ?? 1,
+      );
+
+      // Cache the page for zoom refresh functionality
+      this.pages.set(pageNumber, page);
+
+      return page;
     } catch (error) {
       throw new PDFError(
         `Failed to get page ${String(pageNumber)}: ${String(error)}`,
@@ -62,10 +87,28 @@ export class Document implements IDocument {
     }
   }
 
+  private async refreshAllPages(): Promise<void> {
+    // Refresh all cached pages when zoom changes
+    for (const [, page] of this.pages) {
+      await page.renderManager.refreshIfScaleChanged();
+    }
+  }
+
   destroy(): void {
     if (!this.pdfDocument) {
       throw new PDFError('PDF document is not loaded');
     }
+
+    // Unsubscribe from zoom changes
+    if (this.zoomChangeUnsubscribe) {
+      this.zoomChangeUnsubscribe();
+    }
+
+    // Clean up all cached pages
+    for (const [, page] of this.pages) {
+      page.destroy();
+    }
+    this.pages.clear();
 
     // Clean up zoom controls if available
     this._zoomManager?.destroy();

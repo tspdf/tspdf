@@ -1,4 +1,9 @@
-import { IRenderOptions, IViewport } from '../types';
+import {
+  IRenderOptions,
+  IViewport,
+  IVisibilityOptions,
+  VisibilityCallback,
+} from '../types';
 
 /**
  * Interface for managing PDF page rendering operations.
@@ -25,8 +30,46 @@ export interface IRenderManager {
 
   /**
    * Render the page to a canvas
+   * @param container The container element for the page
    * @param canvas The canvas element to render to
    * @param options Rendering options
    */
-  render(canvas: HTMLCanvasElement, options?: IRenderOptions): Promise<void>;
+  render(
+    container: HTMLDivElement,
+    canvas: HTMLCanvasElement,
+    options?: IRenderOptions,
+  ): Promise<void>;
+
+  /**
+   * Observe page container visibility
+   * @param element Element to observe
+   * @param callback Callback to invoke on visibility changes
+   * @param options Visibility detection options
+   */
+  observeVisibility(
+    element: Element,
+    callback: VisibilityCallback,
+    options?: IVisibilityOptions,
+  ): void;
+
+  /**
+   * Stop observing element visibility
+   * @param element Element to stop observing
+   */
+  unobserveVisibility(element: Element): void;
+
+  /**
+   * Clean up resources
+   */
+  destroy(): void;
+
+  /**
+   * Refresh all rendered canvases if the scale has changed
+   */
+  refreshIfScaleChanged(): Promise<void>;
+
+  /**
+   * Force refresh all rendered canvases with current scale
+   */
+  refreshAllCanvases(): Promise<void>;
 }
