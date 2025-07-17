@@ -26,13 +26,24 @@ export const Document: React.FC<DocumentProps> = ({ file, ...rest }) => {
         await doc.load();
         setPdfDocument(doc);
 
-        // Load all pages
+        // Load pages in batches for better performance
         const loadedPages: IPage[] = [];
-        for (let i = 1; i <= doc.numPages; i++) {
-          const page = await doc.getPage(i);
-          loadedPages.push(page);
+        const batchSize = 5; // Load 5 pages at a time
+
+        for (let i = 1; i <= doc.numPages; i += batchSize) {
+          const batchPromises: Promise<IPage>[] = [];
+          const endIndex = Math.min(i + batchSize - 1, doc.numPages);
+
+          for (let j = i; j <= endIndex; j++) {
+            batchPromises.push(doc.getPage(j));
+          }
+
+          const batchPages = await Promise.all(batchPromises);
+          loadedPages.push(...batchPages);
+
+          // Update pages progressively for better UX
+          setPages([...loadedPages]);
         }
-        setPages(loadedPages);
       } catch (err) {
         console.error('Failed to load document:', err);
         setError(err instanceof Error ? err.message : String(err));

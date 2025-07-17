@@ -11,9 +11,10 @@ import { isBrowser } from '../utils';
 export class RenderManager implements IRenderManager {
   private observer: IntersectionObserver | null = null;
   private callbacks = new Map<Element, VisibilityCallback>();
-  private defaultVisibilityOptions: IVisibilityOptions = {};
-  private renderedCanvases = new Map<HTMLCanvasElement, IViewport>();
-  private lastScale: number = 1.0;
+  private listeners: Array<() => void> = [];
+  private container: HTMLDivElement | null = null;
+  private currentRenderTask: any = null;
+  private isRendering: boolean = false;
 
   constructor(
     private readonly page: PDFPageProxy,
@@ -21,7 +22,6 @@ export class RenderManager implements IRenderManager {
   ) {
     this.page = page;
     this.getDocumentScale = getDocumentScale;
-    this.lastScale = this.currentScale;
   }
 
   get currentScale(): number {
@@ -54,41 +54,83 @@ export class RenderManager implements IRenderManager {
     };
   }
 
-  async render(
-    container: HTMLDivElement,
-    canvas: HTMLCanvasElement,
-  ): Promise<void> {
-    try {
-      const viewport = this.getViewport();
-      this.setContainerDimensions(container, viewport);
-
-      // Set up visibility observation with canvas rendering
-      this.observeVisibility(container, async (_pageNumber, isVisible) => {
-        if (isVisible) {
-          await this.renderPageToCanvas(canvas, viewport);
-          this.renderedCanvases.set(canvas, viewport);
-        }
-      });
-
-      // Store canvas for potential re-rendering on scale changes
-      this.renderedCanvases.set(canvas, viewport);
-    } catch (error) {
-      throw new PDFError(
-        `Failed to set up rendering for page ${String(this.pageNumber)}: ${error instanceof Error ? error.message : 'Unknown error'}`,
-      );
+  init(container: HTMLDivElement): void {
+    if (!container) {
+      throw new PDFError('Container element is required for rendering');
     }
+
+    const viewport = this.getViewport();
+    this.setContainerDimensions(container, viewport);
+    this.container = container;
+
+    this.observeVisibility(container, (pageNumber, isIntersecting) => {
+      if (isIntersecting) {
+        this.notifyListeners();
+      }
+    });
+  }
+
+  async render(canvas: HTMLCanvasElement): Promise<void> {
+    if (!this.container) {
+      throw new PDFError('RenderManager not initialized with a container');
+    }
+
+    // Prevent concurrent rendering
+    if (this.isRendering) {
+      return;
+    }
+
+    this.isRendering = true;
+
+    try {
+      // Cancel any existing render task
+      if (this.currentRenderTask) {
+        this.currentRenderTask.cancel();
+        this.currentRenderTask = null;
+      }
+
+      const viewport = this.getViewport();
+      this.setContainerDimensions(this.container, viewport);
+
+      // Use requestAnimationFrame for smooth rendering
+      await new Promise<void>(resolve => {
+        requestAnimationFrame(async () => {
+          try {
+            await this.renderCanvas(canvas, viewport);
+            resolve();
+          } catch (_error) {
+            resolve(); // Don't throw in RAF callback
+          }
+        });
+      });
+    } finally {
+      this.isRendering = false;
+    }
+  }
+
+  addListener(listener: () => void): () => void {
+    this.listeners.push(listener);
+    return () => {
+      const index = this.listeners.indexOf(listener);
+      if (index > -1) {
+        this.listeners.splice(index, 1);
+      }
+    };
+  }
+
+  private notifyListeners(): void {
+    this.listeners.forEach(listener => listener());
   }
 
   private setContainerDimensions(
     container: HTMLDivElement,
     viewport: IViewport,
   ): void {
-    // Set container dimensions to viewport size for precise visibility tracking
     container.style.width = `${viewport.width}px`;
     container.style.height = `${viewport.height}px`;
   }
 
-  private async renderToCanvas(
+  private async renderCanvas(
     canvas: HTMLCanvasElement,
     viewport: IViewport,
   ): Promise<void> {
@@ -112,20 +154,39 @@ export class RenderManager implements IRenderManager {
     ctx.save();
     ctx.scale(pixelRatio, pixelRatio);
 
-    // Render the PDF page to the canvas
-    await this.page.render({
-      canvasContext: ctx,
-      viewport,
-    }).promise;
+    try {
+      // Create and store the render task
+      this.currentRenderTask = this.page.render({
+        canvasContext: ctx,
+        viewport,
+      });
 
-    ctx.restore();
-  }
+      // Wait for rendering to complete
+      await this.currentRenderTask.promise;
 
-  private async renderPageToCanvas(
-    canvas: HTMLCanvasElement,
-    viewport: IViewport,
-  ): Promise<void> {
-    await this.renderToCanvas(canvas, viewport);
+      // Clear the task when done
+      this.currentRenderTask = null;
+    } catch (error) {
+      // Clear the task on error
+      this.currentRenderTask = null;
+
+      // Check if this is a cancellation error, which is expected
+      if (error && typeof error === 'object' && 'message' in error) {
+        const errorMessage = String(error.message).toLowerCase();
+        if (
+          errorMessage.includes('rendering cancelled') ||
+          errorMessage.includes('cancelled')
+        ) {
+          // This is a cancellation, not a real error - just return
+          return;
+        }
+      }
+
+      // Re-throw actual errors
+      throw error;
+    } finally {
+      ctx.restore();
+    }
   }
 
   private createObserver(options?: IVisibilityOptions): void {
@@ -134,13 +195,9 @@ export class RenderManager implements IRenderManager {
     }
 
     const observerOptions: IntersectionObserverInit = {
-      root: options?.root || this.defaultVisibilityOptions.root || null,
-      rootMargin:
-        options?.rootMargin ||
-        this.defaultVisibilityOptions.rootMargin ||
-        '0px',
-      threshold:
-        options?.threshold || this.defaultVisibilityOptions.threshold || 0.1,
+      root: options?.root || null,
+      rootMargin: options?.rootMargin || '0px',
+      threshold: options?.threshold || 0.1,
     };
 
     this.observer = new IntersectionObserver(entries => {
@@ -186,42 +243,17 @@ export class RenderManager implements IRenderManager {
     this.observer.unobserve(element);
   }
 
-  /**
-   * Refresh all rendered canvases if the scale has changed
-   */
-  async refreshIfScaleChanged(): Promise<void> {
-    const currentScale = this.currentScale;
-    if (currentScale !== this.lastScale) {
-      this.lastScale = currentScale;
-      await this.refreshAllCanvases();
-    }
-  }
-
-  /**
-   * Force refresh all rendered canvases with current scale
-   */
-  async refreshAllCanvases(): Promise<void> {
-    const viewport = this.getViewport();
-
-    for (const [canvas] of this.renderedCanvases) {
-      try {
-        await this.renderPageToCanvas(canvas, viewport);
-        this.renderedCanvases.set(canvas, viewport);
-      } catch (error) {
-        console.warn(
-          `Failed to refresh canvas for page ${this.pageNumber}:`,
-          error,
-        );
-      }
-    }
-  }
-
   destroy(): void {
+    // Cancel any ongoing render task
+    if (this.currentRenderTask) {
+      this.currentRenderTask.cancel();
+      this.currentRenderTask = null;
+    }
+
     if (this.observer) {
       this.observer.disconnect();
       this.observer = null;
     }
     this.callbacks.clear();
-    this.renderedCanvases.clear();
   }
 }

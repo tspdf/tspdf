@@ -28,17 +28,15 @@ export interface IRenderManager {
    */
   getViewport(): IViewport;
 
+  init(container: HTMLDivElement): void;
+
   /**
    * Render the page to a canvas
    * @param container The container element for the page
    * @param canvas The canvas element to render to
    * @param options Rendering options
    */
-  render(
-    container: HTMLDivElement,
-    canvas: HTMLCanvasElement,
-    options?: IRenderOptions,
-  ): Promise<void>;
+  render(canvas: HTMLCanvasElement, options?: IRenderOptions): Promise<void>;
 
   /**
    * Observe page container visibility
@@ -59,17 +57,14 @@ export interface IRenderManager {
   unobserveVisibility(element: Element): void;
 
   /**
+   * Add a listener for render events
+   * @param listener Callback to invoke when page should be rendered
+   * @returns Function to remove the listener
+   */
+  addListener(listener: () => void): () => void;
+
+  /**
    * Clean up resources
    */
   destroy(): void;
-
-  /**
-   * Refresh all rendered canvases if the scale has changed
-   */
-  refreshIfScaleChanged(): Promise<void>;
-
-  /**
-   * Force refresh all rendered canvases with current scale
-   */
-  refreshAllCanvases(): Promise<void>;
 }

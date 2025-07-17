@@ -8,6 +8,8 @@ export class ZoomManager implements IZoomManager {
   private readonly stepSize: number;
   private boundWheelHandler: ((event: Event) => void) | null = null;
   private listeners: Array<() => void> = [];
+  private debounceTimer: number | null = null;
+  private pendingScale: number | null = null;
 
   constructor(
     initialScale: number,
@@ -24,7 +26,8 @@ export class ZoomManager implements IZoomManager {
   }
 
   get currentScale(): number {
-    return this.scale;
+    // Return pending scale if available for immediate UI feedback
+    return this.pendingScale ?? this.scale;
   }
 
   get canZoomIn(): boolean {
@@ -40,11 +43,22 @@ export class ZoomManager implements IZoomManager {
       Math.max(newScale, this.minScale),
       this.maxScale,
     );
-    const changed = this.scale !== clampedScale;
-    this.scale = clampedScale;
-    if (changed) {
-      this.notifyListeners();
+
+    // Store the pending scale and debounce notifications
+    this.pendingScale = clampedScale;
+
+    if (this.debounceTimer !== null) {
+      clearTimeout(this.debounceTimer);
     }
+
+    this.debounceTimer = window.setTimeout(() => {
+      if (this.pendingScale !== null && this.scale !== this.pendingScale) {
+        this.scale = this.pendingScale;
+        this.notifyListeners();
+      }
+      this.debounceTimer = null;
+      this.pendingScale = null;
+    }, 16); // ~60fps debouncing
   }
 
   addListener(listener: () => void): () => void {
@@ -111,5 +125,10 @@ export class ZoomManager implements IZoomManager {
 
   destroy(): void {
     this.disableControls();
+    if (this.debounceTimer !== null) {
+      clearTimeout(this.debounceTimer);
+      this.debounceTimer = null;
+    }
+    this.pendingScale = null;
   }
 }
