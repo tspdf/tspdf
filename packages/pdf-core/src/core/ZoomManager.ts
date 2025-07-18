@@ -31,11 +31,11 @@ export class ZoomManager implements IZoomManager {
   }
 
   get canZoomIn(): boolean {
-    return this.scale < this.maxScale;
+    return this.currentScale < this.maxScale;
   }
 
   get canZoomOut(): boolean {
-    return this.scale > this.minScale;
+    return this.currentScale > this.minScale;
   }
 
   setScale(newScale: number): void {

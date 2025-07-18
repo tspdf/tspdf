@@ -54,10 +54,7 @@ export class Document implements IDocument {
 
     try {
       const pdfPage = await this.pdfDocument.getPage(pageNumber);
-      const page = new Page(
-        pdfPage,
-        () => this._zoomManager?.currentScale ?? 1,
-      );
+      const page = new Page(pdfPage, this._zoomManager);
 
       return page;
     } catch (error) {

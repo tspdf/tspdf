@@ -1,4 +1,4 @@
-import type { IPage } from '../interfaces';
+import type { IPage, IZoomManager } from '../interfaces';
 import { IRenderManager } from '../interfaces/IRenderManager';
 import { PDFPageProxy } from '../pdfjs/types';
 import { RenderManager } from './RenderManager';
@@ -8,9 +8,9 @@ export class Page implements IPage {
 
   constructor(
     private readonly page: PDFPageProxy,
-    private readonly getDocumentScale: () => number,
+    zoomManager?: IZoomManager,
   ) {
-    this.renderManager = new RenderManager(page, this.getDocumentScale);
+    this.renderManager = new RenderManager(page, zoomManager);
   }
 
   get pageNumber(): number {

@@ -1,35 +1,40 @@
-import { IRenderManager } from '../interfaces/IRenderManager';
+import { IRenderManager, IZoomManager } from '../interfaces';
 import { PDFPageProxy } from '../pdfjs/types';
-import {
-  IViewport,
-  IVisibilityOptions,
-  PDFError,
-  VisibilityCallback,
-} from '../types';
+import { IViewport, PDFError, VisibilityCallback } from '../types';
 import { isBrowser } from '../utils';
 
 export class RenderManager implements IRenderManager {
   private observer: IntersectionObserver | null = null;
-  private callbacks = new Map<Element, VisibilityCallback>();
   private listeners: Array<() => void> = [];
   private container: HTMLDivElement | null = null;
   private currentRenderTask: any = null;
   private isRendering: boolean = false;
+  private isVisible: boolean = false;
+  private zoomListenerRemover: (() => void) | null = null;
 
   constructor(
     private readonly page: PDFPageProxy,
-    private readonly getDocumentScale: () => number,
+    private readonly zoomManager?: IZoomManager,
   ) {
     this.page = page;
-    this.getDocumentScale = getDocumentScale;
+
+    this.setupStateListeners();
   }
 
   get currentScale(): number {
-    return this.getDocumentScale() ?? 1.0;
+    return this.zoomManager?.currentScale ?? 1.0;
   }
 
   get pageNumber(): number {
     return this.page.pageNumber;
+  }
+
+  private setupStateListeners(): void {
+    if (this.zoomManager) {
+      this.zoomListenerRemover = this.zoomManager.addListener(() => {
+        this.notifyListeners();
+      });
+    }
   }
 
   getViewport(): IViewport {
@@ -64,6 +69,7 @@ export class RenderManager implements IRenderManager {
     this.container = container;
 
     this.observeVisibility(container, (pageNumber, isIntersecting) => {
+      this.isVisible = isIntersecting;
       if (isIntersecting) {
         this.notifyListeners();
       }
@@ -75,36 +81,36 @@ export class RenderManager implements IRenderManager {
       throw new PDFError('RenderManager not initialized with a container');
     }
 
-    // Prevent concurrent rendering
-    if (this.isRendering) {
+    // Don't render if not visible
+    if (!this.isVisible) {
+      console.log(`Page ${this.pageNumber} not visible, skipping render`);
       return;
     }
 
-    this.isRendering = true;
+    // Don't render if already rendering
+    if (this.isRendering) {
+      console.log(`Page ${this.pageNumber} already rendering, skipping`);
+      return;
+    }
 
     try {
-      // Cancel any existing render task
-      if (this.currentRenderTask) {
-        this.currentRenderTask.cancel();
-        this.currentRenderTask = null;
-      }
+      // Cancel any existing operations
+      this.cancelRender();
 
       const viewport = this.getViewport();
       this.setContainerDimensions(this.container, viewport);
+      await this.renderCanvas(canvas, viewport);
 
-      // Use requestAnimationFrame for smooth rendering
-      await new Promise<void>(resolve => {
-        requestAnimationFrame(async () => {
-          try {
-            await this.renderCanvas(canvas, viewport);
-            resolve();
-          } catch (_error) {
-            resolve(); // Don't throw in RAF callback
-          }
-        });
-      });
+      console.log(`Page ${this.pageNumber} rendered successfully`);
     } finally {
       this.isRendering = false;
+    }
+  }
+
+  cancelRender(): void {
+    if (this.currentRenderTask) {
+      this.currentRenderTask.cancel();
+      this.currentRenderTask = null;
     }
   }
 
@@ -189,20 +195,19 @@ export class RenderManager implements IRenderManager {
     }
   }
 
-  private createObserver(options?: IVisibilityOptions): void {
+  private createObserver(callback: VisibilityCallback): void {
     if (!isBrowser() || !window.IntersectionObserver) {
       return; // Server-side or unsupported browser
     }
 
     const observerOptions: IntersectionObserverInit = {
-      root: options?.root || null,
-      rootMargin: options?.rootMargin || '0px',
-      threshold: options?.threshold || 0.1,
+      root: null,
+      rootMargin: '100px',
+      threshold: 0.01,
     };
 
     this.observer = new IntersectionObserver(entries => {
       entries.forEach(entry => {
-        const callback = this.callbacks.get(entry.target);
         if (callback) {
           const pageNumber = parseInt(
             entry.target.getAttribute('data-page-number') || '0',
@@ -214,23 +219,18 @@ export class RenderManager implements IRenderManager {
     }, observerOptions);
   }
 
-  observeVisibility(
-    element: Element,
-    callback: VisibilityCallback,
-    options?: IVisibilityOptions,
-  ): void {
+  observeVisibility(element: Element, callback: VisibilityCallback): void {
     if (!this.observer) {
-      this.createObserver(options);
+      this.createObserver(callback);
     }
 
     if (!this.observer) {
-      return; // Observer not available
+      return;
     }
 
     // Ensure the element has the page number as a data attribute
     element.setAttribute('data-page-number', String(this.pageNumber));
 
-    this.callbacks.set(element, callback);
     this.observer.observe(element);
   }
 
@@ -239,21 +239,28 @@ export class RenderManager implements IRenderManager {
       return;
     }
 
-    this.callbacks.delete(element);
     this.observer.unobserve(element);
   }
 
   destroy(): void {
+    // Cancel any ongoing operations
+    this.cancelRender();
+
     // Cancel any ongoing render task
     if (this.currentRenderTask) {
       this.currentRenderTask.cancel();
       this.currentRenderTask = null;
     }
 
+    // Remove zoom listener
+    if (this.zoomListenerRemover) {
+      this.zoomListenerRemover();
+      this.zoomListenerRemover = null;
+    }
+
     if (this.observer) {
       this.observer.disconnect();
       this.observer = null;
     }
-    this.callbacks.clear();
   }
 }

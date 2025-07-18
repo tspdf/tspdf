@@ -39,6 +39,11 @@ export interface IRenderManager {
   render(canvas: HTMLCanvasElement, options?: IRenderOptions): Promise<void>;
 
   /**
+   * Cancel any pending or active renders
+   */
+  cancelRender(): void;
+
+  /**
    * Observe page container visibility
    * @param element Element to observe
    * @param callback Callback to invoke on visibility changes
