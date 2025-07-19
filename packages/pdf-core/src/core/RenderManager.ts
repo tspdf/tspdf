@@ -26,14 +26,6 @@ export class RenderManager extends EventEmitter implements IRenderManager {
     return this.page.pageNumber;
   }
 
-  private setupStateListeners(): void {
-    if (this.zoomManager) {
-      this.zoomListenerRemover = this.zoomManager.addListener(() => {
-        this.notifyListeners();
-      });
-    }
-  }
-
   getViewport(): IViewport {
     const scale = this.currentScale;
 
@@ -80,27 +72,20 @@ export class RenderManager extends EventEmitter implements IRenderManager {
       throw new PDFError('RenderManager not initialized with a container');
     }
 
-    // Don't render if not visible
     if (!this.isVisible) {
-      console.log(`Page ${this.pageNumber} not visible, skipping render`);
       return;
     }
 
-    // Don't render if already rendering
     if (this.isRendering) {
-      console.log(`Page ${this.pageNumber} already rendering, skipping`);
       return;
     }
 
     try {
-      // Cancel any existing operations
       this.cancelRender();
 
       const viewport = this.getViewport();
       this.setContainerDimensions(this.container, viewport);
       await this.renderCanvas(canvas, viewport);
-
-      console.log(`Page ${this.pageNumber} rendered successfully`);
     } finally {
       this.isRendering = false;
     }
@@ -111,93 +96,6 @@ export class RenderManager extends EventEmitter implements IRenderManager {
       this.currentRenderTask.cancel();
       this.currentRenderTask = null;
     }
-  }
-
-  private setContainerDimensions(
-    container: HTMLDivElement,
-    viewport: IViewport,
-  ): void {
-    container.style.width = `${viewport.width}px`;
-    container.style.height = `${viewport.height}px`;
-  }
-
-  private async renderCanvas(
-    canvas: HTMLCanvasElement,
-    viewport: IViewport,
-  ): Promise<void> {
-    const ctx = canvas.getContext('2d');
-    if (!ctx) {
-      throw new PDFError('Unable to get canvas 2D context');
-    }
-
-    const pixelRatio =
-      typeof window !== 'undefined' ? window.devicePixelRatio : 1;
-
-    // Set canvas dimensions with pixel ratio for crisp rendering
-    canvas.width = viewport.width * pixelRatio;
-    canvas.height = viewport.height * pixelRatio;
-
-    // Set canvas CSS dimensions to match viewport
-    canvas.style.width = `${viewport.width}px`;
-    canvas.style.height = `${viewport.height}px`;
-
-    // Scale the context to account for device pixel ratio
-    ctx.save();
-    ctx.scale(pixelRatio, pixelRatio);
-
-    try {
-      // Create and store the render task
-      this.currentRenderTask = this.page.render({
-        canvasContext: ctx,
-        viewport,
-      });
-
-      // Wait for rendering to complete
-      await this.currentRenderTask.promise;
-
-      // Clear the task when done
-      this.currentRenderTask = null;
-    } catch (error) {
-      // Clear the task on error
-      this.currentRenderTask = null;
-
-      // Check if this is a cancellation error, which is expected
-      if (error && typeof error === 'object' && 'message' in error) {
-        const errorMessage = String(error.message).toLowerCase();
-        if (
-          errorMessage.includes('rendering cancelled') ||
-          errorMessage.includes('cancelled')
-        ) {
-          // This is a cancellation, not a real error - just return
-          return;
-        }
-      }
-
-      // Re-throw actual errors
-      throw error;
-    } finally {
-      ctx.restore();
-    }
-  }
-
-  private createObserver(callback: VisibilityCallback): void {
-    if (!isBrowser() || !window.IntersectionObserver) {
-      return; // Server-side or unsupported browser
-    }
-
-    const observerOptions: IntersectionObserverInit = {
-      root: null,
-      rootMargin: '100px',
-      threshold: 0.01,
-    };
-
-    this.observer = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (callback) {
-          callback(entry.isIntersecting, entry.intersectionRatio);
-        }
-      });
-    }, observerOptions);
   }
 
   observeVisibility(element: Element, callback: VisibilityCallback): void {
@@ -221,16 +119,13 @@ export class RenderManager extends EventEmitter implements IRenderManager {
   }
 
   destroy(): void {
-    // Cancel any ongoing operations
     this.cancelRender();
 
-    // Cancel any ongoing render task
     if (this.currentRenderTask) {
       this.currentRenderTask.cancel();
       this.currentRenderTask = null;
     }
 
-    // Remove zoom listener
     if (this.zoomListenerRemover) {
       this.zoomListenerRemover();
       this.zoomListenerRemover = null;
@@ -242,5 +137,90 @@ export class RenderManager extends EventEmitter implements IRenderManager {
     }
 
     super.destroy();
+  }
+
+  private setupStateListeners(): void {
+    if (this.zoomManager) {
+      this.zoomListenerRemover = this.zoomManager.addListener(() => {
+        this.notifyListeners();
+      });
+    }
+  }
+
+  private setContainerDimensions(
+    container: HTMLDivElement,
+    viewport: IViewport,
+  ): void {
+    container.style.width = `${viewport.width}px`;
+    container.style.height = `${viewport.height}px`;
+  }
+
+  private async renderCanvas(
+    canvas: HTMLCanvasElement,
+    viewport: IViewport,
+  ): Promise<void> {
+    const ctx = canvas.getContext('2d');
+    if (!ctx) {
+      throw new PDFError('Unable to get canvas 2D context');
+    }
+
+    const pixelRatio =
+      typeof window !== 'undefined' ? window.devicePixelRatio : 1;
+
+    canvas.width = viewport.width * pixelRatio;
+    canvas.height = viewport.height * pixelRatio;
+
+    canvas.style.width = `${viewport.width}px`;
+    canvas.style.height = `${viewport.height}px`;
+
+    ctx.save();
+    ctx.scale(pixelRatio, pixelRatio);
+
+    try {
+      this.currentRenderTask = this.page.render({
+        canvasContext: ctx,
+        viewport,
+      });
+
+      await this.currentRenderTask.promise;
+
+      this.currentRenderTask = null;
+    } catch (error) {
+      this.currentRenderTask = null;
+
+      if (error && typeof error === 'object' && 'message' in error) {
+        const errorMessage = String(error.message).toLowerCase();
+        if (
+          errorMessage.includes('rendering cancelled') ||
+          errorMessage.includes('cancelled')
+        ) {
+          return;
+        }
+      }
+
+      throw error;
+    } finally {
+      ctx.restore();
+    }
+  }
+
+  private createObserver(callback: VisibilityCallback): void {
+    if (!isBrowser() || !window.IntersectionObserver) {
+      return;
+    }
+
+    const observerOptions: IntersectionObserverInit = {
+      root: null,
+      rootMargin: '100px',
+      threshold: 0.01,
+    };
+
+    this.observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (callback) {
+          callback(entry.isIntersecting, entry.intersectionRatio);
+        }
+      });
+    }, observerOptions);
   }
 }

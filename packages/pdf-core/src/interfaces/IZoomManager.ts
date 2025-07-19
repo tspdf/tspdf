@@ -1,19 +1,19 @@
 /**
- * Interface for managing zoom functionality
+ * Interface for managing zoom functionality in PDF viewers.
  */
 export interface IZoomManager {
-  /** Current zoom scale */
+  /** Current zoom scale (1.0 = 100%) */
   readonly currentScale: number;
 
-  /** Whether the zoom can be increased further */
+  /** Whether zoom can be increased further */
   readonly canZoomIn: boolean;
 
-  /** Whether the zoom can be decreased further */
+  /** Whether zoom can be decreased further */
   readonly canZoomOut: boolean;
 
   /**
-   * Set the zoom scale
-   * @param newScale The new scale factor (will be clamped to min/max bounds)
+   * Set the zoom scale.
+   * @param newScale Scale factor (will be clamped to min/max bounds)
    */
   setScale(newScale: number): void;
 
@@ -27,24 +27,24 @@ export interface IZoomManager {
   resetZoom(): void;
 
   /**
-   * Enable Ctrl+wheel zoom controls on the specified element
-   * @param element The element to attach zoom controls to (defaults to document)
+   * Enable Ctrl+wheel zoom controls on the specified element.
+   * @param element Element to attach controls to (defaults to document)
    */
   enableControls(element?: HTMLElement): void;
 
   /**
-   * Disable zoom controls
-   * @param element The element to remove zoom controls from (defaults to document)
+   * Disable zoom controls.
+   * @param element Element to remove controls from (defaults to document)
    */
   disableControls(element?: HTMLElement): void;
 
-  /** Clean up resources and remove event listeners */
-  destroy(): void;
-
   /**
-   * Add a listener for zoom changes
+   * Add a listener for zoom changes.
    * @param listener Function to call when zoom changes
    * @returns Function to remove the listener
    */
   addListener(listener: () => void): () => void;
+
+  /** Clean up resources and remove event listeners */
+  destroy(): void;
 }

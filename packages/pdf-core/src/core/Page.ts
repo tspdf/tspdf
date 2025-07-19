@@ -1,5 +1,4 @@
-import type { IPage, IZoomManager } from '../interfaces';
-import { IRenderManager } from '../interfaces/IRenderManager';
+import type { IPage, IRenderManager, IZoomManager } from '../interfaces';
 import { PDFPageProxy } from '../pdfjs/types';
 import { RenderManager } from './RenderManager';
 

@@ -1,75 +1,55 @@
-import {
-  IRenderOptions,
-  IViewport,
-  IVisibilityOptions,
-  VisibilityCallback,
-} from '../types';
+import { IViewport, VisibilityCallback } from '../types';
 
 /**
  * Interface for managing PDF page rendering operations.
- *
- * The PageRenderManager is responsible for calculating viewports and managing
- * the rendering properties of a PDF page, including scale, rotation, and positioning.
  */
 export interface IRenderManager {
   readonly pageNumber: number;
+
   /**
-   * Gets the current scale factor being applied to the page.
-   *
-   * This scale is typically derived from the document's zoom level and is used
-   * to calculate the appropriate viewport dimensions for rendering.
-   *
-   * @returns The current scale factor (1.0 = 100%, 2.0 = 200%, etc.)
+   * Current scale factor being applied to the page.
+   * Typically derived from the document's zoom level.
    */
   readonly currentScale: number;
 
   /**
-   * Calculates and returns a viewport for rendering the PDF page.
+   * Calculates viewport dimensions for rendering the PDF page.
    */
   getViewport(): IViewport;
 
+  /**
+   * Initialize the render manager with a container element.
+   */
   init(container: HTMLDivElement): void;
 
   /**
-   * Render the page to a canvas
-   * @param container The container element for the page
-   * @param canvas The canvas element to render to
-   * @param options Rendering options
+   * Render the page to a canvas element.
    */
-  render(canvas: HTMLCanvasElement, options?: IRenderOptions): Promise<void>;
+  render(canvas: HTMLCanvasElement): Promise<void>;
 
   /**
-   * Cancel any pending or active renders
+   * Cancel any pending or active render operations.
    */
   cancelRender(): void;
 
   /**
-   * Observe page container visibility
-   * @param element Element to observe
-   * @param callback Callback to invoke on visibility changes
-   * @param options Visibility detection options
+   * Start observing element visibility for lazy rendering.
    */
-  observeVisibility(
-    element: Element,
-    callback: VisibilityCallback,
-    options?: IVisibilityOptions,
-  ): void;
+  observeVisibility(element: Element, callback: VisibilityCallback): void;
 
   /**
-   * Stop observing element visibility
-   * @param element Element to stop observing
+   * Stop observing element visibility.
    */
   unobserveVisibility(element: Element): void;
 
   /**
-   * Add a listener for render events
-   * @param listener Callback to invoke when page should be rendered
+   * Add a listener for render-related events.
    * @returns Function to remove the listener
    */
   addListener(listener: () => void): () => void;
 
   /**
-   * Clean up resources
+   * Clean up resources and remove all listeners.
    */
   destroy(): void;
 }

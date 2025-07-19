@@ -1,5 +1,5 @@
 /**
- * PDF viewport information
+ * PDF viewport information for rendering calculations.
  */
 export interface IViewport {
   readonly width: number;
@@ -12,7 +12,7 @@ export interface IViewport {
 }
 
 /**
- * PDF operation error
+ * Custom error class for PDF-related operations.
  */
 export class PDFError extends Error {
   constructor(message: string) {
@@ -21,33 +21,11 @@ export class PDFError extends Error {
 }
 
 /**
- * Options for rendering a PDF page
- */
-export interface IRenderOptions {
-  /** Scale factor for rendering */
-  scale?: number;
-  /** Additional rotation in degrees */
-  rotation?: number;
-  /** Device pixel ratio for high-DPI displays */
-  pixelRatio?: number;
-}
-
-/**
- * Visibility detection callback
+ * Callback function for visibility detection events.
+ * @param isVisible Whether the element is currently visible
+ * @param intersectionRatio How much of the element is visible (0-1)
  */
 export type VisibilityCallback = (
   isVisible: boolean,
   intersectionRatio: number,
 ) => void;
-
-/**
- * Options for visibility detection
- */
-export interface IVisibilityOptions {
-  /** Root element for intersection observation (defaults to viewport) */
-  root?: Element | null;
-  /** Root margin for intersection detection */
-  rootMargin?: string;
-  /** Threshold for visibility detection (0-1) */
-  threshold?: number | number[];
-}
