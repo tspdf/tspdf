@@ -1,6 +1,13 @@
 import type { IZoomManager } from '../interfaces';
 import { EventEmitter } from '../utils';
 
+/**
+ * ZoomManager handles zoom operations for PDF documents.
+ *
+ * Events emitted:
+ * - 'zoomChange': (newScale: number, oldScale: number) => void
+ *   Emitted when the zoom scale changes
+ */
 export class ZoomManager extends EventEmitter implements IZoomManager {
   private scale: number;
   private readonly minScale: number;
@@ -54,8 +61,9 @@ export class ZoomManager extends EventEmitter implements IZoomManager {
 
     this.debounceTimer = window.setTimeout(() => {
       if (this.pendingScale !== null && this.scale !== this.pendingScale) {
+        const oldScale = this.scale;
         this.scale = this.pendingScale;
-        this.notifyListeners();
+        this.emit('zoomChange', this.scale, oldScale);
       }
       this.debounceTimer = null;
       this.pendingScale = null;

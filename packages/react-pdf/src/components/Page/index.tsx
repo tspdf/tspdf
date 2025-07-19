@@ -15,20 +15,23 @@ export const Page: React.FC<PageProps> = ({ page, ...rest }) => {
 
     page.init(containerRef.current);
 
-    const removeListener = page.renderManager.addListener(() => {
-      console.log(`Page ${page.pageNumber} visibility or state changed`);
+    // Listen for events that should trigger re-render
+    const removeZoomListener = page.renderManager.on('zoomChange', () => {
       setRenderTrigger(prev => prev + 1);
     });
 
-    return removeListener;
+    const removeVisibleListener = page.renderManager.on('visible', () => {
+      setRenderTrigger(prev => prev + 1);
+    });
+
+    return () => {
+      removeZoomListener();
+      removeVisibleListener();
+    };
   }, [page]);
 
   useEffect(() => {
     if (!canvasRef.current) return;
-
-    console.log(
-      `Page ${page.pageNumber} render effect: trigger=${renderTrigger}`,
-    );
 
     const renderPage = async () => {
       await page.render(canvasRef.current!);

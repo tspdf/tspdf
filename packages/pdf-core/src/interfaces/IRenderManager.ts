@@ -43,10 +43,12 @@ export interface IRenderManager {
   unobserveVisibility(element: Element): void;
 
   /**
-   * Add a listener for render-related events.
-   * @returns Function to remove the listener
+   * Register a listener for render events.
+   * @param event - The event name to listen for
+   * @param listener - The callback function
+   * @returns A function to remove the listener
    */
-  addListener(listener: () => void): () => void;
+  on(event: string, listener: (...args: any[]) => void): () => void;
 
   /**
    * Clean up resources and remove all listeners.

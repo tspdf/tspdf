@@ -3,6 +3,15 @@ import { PDFPageProxy } from '../pdfjs/types';
 import { IViewport, PDFError, VisibilityCallback } from '../types';
 import { EventEmitter, isBrowser } from '../utils';
 
+/**
+ * RenderManager handles the rendering lifecycle of individual PDF pages.
+ *
+ * Events emitted:
+ * - 'visible': (pageNumber: number) => void
+ *   Emitted when a page becomes visible in the viewport
+ * - 'hidden': (pageNumber: number) => void
+ *  Emitted when a page stops being visible in the viewport
+ */
 export class RenderManager extends EventEmitter implements IRenderManager {
   private observer: IntersectionObserver | null = null;
   private container: HTMLDivElement | null = null;
@@ -60,9 +69,15 @@ export class RenderManager extends EventEmitter implements IRenderManager {
     this.container = container;
 
     this.observeVisibility(container, isIntersecting => {
+      const wasVisible = this.isVisible;
       this.isVisible = isIntersecting;
-      if (isIntersecting) {
-        this.notifyListeners();
+
+      if (isIntersecting && !wasVisible) {
+        // Page became visible
+        this.emit('visible', this.pageNumber);
+      } else if (!isIntersecting && wasVisible) {
+        // Page stopped being visible
+        this.emit('hidden', this.pageNumber);
       }
     });
   }
@@ -80,12 +95,21 @@ export class RenderManager extends EventEmitter implements IRenderManager {
       return;
     }
 
+    const startTime = performance.now();
+    this.isRendering = true;
+
     try {
       this.cancelRender();
 
       const viewport = this.getViewport();
       this.setContainerDimensions(this.container, viewport);
       await this.renderCanvas(canvas, viewport);
+
+      const renderTime = performance.now() - startTime;
+
+      console.log(
+        `Rendered page ${this.pageNumber} at scale ${this.currentScale} (${renderTime.toFixed(2)}ms)`,
+      );
     } finally {
       this.isRendering = false;
     }
@@ -141,8 +165,9 @@ export class RenderManager extends EventEmitter implements IRenderManager {
 
   private setupStateListeners(): void {
     if (this.zoomManager) {
-      this.zoomListenerRemover = this.zoomManager.addListener(() => {
-        this.notifyListeners();
+      this.zoomListenerRemover = this.zoomManager.on('zoomChange', () => {
+        // Re-render when zoom changes
+        this.emit('zoomChange', this.pageNumber, this.currentScale);
       });
     }
   }

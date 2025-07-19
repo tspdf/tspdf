@@ -39,12 +39,15 @@ export interface IZoomManager {
   disableControls(element?: HTMLElement): void;
 
   /**
-   * Add a listener for zoom changes.
-   * @param listener Function to call when zoom changes
-   * @returns Function to remove the listener
+   * Register a listener for zoom events.
+   * @param event - The event name to listen for
+   * @param listener - The callback function
+   * @returns A function to remove the listener
    */
-  addListener(listener: () => void): () => void;
+  on(event: string, listener: (...args: any[]) => void): () => void;
 
-  /** Clean up resources and remove event listeners */
+  /**
+   * Clean up resources and remove event listeners
+   */
   destroy(): void;
 }

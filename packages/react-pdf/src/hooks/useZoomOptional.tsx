@@ -17,7 +17,7 @@ export const useZoomOptional = () => {
       setCanZoomOut(context.canZoomOut);
     };
 
-    const removeListener = context.addListener(updateState);
+    const removeListener = context.on('zoomChange', updateState);
     return removeListener;
   }, [context]);
 
