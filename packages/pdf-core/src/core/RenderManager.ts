@@ -1,11 +1,10 @@
 import { IRenderManager, IZoomManager } from '../interfaces';
 import { PDFPageProxy } from '../pdfjs/types';
 import { IViewport, PDFError, VisibilityCallback } from '../types';
-import { isBrowser } from '../utils';
+import { EventEmitter, isBrowser } from '../utils';
 
-export class RenderManager implements IRenderManager {
+export class RenderManager extends EventEmitter implements IRenderManager {
   private observer: IntersectionObserver | null = null;
-  private listeners: Array<() => void> = [];
   private container: HTMLDivElement | null = null;
   private currentRenderTask: any = null;
   private isRendering: boolean = false;
@@ -16,7 +15,7 @@ export class RenderManager implements IRenderManager {
     private readonly page: PDFPageProxy,
     private readonly zoomManager?: IZoomManager,
   ) {
-    this.page = page;
+    super();
   }
 
   get currentScale(): number {
@@ -112,20 +111,6 @@ export class RenderManager implements IRenderManager {
       this.currentRenderTask.cancel();
       this.currentRenderTask = null;
     }
-  }
-
-  addListener(listener: () => void): () => void {
-    this.listeners.push(listener);
-    return () => {
-      const index = this.listeners.indexOf(listener);
-      if (index > -1) {
-        this.listeners.splice(index, 1);
-      }
-    };
-  }
-
-  private notifyListeners(): void {
-    this.listeners.forEach(listener => listener());
   }
 
   private setContainerDimensions(
@@ -255,5 +240,7 @@ export class RenderManager implements IRenderManager {
       this.observer.disconnect();
       this.observer = null;
     }
+
+    super.destroy();
   }
 }

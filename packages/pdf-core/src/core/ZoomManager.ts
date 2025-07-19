@@ -1,13 +1,13 @@
 import type { IZoomManager } from '../interfaces';
+import { EventEmitter } from '../utils';
 
-export class ZoomManager implements IZoomManager {
+export class ZoomManager extends EventEmitter implements IZoomManager {
   private scale: number;
   private readonly minScale: number;
   private readonly maxScale: number;
   private readonly zoomFactor: number;
   private readonly stepSize: number;
   private boundWheelHandler: ((event: Event) => void) | null = null;
-  private listeners: Array<() => void> = [];
   private debounceTimer: number | null = null;
   private pendingScale: number | null = null;
 
@@ -18,6 +18,7 @@ export class ZoomManager implements IZoomManager {
     zoomFactor: number = 1.2,
     stepSize: number = 0.1,
   ) {
+    super();
     this.scale = initialScale;
     this.minScale = minScale;
     this.maxScale = maxScale;
@@ -59,20 +60,6 @@ export class ZoomManager implements IZoomManager {
       this.debounceTimer = null;
       this.pendingScale = null;
     }, 16); // ~60fps debouncing
-  }
-
-  addListener(listener: () => void): () => void {
-    this.listeners.push(listener);
-    return () => {
-      const index = this.listeners.indexOf(listener);
-      if (index > -1) {
-        this.listeners.splice(index, 1);
-      }
-    };
-  }
-
-  private notifyListeners(): void {
-    this.listeners.forEach(listener => listener());
   }
 
   zoomIn(): void {
@@ -130,5 +117,6 @@ export class ZoomManager implements IZoomManager {
       this.debounceTimer = null;
     }
     this.pendingScale = null;
+    super.destroy();
   }
 }
