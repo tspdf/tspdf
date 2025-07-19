@@ -17,8 +17,6 @@ export class RenderManager implements IRenderManager {
     private readonly zoomManager?: IZoomManager,
   ) {
     this.page = page;
-
-    this.setupStateListeners();
   }
 
   get currentScale(): number {
@@ -64,11 +62,13 @@ export class RenderManager implements IRenderManager {
       throw new PDFError('Container element is required for rendering');
     }
 
+    this.setupStateListeners();
+
     const viewport = this.getViewport();
     this.setContainerDimensions(container, viewport);
     this.container = container;
 
-    this.observeVisibility(container, (pageNumber, isIntersecting) => {
+    this.observeVisibility(container, isIntersecting => {
       this.isVisible = isIntersecting;
       if (isIntersecting) {
         this.notifyListeners();
@@ -209,11 +209,7 @@ export class RenderManager implements IRenderManager {
     this.observer = new IntersectionObserver(entries => {
       entries.forEach(entry => {
         if (callback) {
-          const pageNumber = parseInt(
-            entry.target.getAttribute('data-page-number') || '0',
-            10,
-          );
-          callback(pageNumber, entry.isIntersecting, entry.intersectionRatio);
+          callback(entry.isIntersecting, entry.intersectionRatio);
         }
       });
     }, observerOptions);
@@ -227,9 +223,6 @@ export class RenderManager implements IRenderManager {
     if (!this.observer) {
       return;
     }
-
-    // Ensure the element has the page number as a data attribute
-    element.setAttribute('data-page-number', String(this.pageNumber));
 
     this.observer.observe(element);
   }

@@ -36,7 +36,6 @@ export interface IRenderOptions {
  * Visibility detection callback
  */
 export type VisibilityCallback = (
-  pageNumber: number,
   isVisible: boolean,
   intersectionRatio: number,
 ) => void;
