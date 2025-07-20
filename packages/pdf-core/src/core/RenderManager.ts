@@ -15,6 +15,7 @@ import { EventEmitter, isBrowser } from '../utils';
 export class RenderManager extends EventEmitter implements IRenderManager {
   private observer: IntersectionObserver | null = null;
   private container: HTMLDivElement | null = null;
+  private canvas: HTMLCanvasElement | null = null;
   private currentRenderTask: any = null;
   private isRendering: boolean = false;
   private isVisible: boolean = false;
@@ -57,16 +58,20 @@ export class RenderManager extends EventEmitter implements IRenderManager {
     };
   }
 
-  init(container: HTMLDivElement): void {
+  init(container: HTMLDivElement, canvas: HTMLCanvasElement): void {
     if (!container) {
       throw new PDFError('Container element is required for rendering');
     }
 
+    if (!canvas) {
+      throw new PDFError('Canvas element is required for rendering');
+    }
+
+    this.canvas = canvas;
+    this.container = container;
     this.setupStateListeners();
 
-    const viewport = this.getViewport();
-    this.setContainerDimensions(container, viewport);
-    this.container = container;
+    this.setDimensions();
 
     this.observeVisibility(container, isIntersecting => {
       const wasVisible = this.isVisible;
@@ -82,10 +87,12 @@ export class RenderManager extends EventEmitter implements IRenderManager {
     });
   }
 
-  async render(canvas: HTMLCanvasElement): Promise<void> {
+  async render(): Promise<void> {
     if (!this.container) {
       throw new PDFError('RenderManager not initialized with a container');
     }
+
+    this.setDimensions();
 
     if (!this.isVisible) {
       return;
@@ -101,9 +108,7 @@ export class RenderManager extends EventEmitter implements IRenderManager {
     try {
       this.cancelRender();
 
-      const viewport = this.getViewport();
-      this.setContainerDimensions(this.container, viewport);
-      await this.renderCanvas(canvas, viewport);
+      await this.renderCanvas();
 
       const renderTime = performance.now() - startTime;
 
@@ -172,19 +177,32 @@ export class RenderManager extends EventEmitter implements IRenderManager {
     }
   }
 
-  private setContainerDimensions(
-    container: HTMLDivElement,
-    viewport: IViewport,
-  ): void {
-    container.style.width = `${viewport.width}px`;
-    container.style.height = `${viewport.height}px`;
+  private setDimensions(): void {
+    if (!this.container) {
+      throw new PDFError('Container element is not set');
+    }
+
+    if (!this.canvas) {
+      throw new PDFError('Canvas element is not set');
+    }
+
+    const viewport = this.getViewport();
+
+    this.container.style.width = `${viewport.width}px`;
+    this.container.style.height = `${viewport.height}px`;
+
+    this.canvas.style.width = `${viewport.width}px`;
+    this.canvas.style.height = `${viewport.height}px`;
   }
 
-  private async renderCanvas(
-    canvas: HTMLCanvasElement,
-    viewport: IViewport,
-  ): Promise<void> {
-    const ctx = canvas.getContext('2d');
+  private async renderCanvas(): Promise<void> {
+    if (!this.canvas) {
+      throw new PDFError('Canvas element is not set for rendering');
+    }
+
+    const viewport = this.getViewport();
+
+    const ctx = this.canvas.getContext('2d');
     if (!ctx) {
       throw new PDFError('Unable to get canvas 2D context');
     }
@@ -192,11 +210,8 @@ export class RenderManager extends EventEmitter implements IRenderManager {
     const pixelRatio =
       typeof window !== 'undefined' ? window.devicePixelRatio : 1;
 
-    canvas.width = viewport.width * pixelRatio;
-    canvas.height = viewport.height * pixelRatio;
-
-    canvas.style.width = `${viewport.width}px`;
-    canvas.style.height = `${viewport.height}px`;
+    this.canvas.width = viewport.width * pixelRatio;
+    this.canvas.height = viewport.height * pixelRatio;
 
     ctx.save();
     ctx.scale(pixelRatio, pixelRatio);

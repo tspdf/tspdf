@@ -10,12 +10,12 @@ export interface IPage {
   /**
    * Initialize the page with a container element.
    */
-  init(container: HTMLDivElement): void;
+  init(container: HTMLDivElement, canvas: HTMLCanvasElement): void;
 
   /**
    * Render the page to a canvas element.
    */
-  render(canvas: HTMLCanvasElement): Promise<void>;
+  render(): Promise<void>;
 
   /**
    * Destroy the page and free resources.

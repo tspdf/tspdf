@@ -20,12 +20,12 @@ export interface IRenderManager {
   /**
    * Initialize the render manager with a container element.
    */
-  init(container: HTMLDivElement): void;
+  init(container: HTMLDivElement, canvas: HTMLCanvasElement): void;
 
   /**
    * Render the page to a canvas element.
    */
-  render(canvas: HTMLCanvasElement): Promise<void>;
+  render(): Promise<void>;
 
   /**
    * Cancel any pending or active render operations.

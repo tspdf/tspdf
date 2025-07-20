@@ -16,12 +16,12 @@ export class Page implements IPage {
     return this.renderManager.pageNumber;
   }
 
-  init(container: HTMLDivElement): void {
-    this.renderManager.init(container);
+  init(container: HTMLDivElement, canvas: HTMLCanvasElement): void {
+    this.renderManager.init(container, canvas);
   }
 
-  async render(canvas: HTMLCanvasElement): Promise<void> {
-    return await this.renderManager.render(canvas);
+  async render(): Promise<void> {
+    return await this.renderManager.render();
   }
 
   destroy(): void {

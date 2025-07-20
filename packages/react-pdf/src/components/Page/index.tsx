@@ -11,9 +11,9 @@ export const Page: React.FC<PageProps> = ({ page, ...rest }) => {
   const [renderTrigger, setRenderTrigger] = useState(0);
 
   useEffect(() => {
-    if (!containerRef.current) return;
+    if (!containerRef.current || !canvasRef.current) return;
 
-    page.init(containerRef.current);
+    page.init(containerRef.current, canvasRef.current!);
 
     // Listen for events that should trigger re-render
     const removeZoomListener = page.renderManager.on('zoomChange', () => {
@@ -34,7 +34,7 @@ export const Page: React.FC<PageProps> = ({ page, ...rest }) => {
     if (!canvasRef.current) return;
 
     const renderPage = async () => {
-      await page.render(canvasRef.current!);
+      await page.render();
     };
 
     renderPage();
