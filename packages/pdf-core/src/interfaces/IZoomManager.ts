@@ -1,5 +1,11 @@
 /**
  * Interface for managing zoom functionality in PDF viewers.
+ *
+ * Events emitted:
+ * - 'zoomUpdate': (newScale: number, oldScale: number) => void
+ *   Emitted immediately when zoom begins (for instant UI feedback)
+ * - 'zoomChanged': (newScale: number, oldScale: number) => void
+ *   Emitted when zoom changes (debounced for performance)
  */
 export interface IZoomManager {
   /** Current zoom scale (1.0 = 100%) */

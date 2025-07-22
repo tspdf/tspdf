@@ -5,8 +5,10 @@ import { EventEmitter } from '../utils';
  * ZoomManager handles zoom operations for PDF documents.
  *
  * Events emitted:
- * - 'zoomChange': (newScale: number, oldScale: number) => void
- *   Emitted when the zoom scale changes
+ * - 'zoomUpdate': (newScale: number, oldScale: number) => void
+ *   Emitted immediately on every scale change (for real-time dimension updates)
+ * - 'zoomChanged': (newScale: number, oldScale: number) => void
+ *   Emitted when the zoom scale changes (debounced, for re-rendering)
  */
 export class ZoomManager extends EventEmitter implements IZoomManager {
   private scale: number;
@@ -47,27 +49,34 @@ export class ZoomManager extends EventEmitter implements IZoomManager {
   }
 
   setScale(newScale: number): void {
-    const clampedScale = Math.min(
-      Math.max(newScale, this.minScale),
-      this.maxScale,
+    const clampedScale = Math.max(
+      this.minScale,
+      Math.min(this.maxScale, newScale),
     );
+    const oldScale = this.currentScale;
 
-    // Store the pending scale and debounce notifications
+    if (clampedScale === this.currentScale) {
+      return;
+    }
+
     this.pendingScale = clampedScale;
 
-    if (this.debounceTimer !== null) {
-      clearTimeout(this.debounceTimer);
+    // Emit immediate progress event for real-time dimension updates
+    this.emit('zoomUpdate', clampedScale, oldScale);
+
+    if (this.debounceTimer) {
+      window.clearTimeout(this.debounceTimer);
     }
 
     this.debounceTimer = window.setTimeout(() => {
       if (this.pendingScale !== null && this.scale !== this.pendingScale) {
-        const oldScale = this.scale;
+        const finalOldScale = this.scale;
         this.scale = this.pendingScale;
-        this.emit('zoomChange', this.scale, oldScale);
+        this.emit('zoomChanged', this.scale, finalOldScale);
       }
       this.debounceTimer = null;
       this.pendingScale = null;
-    }, 16); // ~60fps debouncing
+    }, 200); // 200ms debounce
   }
 
   zoomIn(): void {
@@ -95,9 +104,9 @@ export class ZoomManager extends EventEmitter implements IZoomManager {
         wheelEvent.stopPropagation();
 
         if (wheelEvent.deltaY < 0) {
-          this.setScale(this.scale * this.zoomFactor);
+          this.setScale(this.currentScale * this.zoomFactor);
         } else if (wheelEvent.deltaY > 0) {
-          this.setScale(this.scale / this.zoomFactor);
+          this.setScale(this.currentScale / this.zoomFactor);
         }
       }
     };

@@ -15,17 +15,19 @@ export const Page: React.FC<PageProps> = ({ page, ...rest }) => {
 
     page.init(containerRef.current, canvasRef.current!);
 
-    // Listen for events that should trigger re-render
-    const removeZoomListener = page.renderManager.on('zoomChange', () => {
-      setRenderTrigger(prev => prev + 1);
-    });
+    const removeZoomChangedListener = page.renderManager.on(
+      'zoomChanged',
+      () => {
+        setRenderTrigger(prev => prev + 1);
+      },
+    );
 
-    const removeVisibleListener = page.renderManager.on('visible', () => {
-      setRenderTrigger(prev => prev + 1);
-    });
+    const removeVisibleListener = page.renderManager.on('visible', () =>
+      setRenderTrigger(prev => prev + 1),
+    );
 
     return () => {
-      removeZoomListener();
+      removeZoomChangedListener();
       removeVisibleListener();
     };
   }, [page]);

@@ -9,8 +9,8 @@ import { EventEmitter, isBrowser } from '../utils';
  * Events emitted:
  * - 'visible': (pageNumber: number) => void
  *   Emitted when a page becomes visible in the viewport
- * - 'hidden': (pageNumber: number) => void
- *  Emitted when a page stops being visible in the viewport
+ * - 'zoomChanged': (pageNumber: number, scale: number) => void
+ *   Emitted when zoom changes and user stops zooming (for actual re-rendering)
  */
 export class RenderManager extends EventEmitter implements IRenderManager {
   private observer: IntersectionObserver | null = null;
@@ -19,7 +19,8 @@ export class RenderManager extends EventEmitter implements IRenderManager {
   private currentRenderTask: any = null;
   private isRendering: boolean = false;
   private isVisible: boolean = false;
-  private zoomListenerRemover: (() => void) | null = null;
+  private zoomUpdateListenerRemover: (() => void) | null = null;
+  private zoomChangedListenerRemover: (() => void) | null = null;
 
   constructor(
     private readonly page: PDFPageProxy,
@@ -155,9 +156,14 @@ export class RenderManager extends EventEmitter implements IRenderManager {
       this.currentRenderTask = null;
     }
 
-    if (this.zoomListenerRemover) {
-      this.zoomListenerRemover();
-      this.zoomListenerRemover = null;
+    if (this.zoomUpdateListenerRemover) {
+      this.zoomUpdateListenerRemover();
+      this.zoomUpdateListenerRemover = null;
+    }
+
+    if (this.zoomChangedListenerRemover) {
+      this.zoomChangedListenerRemover();
+      this.zoomChangedListenerRemover = null;
     }
 
     if (this.observer) {
@@ -170,10 +176,18 @@ export class RenderManager extends EventEmitter implements IRenderManager {
 
   private setupStateListeners(): void {
     if (this.zoomManager) {
-      this.zoomListenerRemover = this.zoomManager.on('zoomChange', () => {
-        // Re-render when zoom changes
-        this.emit('zoomChange', this.pageNumber, this.currentScale);
+      this.zoomUpdateListenerRemover = this.zoomManager.on('zoomUpdate', () => {
+        // Update dimensions immediately when zoom is changing
+        this.setDimensions();
       });
+
+      this.zoomChangedListenerRemover = this.zoomManager.on(
+        'zoomChanged',
+        () => {
+          // Emit event when zoom changes (after user stops zooming)
+          this.emit('zoomChanged', this.pageNumber, this.currentScale);
+        },
+      );
     }
   }
 

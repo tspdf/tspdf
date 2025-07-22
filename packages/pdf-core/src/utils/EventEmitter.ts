@@ -50,7 +50,7 @@ export class EventEmitter {
    * @example
    * ```typescript
    * emitter.emit('visible', pageNumber);
-   * emitter.emit('zoomChange', newScale, oldScale);
+   * emitter.emit('zoomChanged', newScale, oldScale);
    * ```
    */
   emit(event: string, ...args: any[]): void {
