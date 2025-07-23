@@ -80,11 +80,11 @@ export class ZoomManager extends EventEmitter implements IZoomManager {
   }
 
   zoomIn(): void {
-    this.setScale(this.scale + this.stepSize);
+    this.setScale(this.currentScale + this.stepSize);
   }
 
   zoomOut(): void {
-    this.setScale(this.scale - this.stepSize);
+    this.setScale(this.currentScale - this.stepSize);
   }
 
   resetZoom(): void {
