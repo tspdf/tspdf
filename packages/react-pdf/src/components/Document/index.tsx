@@ -1,21 +1,25 @@
-import { Document as CoreDocument, type IPage } from '@tspdf/pdf-core';
+import { Document as CoreDocument } from '@tspdf/pdf-core';
 import React, { useEffect, useRef, useState } from 'react';
 
 import { useZoomOptional } from '../../hooks/useZoomOptional';
-import { Page } from '../Page';
+import { SingleModeBody } from './SingleModeBody';
+import { VerticalModeBody } from './VerticalModeBody';
 
 interface DocumentProps extends React.HTMLProps<HTMLDivElement> {
   file: string;
+  mode?: 'page' | 'vertical';
 }
 
-export const Document: React.FC<DocumentProps> = ({ file, ...rest }) => {
+export const Document: React.FC<DocumentProps> = ({
+  file,
+  mode = 'page',
+  ...rest
+}) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const { zoomManager } = useZoomOptional();
-  const [pdfDocument, setPdfDocument] = useState<CoreDocument | null>(null);
-  const [pages, setPages] = useState<IPage[]>([]);
+  const [coreDocument, setCoreDocument] = useState<CoreDocument | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  // Load document when file changes
   useEffect(() => {
     if (!file || typeof window === 'undefined') return;
 
@@ -24,26 +28,7 @@ export const Document: React.FC<DocumentProps> = ({ file, ...rest }) => {
         setError(null);
         const doc = new CoreDocument(file, zoomManager || undefined);
         await doc.load();
-        setPdfDocument(doc);
-
-        // Load pages in batches for better performance
-        const loadedPages: IPage[] = [];
-        const batchSize = 5; // Load 5 pages at a time
-
-        for (let i = 1; i <= doc.numPages; i += batchSize) {
-          const batchPromises: Promise<IPage>[] = [];
-          const endIndex = Math.min(i + batchSize - 1, doc.numPages);
-
-          for (let j = i; j <= endIndex; j++) {
-            batchPromises.push(doc.getPage(j));
-          }
-
-          const batchPages = await Promise.all(batchPromises);
-          loadedPages.push(...batchPages);
-
-          // Update pages progressively for better UX
-          setPages([...loadedPages]);
-        }
+        setCoreDocument(doc);
       } catch (err) {
         console.error('Failed to load document:', err);
         setError(err instanceof Error ? err.message : String(err));
@@ -68,15 +53,28 @@ export const Document: React.FC<DocumentProps> = ({ file, ...rest }) => {
   // Clean up when component unmounts
   useEffect(() => {
     return () => {
-      if (pdfDocument) {
-        pdfDocument.destroy();
+      if (coreDocument) {
+        coreDocument.destroy();
       }
     };
-  }, [pdfDocument]);
+  }, [coreDocument]);
 
   if (error) {
     return <div className='text-red-500'>Error: {error}</div>;
   }
+
+  const renderContent = () => {
+    if (!coreDocument) {
+      return <div className='text-gray-500'>Loading document...</div>;
+    }
+    if (mode === 'vertical') {
+      return (
+        <VerticalModeBody coreDocument={coreDocument} setError={setError} />
+      );
+    }
+
+    return <SingleModeBody coreDocument={coreDocument} setError={setError} />;
+  };
 
   return (
     <div
@@ -84,20 +82,7 @@ export const Document: React.FC<DocumentProps> = ({ file, ...rest }) => {
       className='relative h-full w-full overflow-auto scroll-smooth bg-gray-50'
       {...rest}
     >
-      <div
-        className='flex flex-col gap-4 p-4 sm:p-2 md:p-4'
-        style={{ minWidth: '100%' }}
-      >
-        {pages.map((page, index) => (
-          <div
-            key={index}
-            className='mx-auto'
-            style={{ minWidth: 'fit-content' }}
-          >
-            <Page page={page} />
-          </div>
-        ))}
-      </div>
+      {renderContent()}
     </div>
   );
 };
