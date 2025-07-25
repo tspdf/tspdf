@@ -1,3 +1,3 @@
 export { Document, ZoomManager } from './core';
-export type { IPage, IZoomManager } from './interfaces';
-export type { IViewport, VisibilityCallback } from './types';
+export type { IDocument, IPage, IZoomManager } from './interfaces';
+export type { DocumentMode, IViewport, VisibilityCallback } from './types';

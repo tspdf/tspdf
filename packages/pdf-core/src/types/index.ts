@@ -29,3 +29,5 @@ export type VisibilityCallback = (
   isVisible: boolean,
   intersectionRatio: number,
 ) => void;
+
+export type { DocumentMode } from './Document';

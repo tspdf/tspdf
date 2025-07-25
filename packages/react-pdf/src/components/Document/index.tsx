@@ -1,22 +1,20 @@
 import { Document as CoreDocument } from '@tspdf/pdf-core';
 import React, { useEffect, useRef, useState } from 'react';
 
+import { useDocumentModeOptional } from '../../hooks/useDocumentMode';
 import { useZoomOptional } from '../../hooks/useZoomOptional';
 import { SingleModeBody } from './SingleModeBody';
 import { VerticalModeBody } from './VerticalModeBody';
 
 interface DocumentProps extends React.HTMLProps<HTMLDivElement> {
   file: string;
-  mode?: 'page' | 'vertical';
 }
 
-export const Document: React.FC<DocumentProps> = ({
-  file,
-  mode = 'page',
-  ...rest
-}) => {
+export const Document: React.FC<DocumentProps> = ({ file, ...rest }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const { zoomManager } = useZoomOptional();
+  const documentModeContext = useDocumentModeOptional();
+  const mode = documentModeContext?.mode ?? 'page';
   const [coreDocument, setCoreDocument] = useState<CoreDocument | null>(null);
   const [error, setError] = useState<string | null>(null);
 
