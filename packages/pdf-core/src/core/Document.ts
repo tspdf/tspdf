@@ -7,12 +7,12 @@ import { Page } from './Page';
 export class Document implements IDocument {
   private pdfDocument: PDFDocumentProxy | null;
   private readonly url: string;
-  private readonly _zoomManager?: IZoomManager;
+  private readonly zoomManager?: IZoomManager;
 
   constructor(url: string, zoomManager?: IZoomManager) {
     this.pdfDocument = null;
     this.url = url;
-    this._zoomManager = zoomManager;
+    this.zoomManager = zoomManager;
   }
 
   get numPages(): number {
@@ -54,7 +54,7 @@ export class Document implements IDocument {
 
     try {
       const pdfPage = await this.pdfDocument.getPage(pageNumber);
-      const page = new Page(pdfPage, this._zoomManager);
+      const page = new Page(pdfPage, this.zoomManager);
 
       return page;
     } catch (error) {
@@ -64,13 +64,27 @@ export class Document implements IDocument {
     }
   }
 
+  async getAllPages(): Promise<IPage[]> {
+    const pages: IPage[] = [];
+
+    for (let i = 1; i <= this.numPages; i++) {
+      try {
+        pages.push(await this.getPage(i));
+      } catch (error) {
+        console.error(`Error loading page ${i}:`, error);
+      }
+    }
+
+    return pages;
+  }
+
   destroy(): void {
     if (!this.pdfDocument) {
       throw new PDFError('PDF document is not loaded');
     }
 
     // Clean up zoom controls if available
-    this._zoomManager?.destroy();
+    this.zoomManager?.destroy();
 
     void this.pdfDocument.destroy();
   }

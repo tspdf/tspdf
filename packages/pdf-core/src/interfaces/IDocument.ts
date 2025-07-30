@@ -16,6 +16,9 @@ export interface IDocument {
    */
   getPage(pageNumber: number): Promise<IPage>;
 
+  /** Get all pages in the document */
+  getAllPages(): Promise<IPage[]>;
+
   /** Destroy the document and free resources */
   destroy(): void;
 }
