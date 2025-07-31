@@ -17,7 +17,7 @@ export class ZoomManager extends EventEmitter implements IZoomManager {
   private readonly zoomFactor: number;
   private readonly stepSize: number;
   private boundWheelHandler: ((event: Event) => void) | null = null;
-  private debounceTimer: number | null = null;
+  private debounceTimer: ReturnType<typeof setTimeout> | null = null;
   private pendingScale: number | null = null;
 
   constructor(
@@ -65,10 +65,10 @@ export class ZoomManager extends EventEmitter implements IZoomManager {
     this.emit('zoomUpdate', clampedScale, oldScale);
 
     if (this.debounceTimer) {
-      window.clearTimeout(this.debounceTimer);
+      clearTimeout(this.debounceTimer);
     }
 
-    this.debounceTimer = window.setTimeout(() => {
+    this.debounceTimer = setTimeout(() => {
       if (this.pendingScale !== null && this.scale !== this.pendingScale) {
         const finalOldScale = this.scale;
         this.scale = this.pendingScale;
