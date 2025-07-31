@@ -13,7 +13,7 @@ export const Page: React.FC<PageProps> = ({ page, ...rest }) => {
   useEffect(() => {
     if (!containerRef.current || !canvasRef.current) return;
 
-    page.init(containerRef.current, canvasRef.current!);
+    page.init(containerRef.current, canvasRef.current);
 
     const removeZoomChangedListener = page.renderManager.on(
       'zoomChanged',
