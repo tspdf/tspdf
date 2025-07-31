@@ -1,13 +1,24 @@
 import type { IZoomManager } from '../interfaces';
+import { EventEmitter } from '../utils';
 
-export class ZoomManager implements IZoomManager {
+/**
+ * ZoomManager handles zoom operations for PDF documents.
+ *
+ * Events emitted:
+ * - 'zoomUpdate': (newScale: number, oldScale: number) => void
+ *   Emitted immediately on every scale change (for real-time dimension updates)
+ * - 'zoomChanged': (newScale: number, oldScale: number) => void
+ *   Emitted when the zoom scale changes (debounced, for re-rendering)
+ */
+export class ZoomManager extends EventEmitter implements IZoomManager {
   private scale: number;
   private readonly minScale: number;
   private readonly maxScale: number;
   private readonly zoomFactor: number;
   private readonly stepSize: number;
   private boundWheelHandler: ((event: Event) => void) | null = null;
-  private listeners: Array<() => void> = [];
+  private debounceTimer: ReturnType<typeof setTimeout> | null = null;
+  private pendingScale: number | null = null;
 
   constructor(
     initialScale: number,
@@ -16,6 +27,7 @@ export class ZoomManager implements IZoomManager {
     zoomFactor: number = 1.2,
     stepSize: number = 0.1,
   ) {
+    super();
     this.scale = initialScale;
     this.minScale = minScale;
     this.maxScale = maxScale;
@@ -24,49 +36,55 @@ export class ZoomManager implements IZoomManager {
   }
 
   get currentScale(): number {
-    return this.scale;
+    // Return pending scale if available for immediate UI feedback
+    return this.pendingScale ?? this.scale;
   }
 
   get canZoomIn(): boolean {
-    return this.scale < this.maxScale;
+    return this.currentScale < this.maxScale;
   }
 
   get canZoomOut(): boolean {
-    return this.scale > this.minScale;
+    return this.currentScale > this.minScale;
   }
 
   setScale(newScale: number): void {
-    const clampedScale = Math.min(
-      Math.max(newScale, this.minScale),
-      this.maxScale,
+    const clampedScale = Math.max(
+      this.minScale,
+      Math.min(this.maxScale, newScale),
     );
-    const changed = this.scale !== clampedScale;
-    this.scale = clampedScale;
-    if (changed) {
-      this.notifyListeners();
+    const oldScale = this.currentScale;
+
+    if (clampedScale === this.currentScale) {
+      return;
     }
-  }
 
-  addListener(listener: () => void): () => void {
-    this.listeners.push(listener);
-    return () => {
-      const index = this.listeners.indexOf(listener);
-      if (index > -1) {
-        this.listeners.splice(index, 1);
+    this.pendingScale = clampedScale;
+
+    // Emit immediate progress event for real-time dimension updates
+    this.emit('zoomUpdate', clampedScale, oldScale);
+
+    if (this.debounceTimer) {
+      clearTimeout(this.debounceTimer);
+    }
+
+    this.debounceTimer = setTimeout(() => {
+      if (this.pendingScale !== null && this.scale !== this.pendingScale) {
+        const finalOldScale = this.scale;
+        this.scale = this.pendingScale;
+        this.emit('zoomChanged', this.scale, finalOldScale);
       }
-    };
-  }
-
-  private notifyListeners(): void {
-    this.listeners.forEach(listener => listener());
+      this.debounceTimer = null;
+      this.pendingScale = null;
+    }, 200); // 200ms debounce
   }
 
   zoomIn(): void {
-    this.setScale(this.scale + this.stepSize);
+    this.setScale(this.currentScale + this.stepSize);
   }
 
   zoomOut(): void {
-    this.setScale(this.scale - this.stepSize);
+    this.setScale(this.currentScale - this.stepSize);
   }
 
   resetZoom(): void {
@@ -86,9 +104,9 @@ export class ZoomManager implements IZoomManager {
         wheelEvent.stopPropagation();
 
         if (wheelEvent.deltaY < 0) {
-          this.setScale(this.scale * this.zoomFactor);
+          this.setScale(this.currentScale * this.zoomFactor);
         } else if (wheelEvent.deltaY > 0) {
-          this.setScale(this.scale / this.zoomFactor);
+          this.setScale(this.currentScale / this.zoomFactor);
         }
       }
     };
@@ -111,5 +129,11 @@ export class ZoomManager implements IZoomManager {
 
   destroy(): void {
     this.disableControls();
+    if (this.debounceTimer !== null) {
+      clearTimeout(this.debounceTimer);
+      this.debounceTimer = null;
+    }
+    this.pendingScale = null;
+    super.destroy();
   }
 }

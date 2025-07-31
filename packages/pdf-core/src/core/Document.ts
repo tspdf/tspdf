@@ -1,18 +1,18 @@
 import type { IDocument, IPage, IZoomManager } from '../interfaces';
 import { loadPdfjs } from '../pdfjs';
 import { PDFDocumentProxy } from '../pdfjs/types';
-import { PDFError, PDFErrorType } from '../types';
+import { PDFError } from '../types';
 import { Page } from './Page';
 
 export class Document implements IDocument {
   private pdfDocument: PDFDocumentProxy | null;
   private readonly url: string;
-  private readonly _zoomManager?: IZoomManager;
+  private readonly zoomManager?: IZoomManager;
 
   constructor(url: string, zoomManager?: IZoomManager) {
     this.pdfDocument = null;
     this.url = url;
-    this._zoomManager = zoomManager;
+    this.zoomManager = zoomManager;
   }
 
   get numPages(): number {
@@ -32,20 +32,13 @@ export class Document implements IDocument {
       });
       this.pdfDocument = await loadingTask.promise;
     } catch (error) {
-      throw new PDFError(
-        PDFErrorType.LOADING_ERROR,
-        `Failed to load PDF document: ${String(error)}`,
-        error as Error,
-      );
+      throw new PDFError(`Failed to load PDF document: ${String(error)}`);
     }
   }
 
   async getPage(pageNumber: number): Promise<IPage> {
     if (!this.pdfDocument) {
-      throw new PDFError(
-        PDFErrorType.LOADING_ERROR,
-        'PDF document is not loaded',
-      );
+      throw new PDFError('PDF document is not loaded');
     }
 
     // Validate pageNumber is a valid number and within range
@@ -55,33 +48,43 @@ export class Document implements IDocument {
       pageNumber > this.pdfDocument.numPages
     ) {
       throw new PDFError(
-        PDFErrorType.PAGE_ERROR,
         `Invalid page number: ${String(pageNumber)}. Must be between 1 and ${String(this.pdfDocument.numPages)}`,
       );
     }
 
     try {
       const pdfPage = await this.pdfDocument.getPage(pageNumber);
-      return new Page(pdfPage, () => this._zoomManager?.currentScale ?? 1);
+      const page = new Page(pdfPage, this.zoomManager);
+
+      return page;
     } catch (error) {
       throw new PDFError(
-        PDFErrorType.PAGE_ERROR,
         `Failed to get page ${String(pageNumber)}: ${String(error)}`,
-        error,
       );
     }
   }
 
+  async getAllPages(): Promise<IPage[]> {
+    const pages: IPage[] = [];
+
+    for (let i = 1; i <= this.numPages; i++) {
+      try {
+        pages.push(await this.getPage(i));
+      } catch (error) {
+        console.error(`Error loading page ${i}:`, error);
+      }
+    }
+
+    return pages;
+  }
+
   destroy(): void {
     if (!this.pdfDocument) {
-      throw new PDFError(
-        PDFErrorType.LOADING_ERROR,
-        'PDF document is not loaded',
-      );
+      throw new PDFError('PDF document is not loaded');
     }
 
     // Clean up zoom controls if available
-    this._zoomManager?.destroy();
+    this.zoomManager?.destroy();
 
     void this.pdfDocument.destroy();
   }

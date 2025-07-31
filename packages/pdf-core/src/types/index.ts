@@ -1,21 +1,5 @@
 /**
- * Options for viewport calculation
- */
-export interface IViewportOptions {
-  /** Scale factor */
-  scale?: number;
-  /** Rotation in degrees */
-  rotation?: number;
-  /** Offset X */
-  offsetX?: number;
-  /** Offset Y */
-  offsetY?: number;
-  /** Don't flip */
-  dontFlip?: boolean;
-}
-
-/**
- * PDF viewport information
+ * PDF viewport information for rendering calculations.
  */
 export interface IViewport {
   readonly width: number;
@@ -28,36 +12,22 @@ export interface IViewport {
 }
 
 /**
- * Error types for PDF operations
- */
-export enum PDFErrorType {
-  LOADING_ERROR = 'LOADING_ERROR',
-  PAGE_ERROR = 'PAGE_ERROR',
-  RENDERING_ERROR = 'RENDERING_ERROR',
-}
-
-/**
- * PDF operation error
+ * Custom error class for PDF-related operations.
  */
 export class PDFError extends Error {
-  constructor(
-    public readonly type: PDFErrorType,
-    message: string,
-    public readonly originalError?: unknown,
-  ) {
+  constructor(message: string) {
     super(message);
-    this.name = 'PDFError';
   }
 }
 
 /**
- * Options for rendering a PDF page
+ * Callback function for visibility detection events.
+ * @param isVisible Whether the element is currently visible
+ * @param intersectionRatio How much of the element is visible (0-1)
  */
-export interface IRenderOptions {
-  /** Scale factor for rendering */
-  scale?: number;
-  /** Additional rotation in degrees */
-  rotation?: number;
-  /** Device pixel ratio for high-DPI displays */
-  pixelRatio?: number;
-}
+export type VisibilityCallback = (
+  isVisible: boolean,
+  intersectionRatio: number,
+) => void;
+
+export type { DocumentMode } from './Document';
