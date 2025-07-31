@@ -17,7 +17,12 @@ export const Toolbar: React.FC<ToolbarProps> = () => {
           <select
             className='rounded border p-1'
             value={mode}
-            onChange={e => setMode(e.target.value as 'vertical' | 'page')}
+            onChange={e => {
+              const value = e.target.value;
+              if (value === 'vertical' || value === 'page') {
+                setMode(value);
+              }
+            }}
           >
             <option value='vertical'>Vertical Mode</option>
             <option value='page'>Single Page Mode</option>
