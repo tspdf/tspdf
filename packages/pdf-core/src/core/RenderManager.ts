@@ -103,19 +103,12 @@ export class RenderManager extends EventEmitter implements IRenderManager {
       return;
     }
 
-    const startTime = performance.now();
     this.isRendering = true;
 
     try {
       this.cancelRender();
 
       await this.renderCanvas();
-
-      const renderTime = performance.now() - startTime;
-
-      console.log(
-        `Rendered page ${this.pageNumber} at scale ${this.currentScale} (${renderTime.toFixed(2)}ms)`,
-      );
     } finally {
       this.isRendering = false;
     }
