@@ -9,10 +9,10 @@ import { createTypeScriptLibraryConfig } from './ts-internal.js';
  * Create React library configuration
  * Extends TypeScript config with React-specific plugins
  */
-export function createReactLibraryConfig(options) {
-  const { plugins = [], external = [], ...baseOptions } = options;
+export async function createReactLibraryConfig(options) {
+  const { plugins = [], ...baseOptions } = options;
 
-  const config = createTypeScriptLibraryConfig({
+  const config = await createTypeScriptLibraryConfig({
     ...baseOptions,
     filename: 'index.esm.js',
     plugins: [
@@ -32,13 +32,18 @@ export function createReactLibraryConfig(options) {
 
   // Add React externals to the main build config
   if (config[0]) {
-    config[0].external = [
-      'react',
-      'react-dom',
-      'react/jsx-runtime',
-      // Don't externalize @tspdf packages or pdfjs-dist - bundle them
-      ...external.filter(ext => !ext.startsWith('@tspdf/')),
-    ];
+    const originalExternal = config[0].external;
+    config[0].external = id => {
+      // Check React externals first
+      if (['react', 'react-dom', 'react/jsx-runtime'].includes(id)) {
+        return true;
+      }
+      // Use the original external logic from ts-internal
+      if (typeof originalExternal === 'function') {
+        return originalExternal(id);
+      }
+      return false;
+    };
   }
 
   return config;
