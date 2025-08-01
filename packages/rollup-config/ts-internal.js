@@ -108,7 +108,23 @@ export async function createTypeScriptLibraryConfig(options) {
       },
     },
 
-    // TypeScript declarations
-    createTypeScriptDeclarationsConfig(resolvedInput, outDir),
+    // TypeScript declarations with path mapping
+    {
+      ...createTypeScriptDeclarationsConfig(resolvedInput, outDir),
+      external: id => {
+        // Externalize @tspdf/pdf-core in declarations
+        if (id.includes('@tspdf/pdf-core')) {
+          return true;
+        }
+        // Use default externals
+        return /\.css$/.test(id) || /node_modules/.test(id);
+      },
+      output: {
+        ...createTypeScriptDeclarationsConfig(resolvedInput, outDir).output,
+        paths: {
+          '@tspdf/pdf-core': './pdf-core',
+        },
+      },
+    },
   ];
 }
