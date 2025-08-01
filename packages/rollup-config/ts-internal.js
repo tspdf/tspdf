@@ -37,7 +37,7 @@ export function createTypeScriptLibraryConfig(options) {
       output: {
         dir: outDir,
         format: 'es',
-        sourcemap: true,
+        sourcemap: false,
         entryFileNames: filename,
         chunkFileNames: '[name].js',
       },
