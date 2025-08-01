@@ -32,4 +32,7 @@ export interface PDFPageProxy {
   getViewport: (options: any) => any;
   render: (options: any) => { promise: Promise<void> };
   cleanup: () => void;
+  getTextContent: (
+    params?: import('pdfjs-dist/types/src/display/api').getTextContentParameters,
+  ) => Promise<import('pdfjs-dist/types/src/display/api').TextContent>;
 }
