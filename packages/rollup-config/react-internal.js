@@ -36,8 +36,7 @@ export function createReactLibraryConfig(options) {
       'react',
       'react-dom',
       'react/jsx-runtime',
-      'pdfjs-dist',
-      // Don't externalize @tspdf packages - bundle them
+      // Don't externalize @tspdf packages or pdfjs-dist - bundle them
       ...external.filter(ext => !ext.startsWith('@tspdf/')),
     ];
   }

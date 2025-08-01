@@ -7,4 +7,11 @@ const pdfCoreConfig = createTypeScriptLibraryConfig({
   filename: 'index.esm.js',
 });
 
+// Add manual chunks for pdfjs-dist
+if (pdfCoreConfig[0] && pdfCoreConfig[0].output) {
+  pdfCoreConfig[0].output.manualChunks = {
+    pdfjs: ['pdfjs-dist'],
+  };
+}
+
 export default pdfCoreConfig;

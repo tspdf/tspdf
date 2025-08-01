@@ -35,16 +35,17 @@ export function createTypeScriptLibraryConfig(options) {
     {
       input: resolvedInput,
       output: {
-        file: `${outDir}/${filename}`,
+        dir: outDir,
         format: 'es',
         sourcemap: true,
-        inlineDynamicImports: true,
+        entryFileNames: filename,
+        chunkFileNames: '[name].js',
       },
       plugins: [...basePlugins],
       external: id => {
         // Bundle @tspdf packages, externalize everything else that's not relative
         if (id.startsWith('@tspdf/')) return false;
-        if (id === 'pdfjs-dist') return true;
+        if (id === 'pdfjs-dist') return false; // Bundle pdfjs-dist
         return !id.startsWith('.') && !id.startsWith('/');
       },
       treeshake: {
