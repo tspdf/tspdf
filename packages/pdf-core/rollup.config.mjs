@@ -9,7 +9,7 @@ const licenseFile = resolve(__dirname, '../../licenses/pdfjs-dist.txt');
 const pdfCoreConfig = await createTypeScriptLibraryConfig({
   input: 'src/index.ts',
   packageJsonPath: './package.json',
-  minify: false,
+  minify: true,
   filename: 'index.esm.js',
   plugins: [
     copy({
