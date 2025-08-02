@@ -18,7 +18,6 @@
 
 /**
  * Page viewport type from PDF.js
- * Only includes the properties we actually use
  */
 export interface PageViewport {
   /** Viewport width */
@@ -35,4 +34,24 @@ export interface PageViewport {
   offsetY: number;
   /** Transform matrix */
   transform: number[];
+  /** The viewport rectangle */
+  viewBox: number[];
+  /** User unit scale */
+  userUnit: number;
+  /** The original, un-scaled, viewport dimensions */
+  readonly rawDims: Object;
+  /** Clones viewport, with optional additional properties */
+  clone(params?: {
+    scale?: number;
+    rotation?: number;
+    offsetX?: number;
+    offsetY?: number;
+    dontFlip?: boolean;
+  }): PageViewport;
+  /** Converts PDF point to the viewport coordinates */
+  convertToViewportPoint(x: number, y: number): number[];
+  /** Converts PDF rectangle to the viewport coordinates */
+  convertToViewportRectangle(rect: number[]): number[];
+  /** Converts viewport coordinates to the PDF location */
+  convertToPdfPoint(x: number, y: number): number[];
 }

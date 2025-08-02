@@ -20,15 +20,18 @@
  * PDF.js types - only the ones we actually use in our project
  * These are simplified versions focused on our specific needs
  */
-
-export interface PDFJS {
-  getDocument: typeof import('pdfjs-dist').getDocument;
-}
-
 export type { PDFDocumentProxy } from './PDFDocumentProxy';
-export type { PageViewport, PDFPageProxy, RenderTask } from './PDFPageProxy';
+export type {
+  PageViewport,
+  PDFPageProxy,
+  RenderParameters,
+  RenderTask,
+} from './PDFPageProxy';
 export type {
   TextContent,
   TextContentParameters,
   TextItem,
-} from './TextContent';
+  TextLayer,
+  TextLayerParameters,
+  TextMarkedContent,
+} from './TextLayer';

@@ -16,13 +16,16 @@
 // Type definitions derived from PDF.js interfaces
 // Original source: https://github.com/mozilla/pdf.js
 
-import { TextContent, TextContentParameters } from './TextContent';
+import { TextContent, TextContentParameters } from './TextLayer';
 
 /**
  * Page viewport type from PDF.js
- * Only includes the properties we actually use
  */
 export interface PageViewport {
+  /** The xMin, yMin, xMax and yMax coordinates */
+  viewBox: number[];
+  /** The size of units */
+  userUnit: number;
   /** Viewport width */
   width: number;
   /** Viewport height */
@@ -37,6 +40,50 @@ export interface PageViewport {
   offsetY: number;
   /** Transform matrix */
   transform: number[];
+  /** The original, un-scaled, viewport dimensions */
+  readonly rawDims: object;
+  /** Clone viewport with optional additional properties */
+  clone(params?: {
+    scale?: number;
+    rotation?: number;
+    offsetX?: number;
+    offsetY?: number;
+    dontFlip?: boolean;
+  }): PageViewport;
+  /** Convert PDF point to viewport coordinates */
+  convertToViewportPoint(x: number, y: number): number[];
+  /** Convert PDF rectangle to viewport coordinates */
+  convertToViewportRectangle(rect: number[]): number[];
+  /** Convert viewport coordinates to PDF location */
+  convertToPdfPoint(x: number, y: number): number[];
+}
+
+/**
+ * Render parameters interface matching PDF.js RenderParameters
+ */
+export interface RenderParameters {
+  /** A 2D context of a DOM Canvas object */
+  canvasContext: CanvasRenderingContext2D;
+  /** Rendering viewport obtained by calling PDFPageProxy.getViewport */
+  viewport: PageViewport;
+  /** Rendering intent, can be 'display', 'print', or 'any' */
+  intent?: string;
+  /** Controls which annotations are rendered onto the canvas */
+  annotationMode?: number;
+  /** Additional transform, applied just before viewport transform */
+  transform?: number[];
+  /** Background to use for the canvas */
+  background?: string | CanvasGradient | CanvasPattern;
+  /** Overwrites background and foreground colors for high contrast mode */
+  pageColors?: object;
+  /** Promise that resolves with OptionalContentConfig */
+  optionalContentConfigPromise?: Promise<any>;
+  /** Map annotation ids with canvases used to render them */
+  annotationCanvasMap?: Map<string, HTMLCanvasElement>;
+  /** Print annotation storage */
+  printAnnotationStorage?: any;
+  /** Render the page in editing mode */
+  isEditing?: boolean;
 }
 
 /**
@@ -74,15 +121,8 @@ export interface PDFPageProxy {
 
   /**
    * Render the page to a canvas
-   * Simplified to only include what we use
    */
-  render: (options: {
-    canvasContext: CanvasRenderingContext2D;
-    viewport: PageViewport;
-  }) => RenderTask;
-
-  /** Clean up page resources */
-  cleanup: () => void;
+  render: (params: RenderParameters) => RenderTask;
 
   /** Get text content from the page */
   getTextContent: (params?: TextContentParameters) => Promise<TextContent>;

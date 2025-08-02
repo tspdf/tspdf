@@ -1,5 +1,5 @@
 import type { IDocument, IPage, IZoomManager } from '../interfaces';
-import { loadPdfjs } from '../pdfjs';
+import { getDocument } from '../pdfjs';
 import { PDFDocumentProxy } from '../pdfjs/types';
 import { PDFError } from '../types';
 import { Page } from './Page';
@@ -24,13 +24,8 @@ export class Document implements IDocument {
 
   async load(): Promise<void> {
     try {
-      const pdfjs = await loadPdfjs();
-
-      const loadingTask = pdfjs.getDocument({
-        url: this.url,
-        withCredentials: false,
-      });
-      this.pdfDocument = await loadingTask.promise;
+      const document = await getDocument(this.url);
+      this.pdfDocument = document;
     } catch (error) {
       throw new PDFError(`Failed to load PDF document: ${String(error)}`);
     }
