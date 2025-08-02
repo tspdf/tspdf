@@ -97,7 +97,8 @@ export async function createTypeScriptLibraryConfig(options) {
         }
         // Bundle other @tspdf packages
         if (id.startsWith('@tspdf/')) return false;
-        if (id === 'pdfjs-dist') return false; // Bundle pdfjs-dist
+        // Externalize pdfjs-dist by default (can be overridden in specific packages)
+        if (id === 'pdfjs-dist') return true;
         return !id.startsWith('.') && !id.startsWith('/');
       },
       treeshake: {

@@ -38,10 +38,15 @@ if (pdfCoreConfig[0] && pdfCoreConfig[0].output) {
   delete pdfCoreConfig[0].output.paths;
 
   // Override external to not externalize @tspdf/pdf-core since this IS pdf-core
+  // Also don't externalize pdfjs-dist since we want to bundle it here
   const originalExternal = pdfCoreConfig[0].external;
   pdfCoreConfig[0].external = id => {
     // Don't externalize @tspdf/pdf-core since this is the pdf-core package
     if (id.includes('@tspdf/pdf-core')) {
+      return false;
+    }
+    // Don't externalize pdfjs-dist since we want to bundle it in pdf-core
+    if (id === 'pdfjs-dist') {
       return false;
     }
     return originalExternal(id);
