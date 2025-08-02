@@ -4213,8 +4213,6 @@ __metadata:
     pdfjs-dist: "npm:^5.2.133"
     rollup: "npm:^4.40.2"
     typescript: "npm:^5.8.3"
-  peerDependencies:
-    pdfjs-dist: ^5.2.133
   languageName: unknown
   linkType: soft
 
@@ -4233,7 +4231,6 @@ __metadata:
     rollup: "npm:^4.40.2"
     typescript: "npm:^5.8.3"
   peerDependencies:
-    pdfjs-dist: ^5.2.133
     react: ^19.1.0
     react-dom: ^19.1.0
   languageName: unknown

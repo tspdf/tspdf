@@ -33,7 +33,7 @@ export function createBaseConfig(options) {
     esbuild({
       target,
       minify,
-      sourcemap: true,
+      sourcemap: false,
       jsx: 'automatic',
       define: {
         'process.env.NODE_ENV': JSON.stringify(
