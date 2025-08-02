@@ -1,4 +1,4 @@
-import { PageViewport } from '../pdfjs/types';
+import { PageViewport } from '../pdfjs/types/PageViewport';
 import { VisibilityCallback } from '../types';
 
 /**
