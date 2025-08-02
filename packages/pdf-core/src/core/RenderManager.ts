@@ -1,6 +1,6 @@
 import { IRenderManager, IZoomManager } from '../interfaces';
-import { PDFPageProxy } from '../pdfjs/types';
-import { IViewport, PDFError, VisibilityCallback } from '../types';
+import { PageViewport, PDFPageProxy } from '../pdfjs/types';
+import { PDFError, VisibilityCallback } from '../types';
 import { EventEmitter, isBrowser } from '../utils';
 
 /**
@@ -37,26 +37,16 @@ export class RenderManager extends EventEmitter implements IRenderManager {
     return this.page.pageNumber;
   }
 
-  getViewport(): IViewport {
+  getViewport(): PageViewport {
     const scale = this.currentScale;
 
-    const viewport = this.page.getViewport({
+    return this.page.getViewport({
       scale,
       rotation: 0,
       offsetX: 0,
       offsetY: 0,
       dontFlip: false,
     });
-
-    return {
-      width: viewport.width,
-      height: viewport.height,
-      scale: viewport.scale,
-      rotation: viewport.rotation,
-      offsetX: viewport.offsetX,
-      offsetY: viewport.offsetY,
-      transform: viewport.transform,
-    };
   }
 
   init(container: HTMLDivElement, canvas: HTMLCanvasElement): void {

@@ -1,17 +1,4 @@
 /**
- * PDF viewport information for rendering calculations.
- */
-export interface IViewport {
-  readonly width: number;
-  readonly height: number;
-  readonly scale: number;
-  readonly rotation: number;
-  readonly offsetX: number;
-  readonly offsetY: number;
-  readonly transform: number[];
-}
-
-/**
  * Custom error class for PDF-related operations.
  */
 export class PDFError extends Error {

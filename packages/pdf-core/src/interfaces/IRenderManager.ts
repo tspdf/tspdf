@@ -1,4 +1,5 @@
-import { IViewport, VisibilityCallback } from '../types';
+import { PageViewport } from '../pdfjs/types';
+import { VisibilityCallback } from '../types';
 
 /**
  * Interface for managing PDF page rendering operations.
@@ -15,7 +16,7 @@ export interface IRenderManager {
   /**
    * Calculates viewport dimensions for rendering the PDF page.
    */
-  getViewport(): IViewport;
+  getViewport(): PageViewport;
 
   /**
    * Initialize the render manager with a container element.

@@ -26,13 +26,28 @@ export interface PDFDocumentProxy {
   destroy: () => Promise<void>;
 }
 
+export type TextContent =
+  import('pdfjs-dist/types/src/display/api').TextContent;
+export type TextContentParameters =
+  import('pdfjs-dist/types/src/display/api').getTextContentParameters;
+export type PageViewport =
+  import('pdfjs-dist/types/src/display/display_utils').PageViewport;
+export type RenderTask = import('pdfjs-dist/types/src/display/api').RenderTask;
+
 export interface PDFPageProxy {
   pageNumber: number;
   rotate: number;
-  getViewport: (options: any) => any;
-  render: (options: any) => { promise: Promise<void> };
+  getViewport: (options: {
+    scale: number;
+    rotation?: number;
+    offsetX?: number;
+    offsetY?: number;
+    dontFlip?: boolean;
+  }) => PageViewport;
+  render: (options: {
+    canvasContext: CanvasRenderingContext2D;
+    viewport: PageViewport;
+  }) => RenderTask;
   cleanup: () => void;
-  getTextContent: (
-    params?: import('pdfjs-dist/types/src/display/api').getTextContentParameters,
-  ) => Promise<import('pdfjs-dist/types/src/display/api').TextContent>;
+  getTextContent: (params?: TextContentParameters) => Promise<TextContent>;
 }
