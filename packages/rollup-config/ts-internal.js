@@ -21,6 +21,7 @@ export async function createTypeScriptLibraryConfig(options) {
     plugins = [],
     additionalExternals = [],
     copyPdfCore = false,
+    customManualChunks = null, // Allow overriding manual chunks
   } = options;
 
   // Handle pdf-core copying if requested
@@ -75,12 +76,14 @@ export async function createTypeScriptLibraryConfig(options) {
           }
           return '[name].js';
         },
-        manualChunks: id => {
-          // Create a separate chunk for @tspdf/pdf-core
-          if (id.includes('@tspdf/pdf-core')) {
-            return 'pdf-core';
-          }
-        },
+        manualChunks:
+          customManualChunks ||
+          (id => {
+            // Create a separate chunk for @tspdf/pdf-core
+            if (id.includes('@tspdf/pdf-core')) {
+              return 'pdf-core';
+            }
+          }),
         paths: {
           '@tspdf/pdf-core': './pdf-core/index.esm.js',
         },
@@ -99,7 +102,8 @@ export async function createTypeScriptLibraryConfig(options) {
         if (id.startsWith('@tspdf/')) return false;
         // Externalize pdfjs-dist by default (can be overridden in specific packages)
         if (id === 'pdfjs-dist') return true;
-        return !id.startsWith('.') && !id.startsWith('/');
+        // Handle relative and absolute paths consistently across platforms
+        return !id.startsWith('.') && !id.startsWith('/') && !id.includes('\\');
       },
       treeshake: {
         moduleSideEffects: id => {
