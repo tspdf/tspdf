@@ -1,7 +1,7 @@
 import Link from '@docusaurus/Link';
 import Layout from '@theme/Layout';
-
-import styles from './index.module.css';
+/*
+import styles from './index.module.css';*/
 
 export default function Home() {
   return (
@@ -10,32 +10,50 @@ export default function Home() {
       description='PDF.js made simple: React base. More frameworks coming soon.'
     >
       <main>
-        <div className={styles.hero}>
-          <h1 className={styles.title}>TS PDF</h1>
-          <p className={styles.subtitle}>
-            PDF.js made simple: React base implementation. More frameworks
-            coming soon.
-          </p>
-          <p className={styles.notice}>⚠️ Pre-release: Not production ready.</p>
-          <div className={styles.buttons}>
-            <Link
-              to='https://github.com/tspdf/tspdf'
-              className='button button--primary button--lg'
-            >
-              Get Started
-            </Link>
-            <Link
-              to='https://github.com/tspdf/tspdf/issues'
-              className='button button--secondary button--lg'
-            >
-              Contribute
-            </Link>
-            <Link to='/demo' className='button button--primary button--lg'>
-              Demo
-            </Link>
+        <div className='grid grid-cols-1 items-center gap-8 px-16 !py-42 sm:grid-cols-2'>
+          {/* Columna 1: logo y texto lado a lado */}
+          <div className='flex items-center justify-center space-x-8 lg:justify-start'>
+            <img
+              src='/img/logoTest.png'
+              alt='TS PDF logo'
+              className='h-auto !max-w-[300px]'
+            />
+            <div className='flex flex-col items-start space-y-6 text-left'>
+              <h1 className='!text-[60px] font-bold'>TS PDF</h1>
+              <p className='sm:text-1xl max-w-md text-xl'>
+                PDF.js made simple: React base implementation. More frameworks
+                coming soon.
+              </p>
+              <div className='flex flex-wrap gap-2'>
+                <Link
+                  to='https://github.com/tspdf/tspdf'
+                  className='button button--primary button--lg'
+                >
+                  Get Started
+                </Link>
+                <Link
+                  to='https://github.com/tspdf/tspdf/issues'
+                  className='button button--secondary button--lg'
+                >
+                  Contribute
+                </Link>
+                <Link to='/demo' className='button button--primary button--lg'>
+                  Demo
+                </Link>
+              </div>
+            </div>
+          </div>
+
+          {/* Columna 2: segunda imagen */}
+          <div className='flex justify-center'>
+            <img
+              src='/img/imagenPrueba.png'
+              alt='imagen prueba'
+              className='h-auto !max-w-[600px]'
+            />
           </div>
         </div>
-
+        {/*
         <section className={styles.features}>
           <div className={styles.feature}>
             <h3>React Base</h3>
@@ -62,6 +80,7 @@ export default function Home() {
             more details.
           </p>
         </section>
+*/}
       </main>
     </Layout>
   );
