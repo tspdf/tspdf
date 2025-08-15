@@ -10,7 +10,7 @@ export default function Home() {
       description='PDF.js made simple: React base. More frameworks coming soon.'
     >
       <main>
-        <div className='grid grid-cols-1 items-center gap-8 px-16 !py-42 sm:grid-cols-2'>
+        <div className='grid min-h-[calc(100vh-64px)] grid-cols-1 items-center gap-8 px-16 sm:grid-cols-2'>
           {/* Columna 1: logo y texto lado a lado */}
           <div className='flex flex-col items-center justify-center space-y-6 sm:flex-row sm:items-center sm:justify-start sm:space-y-0 sm:space-x-8'>
             <img
@@ -21,8 +21,8 @@ export default function Home() {
             <div className='flex flex-col items-center space-y-6 text-center sm:items-start sm:text-left'>
               <h1 className='!text-[60px] font-bold'>TS PDF</h1>
               <p className='sm:text-1xl max-w-md text-xl'>
-                PDF.js made simple: React base implementation. More frameworks
-                coming soon.
+                Modern PDF viewer library designed to make embedding PDFs into
+                websites straightforward and flexible.
               </p>
               <div className='flex flex-wrap justify-center gap-2 sm:justify-start'>
                 <Link
@@ -54,7 +54,7 @@ export default function Home() {
           </div>
         </div>
 
-        <section className='!flex min-h-screen items-center justify-center px-8 text-center'>
+        <section className='!flex items-center justify-center px-8 pb-64 text-center'>
           <div className='flex max-w-6xl flex-col items-center justify-center'>
             <h2 className='mb-4 text-3xl font-bold'>Our Goal</h2>
             <p className='max-w-4xl text-lg leading-relaxed'>
@@ -74,6 +74,31 @@ export default function Home() {
                   Maximum flexibility to style, layout, and control PDF viewing
                   exactly as you need.
                 </p>
+
+                <div className='flex flex-col items-center md:items-start'>
+                  <img
+                    src='https://upload.wikimedia.org/wikipedia/commons/2/29/Postgresql_elephant.svg'
+                    alt='PostgreSQL Logo'
+                    className='mb-4 w-10'
+                  />
+                  <h2 className='mb-4 text-2xl font-bold text-blue-800'>
+                    Customizable PDF Viewer (in progress)
+                  </h2>
+                  <ul className='list-disc pl-5'>
+                    <li>
+                      Full control over styles, layout, and available tools.
+                    </li>
+                    <li>
+                      Option to display PDFs without common viewer UI elements
+                      like download buttons or zoom controls, so on.
+                    </li>
+                    <li>
+                      {' '}
+                      A complete, ready-to-use viewer option for those who want
+                      a fully featured yet still customizable PDF solution.
+                    </li>
+                  </ul>
+                </div>
               </div>
               <div className='rounded-lg bg-[var(--ifm-color-primary-lightest)] p-6 shadow-sm'>
                 <h3 className='mb-3 text-xl font-semibold'>Performance</h3>
@@ -81,42 +106,61 @@ export default function Home() {
                   Optimized for speed with minimal overhead, using native PDF
                   rendering when possible.
                 </p>
+
+                <div className='flex flex-col items-center md:items-start'>
+                  <img
+                    src='https://upload.wikimedia.org/wikipedia/commons/2/29/Postgresql_elephant.svg'
+                    alt='PostgreSQL Logo'
+                    className='mb-4 w-10'
+                  />
+                  <h2 className='mb-4 text-2xl font-bold text-blue-800'>
+                    Performance-Focused PDF Viewer (planned)
+                  </h2>
+                  <ul className='list-disc pl-5'>
+                    <li>Designed for minimal overhead and fast rendering.</li>
+                    <li>
+                      Uses the browser’s native PDF viewer when available for
+                      better performance and smaller bundle sizes.
+                    </li>
+                    <li>
+                      Includes compatibility logic to ensure consistent
+                      rendering across different browsers and environments.
+                    </li>
+                    <li>
+                      Planned fallback to PDF.js for browsers without built-in
+                      PDF support.
+                    </li>
+                  </ul>
+                </div>
               </div>
             </div>
           </div>
         </section>
 
-        <section className='mt-12 flex flex-wrap justify-center gap-4 px-6'>
-          <div className='m-4 max-w-[250px] flex-1 basis-[200px] rounded-lg bg-[var(--ifm-color-primary-lightest)] p-4'>
-            <h3 className='mb-2 text-xl'>React Base</h3>
-            <p className='m-0 text-base'>
-              Foundation built in React for basic PDF rendering.
-            </p>
-          </div>
+        <section className='!flex items-center justify-center px-8 pb-64 text-center'>
+          <div className='flex max-w-6xl flex-col items-center justify-center'>
+            <h1>What’s Next</h1>
+            <div className='mt-10 grid grid-cols-1 gap-8 sm:grid-cols-2'>
+              <div className='p-6 shadow-sm'>
+                <h3>Our next milestones are:</h3>
+              </div>
 
-          <div className='m-4 max-w-[250px] flex-1 basis-[200px] rounded-lg bg-[var(--ifm-color-primary-lightest)] p-4'>
-            <h3 className='mb-2 text-xl'>Framework Agnostic</h3>
-            <p className='m-0 text-base'>
-              Designed for easy extension to other frameworks.
-            </p>
-          </div>
-
-          <div className='m-4 max-w-[250px] flex-1 basis-[200px] rounded-lg bg-[var(--ifm-color-primary-lightest)] p-4'>
-            <h3 className='mb-2 text-xl'>Lightweight</h3>
-            <p className='m-0 text-base'>
-              Minimal bundle size, only what you need.
-            </p>
-          </div>
-
-          <div className='m-4 max-w-[250px] flex-1 basis-[200px] rounded-lg bg-[var(--ifm-color-primary-lightest)] p-4'>
-            <h3 className='mb-2 text-xl'>Open Source</h3>
-            <p className='m-0 text-base'>Community-driven and MIT licensed.</p>
+              <div className='p-6 shadow-sm'>
+                <p className='text-lg'>
+                  Finalizing the customizable viewer’s core API and UI
+                  flexibility. Building the compatibility layer for the
+                  performance viewer. Testing across major browsers and
+                  frameworks to ensure smooth integration.
+                </p>
+              </div>
+            </div>
           </div>
         </section>
 
         <section style={{ textAlign: 'center', marginTop: '3rem' }}>
           <p>
-            Full documentation is coming soon. Visit our{' '}
+            Currently supported: React - additional frameworks are planned. Full
+            documentation is coming soon. Visit our{' '}
             <Link to='https://github.com/tspdf/tspdf'>GitHub repo</Link> for
             more details.
           </p>
