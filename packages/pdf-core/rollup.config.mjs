@@ -1,83 +1,74 @@
-import { createTypeScriptLibraryConfig } from '@tspdf/rollup-config/ts-internal';
-import { dirname, resolve } from 'path';
-import copy from 'rollup-plugin-copy';
+import alias from '@rollup/plugin-alias';
+import commonjs from '@rollup/plugin-commonjs';
+import resolve from '@rollup/plugin-node-resolve';
+import { dirname } from 'path';
+import del from 'rollup-plugin-delete';
 import dts from 'rollup-plugin-dts';
+import esbuild from 'rollup-plugin-esbuild';
 import { fileURLToPath } from 'url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const licenseFile = resolve(__dirname, '../../licenses/pdfjs-dist.txt');
 
-const pdfCoreConfig = await createTypeScriptLibraryConfig({
+// Shared JS build options (without delete plugin)
+const jsPlugins = [
+  alias({
+    entries: [],
+  }),
+  resolve({ browser: true, preferBuiltins: false }),
+  commonjs(),
+  esbuild({
+    sourceMap: false,
+    minify: true,
+    target: 'es2022',
+    tsconfig: 'tsconfig.json',
+  }),
+];
+
+// 1) Main library build (does NOT inline pdfjs; it imports our local shim at ./pdfjs-dist/index.js)
+const mainBuild = {
   input: 'src/index.ts',
-  packageJsonPath: './package.json',
-  minify: true,
-  filename: 'index.esm.js',
-  customManualChunks: {
-    'pdfjs-dist/index.esm': ['pdfjs-dist'],
+  external: id => {
+    if (id === 'pdfjs-dist') return true; // remapped via output.paths to our local bundled shim
+    if (id.startsWith('node:')) return true;
+    return false;
+  },
+  output: {
+    file: 'dist/index.esm.js',
+    format: 'esm',
+    sourcemap: false,
+    // Keep dynamic imports (like import('./pdfjs-dist/index.js')) untouched
+    inlineDynamicImports: false,
+    paths: {
+      'pdfjs-dist': './pdfjs-dist/index.js',
+    },
   },
   plugins: [
-    copy({
-      targets: [
-        {
-          src: licenseFile,
-          dest: 'dist/pdfjs-dist',
-          rename: 'LICENSE-pdfjs-dist.txt',
-        },
-      ],
-      hook: 'writeBundle',
-    }),
+    // Clean output dir only once at the start
+    del({ targets: 'dist/*', runOnce: true }),
+    ...jsPlugins,
   ],
-});
+  treeshake: {
+    moduleSideEffects: false,
+  },
+};
 
-// Shared external function for both JS and TypeScript configs
-const createExternalFunction =
-  (includeTypesCheck = false) =>
-  id => {
-    // Don't externalize @tspdf/pdf-core since this is the pdf-core package
-    if (id.includes('@tspdf/pdf-core')) {
-      return false;
-    }
+// 2) PDF.js shim build: bundles pdfjs-dist into dist/pdfjs-dist/index.js
+const pdfjsShimBuild = {
+  input: 'src/pdfjs-bundle.ts',
+  external: [], // bundle everything for the shim, including pdfjs-dist
+  plugins: [...jsPlugins],
+  output: {
+    file: 'dist/pdfjs-dist/index.js',
+    format: 'esm',
+    sourcemap: false,
+  },
+};
 
-    // Don't externalize pdfjs-dist - bundle it in pdf-core
-    if (
-      id === 'pdfjs-dist' ||
-      (includeTypesCheck && id.startsWith('pdfjs-dist/'))
-    ) {
-      return false;
-    }
+// 3) Type declarations
+const dtsBuild = {
+  input: 'src/index.ts',
+  output: { file: 'dist/index.d.ts', format: 'es' },
+  plugins: [dts()],
+};
 
-    // Keep CSS files external (only relevant for TypeScript config)
-    if (includeTypesCheck && /\.css$/.test(id)) {
-      return true;
-    }
-
-    // External everything else from node_modules except pdfjs-dist
-    if (/node_modules/.test(id) && !id.includes('pdfjs-dist')) {
-      return true;
-    }
-
-    return false;
-  };
-
-// Configure JavaScript build
-if (pdfCoreConfig[0] && pdfCoreConfig[0].output) {
-  pdfCoreConfig[0].output.chunkFileNames = '[name].js';
-  delete pdfCoreConfig[0].output.paths;
-  pdfCoreConfig[0].external = createExternalFunction();
-}
-
-// Configure TypeScript declarations
-if (pdfCoreConfig[1]) {
-  pdfCoreConfig[1].external = createExternalFunction(true);
-
-  const dtsPluginIndex = pdfCoreConfig[1].plugins.findIndex(
-    plugin => plugin.name === 'dts',
-  );
-  if (dtsPluginIndex !== -1) {
-    pdfCoreConfig[1].plugins[dtsPluginIndex] = dts({
-      respectExternal: true,
-    });
-  }
-}
-
-export default pdfCoreConfig;
+export default [mainBuild, pdfjsShimBuild, dtsBuild];

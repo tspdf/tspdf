@@ -10,7 +10,10 @@
     "moduleResolution": "node",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "paths": {
+      "../pdfjs-dist/index.js": ["./src/pdfjs-bundle.ts"]
+    }
   },
   "include": ["src"]
 }

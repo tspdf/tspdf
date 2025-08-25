@@ -21,7 +21,8 @@
   },
   "sideEffects": false,
   "scripts": {
-    "build": "rollup --config",
+    "build": "rollup --config && npm run copy-license",
+    "copy-license": "cp ../../licenses/pdfjs-dist.txt dist/pdfjs-dist/LICENSE-pdfjs-dist.txt",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "lint:strict": "eslint . --max-warnings 0"
@@ -30,11 +31,18 @@
     "pdfjs-dist": "^5.2.133"
   },
   "devDependencies": {
+    "@rollup/plugin-alias": "^5.1.1",
+    "@rollup/plugin-commonjs": "^28.0.1",
+    "@rollup/plugin-node-resolve": "^15.3.0",
     "@tspdf/eslint-config": "*",
-    "@tspdf/rollup-config": "*",
     "@tspdf/typescript-config": "*",
+    "esbuild": "^0.25.0",
     "eslint": "^9.28.0",
-    "rollup": "^4.40.2",
+    "rollup": "^4.24.0",
+    "rollup-plugin-copy": "^3.5.0",
+    "rollup-plugin-delete": "^3.0.1",
+    "rollup-plugin-dts": "^6.1.1",
+    "rollup-plugin-esbuild": "^6.2.0",
     "typescript": "^5.8.3"
   }
 }
